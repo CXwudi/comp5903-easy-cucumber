@@ -1,20 +1,23 @@
 # Easy Cucumber
 
-The Enhancement of Alexei's ["Cucumberized" JUnit](https://github.com/alexeikrumshyn/cucumberized-junit)
+This the graduate project for COMP5903 at Carleton University. It is the enhancement of Alexei's original ["Cucumberized" JUnit](https://github.com/alexeikrumshyn/cucumberized-junit)
 
-List of improvement, UML diagram for improved Cucumberized JUnit can be found in `easy-cucumber/doc` directory
+List of improvement, UML diagram for improved Cucumberized JUnit can be found in `doc` directory
 
 ## To develop or check code
 
 - Java 11 or above
 
+## How to import
+
+TODO: finish this part when published with JitPack
+
 ## How to use
 
-First, build the cucumber test using APIs defined in the [`EasyCucumber`](src\main\java\scs\comp5903\cucumber\EasyCucumber.java) class.  
-All APIs in `EasyCucumber` return an executable [`JFeature`](src/main/java/scs/comp5903/cucumber/execution/JFeature.java) class that can run the cucumber test.
-Simply call it anywhere to run the test.
+Call [`EasyCucumber.build()`](src\main\java\scs\comp5903\cucumber\EasyCucumber.java) method to parse and create a cucumber test,
+it will return an executable instance of [`JFeature`](src/main/java/scs/comp5903/cucumber/execution/JFeature.java) that can run the cucumber test through calling `JFeature.execute()`.  
 
-Currently, this project is not published yet as it is still WIP (work in progress). Once it is ready, it will be published as a maven package through [JitPack](https://jitpack.io/).
+Currently, this project is still WIP (work in progress), but at least it is in a usable stage.
 
 ## Supported Cucumber Keywords
 
@@ -22,8 +25,19 @@ Currently, this project is not published yet as it is still WIP (work in progres
 - `Scenario`: the scenario
 - `Scenario Outline`: the scenario outline
 - `Given`, `When`, `Then`, `And`, `But`: the step definition
+- `Examples`: the examples of the scenario outline
+- TODO: more to come
 
 ## Supported Cucumber Features
 
 - Able to parse `{int}`, `{string}`, `{double}`, `{biginteger}` and `{bigdecimal}` in step definition
-- TODO: more
+  - see https://github.com/cucumber/cucumber-expressions#parameter-types for more details
+- Can ignore comments began with `#`
+- Can ignore multi-line description placed under `Feature`, `Scenario` or `Scenario Outline`
+- TODO: more to come
+
+## Extra Features that Official Cucumber does not support
+
+- Several `EasyCucumber.build()` methods can take the instance of your step definition class as parameter. In this case, the cucumber will use your instance to run the step, instead of create a fresh new instance of the step definition class using Java Reflection API
+  - This can be useful for sharing states between different cucumber tests
+- TODO: more to come
