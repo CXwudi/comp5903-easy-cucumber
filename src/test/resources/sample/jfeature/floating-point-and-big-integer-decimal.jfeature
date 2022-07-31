@@ -1,0 +1,8 @@
+Feature: Different way of parsing numbers
+
+  Scenario: A scenario
+    Given 100000000000 as big integer
+    And -1e20 as big decimal
+    And 4.0 as double
+    And 4.0e2 as double
+    Then I should not crash

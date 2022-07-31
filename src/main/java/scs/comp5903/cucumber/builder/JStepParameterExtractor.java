@@ -1,0 +1,162 @@
+package scs.comp5903.cucumber.builder;
+
+import scs.comp5903.cucumber.model.JStepDefMethodDetail;
+import scs.comp5903.cucumber.model.exception.EasyCucumberException;
+import scs.comp5903.cucumber.model.exception.ErrorCode;
+import scs.comp5903.cucumber.model.jstep.*;
+import scs.comp5903.cucumber.model.matcher.*;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
+
+/**
+ * It tries to match the {@link AbstractJStep} with the {@link JStepDefMethodDetail} <br/>
+ * if they match, it will extract out parameters
+ *
+ * @author Charles Chen 101035684
+ * @date 2022-06-29
+ */
+public class JStepParameterExtractor {
+  /**
+   * simply match the digits with an optional minus sign
+   */
+  static final Pattern INTEGER_PATTERN = Pattern.compile("-?\\d+");
+  /**
+   * same as {@link #INTEGER_PATTERN} but with an optional decimal point, and an optional exponent
+   */
+  static final Pattern FLOATING_POINT_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?((E|e)-?\\d+)?");
+  /**
+   * match either "content" or 'content'
+   */
+  static final Pattern STRING_PATTERN = Pattern.compile("(\"[^\"]*\")|('[^']*')");
+
+  /**
+   * Given a step and a step def method detail, try to extract the parameters from the step based on the step def method detail
+   *
+   * @param jStep          the step to extract parameters from
+   * @param jStepDefDetail the step def method detail that expresses the parameters to extract
+   * @return none if jstep doesn't match this step definition <br/>
+   * else, return list of parameters, can be empty lists meaning no parameters
+   */
+  public Optional<List<Object>> tryExtractParameters(AbstractJStep jStep, JStepDefMethodDetail jStepDefDetail) {
+    var parameters = new ArrayList<>();
+    var jStepMatcher = jStepDefDetail.getMatcher();
+    if (!isSameKeyword(jStep, jStepMatcher)) { // not matching
+      return Optional.empty();
+    }
+    var jStepStr = jStep.getStepString(); // e.g. "I am a step with "string" and int 5"
+    var matchingStr = jStepMatcher.getMatchingString(); // e.g. "I am a step with {string} and int {int}"
+
+    for (int j = 0, m = 0; j < jStepStr.length() && m < matchingStr.length(); ) {
+      // each iteration is new one step of walking both strings
+      var jc = jStepStr.charAt(j);
+      var mc = matchingStr.charAt(m);
+      if (jc == mc) {
+        j++;
+        m++;
+      } else {
+        if (mc == '{') {
+          var endIndex = matchingStr.indexOf('}', m);
+          if (endIndex == -1) {
+            throw new EasyCucumberException(ErrorCode.EZCU012, "Uncompleted parameter type: " + matchingStr.substring(m));
+          }
+          var parameterType = matchingStr.substring(m + 1, endIndex);
+          var endingChar = endIndex == matchingStr.length() - 1 ? null : matchingStr.charAt(endIndex + 1);
+          j = extractParameterValueAndGetNextIndex(jStepStr, j, endingChar, parameterType, parameters);
+          m = endIndex + 1;
+        } else { // not matching
+          return Optional.empty();
+        }
+      }
+    }
+    // until here all matches, check if the size of extracted parameters is the same as the size of parameters in method
+    if (parameters.size() != jStepDefDetail.getMethod().getParameterTypes().length) {
+      throw new EasyCucumberException(ErrorCode.EZCU015,
+          "The amount of extracted parameters doesn't match the amount of parameters of the step definition: " + jStepDefDetail.getMethod().getName() +
+              ", please check your step definition declaration.");
+    }
+    // e.g. [ "string", 5 ]
+    return Optional.of(parameters);
+  }
+
+  /**
+   * extraction is done given the
+   *
+   * @param jStepStr                the whole jstep string literal
+   * @param j                       the starting index of jStepStr for beginning matching
+   * @param endingCharOnMatchingStr the ending character right after the '}' in the matching string <br/>
+   *                                {@code null} means there is no more char after '}' and all string after index j are matched <br/>
+   *                                this parameter is useful if the extraction relays on reading the ending character instead of regex
+   * @param parameterType           the parameter type, e.g. "string" or "int" //TODO: support more types and custom type
+   * @param parameters              this is the input/output parameter list, the extracted parameter will be added to this list
+   * @return the next index of jStepStr that should continue checking the matching, after the parameter is extracted
+   */
+  int extractParameterValueAndGetNextIndex(String jStepStr, int j, Character endingCharOnMatchingStr, String parameterType, ArrayList<Object> parameters) {
+    switch (parameterType.toLowerCase()) {
+      case "int":
+        var matcher = INTEGER_PATTERN.matcher(jStepStr.substring(j));
+        var found = matcher.find(0);
+        if (!found) {
+          throw new EasyCucumberException(ErrorCode.EZCU009, "Unable to find integer parameter as int: " + jStepStr.substring(j));
+        }
+        parameters.add(Integer.parseInt(matcher.group()));
+        return j + matcher.end();
+      case "double":
+        matcher = FLOATING_POINT_PATTERN.matcher(jStepStr.substring(j));
+        found = matcher.find(0);
+        if (!found) {
+          throw new EasyCucumberException(ErrorCode.EZCU027, "Unable to find floating point parameter as double: " + jStepStr.substring(j));
+        }
+        parameters.add(Double.parseDouble(matcher.group()));
+        return j + matcher.end();
+      case "string":
+        matcher = STRING_PATTERN.matcher(jStepStr.substring(j));
+        found = matcher.find(0);
+        if (!found) {
+          throw new EasyCucumberException(ErrorCode.EZCU010, "Unable to find string literals: " + jStepStr.substring(j) +
+              ", the string literal should be in double or single quotes.");
+        }
+        var matchedStr = matcher.group();
+        parameters.add(matchedStr.substring(1, matchedStr.length() - 1));
+        return j + matcher.end();
+      case "biginteger":
+        matcher = INTEGER_PATTERN.matcher(jStepStr.substring(j));
+        found = matcher.find(0);
+        if (!found) {
+          throw new EasyCucumberException(ErrorCode.EZCU026, "Unable to find integer parameter as big integer: " + jStepStr.substring(j));
+        }
+        parameters.add(new BigInteger(matcher.group()));
+        return j + matcher.end();
+      case "bigdecimal":
+        matcher = FLOATING_POINT_PATTERN.matcher(jStepStr.substring(j));
+        found = matcher.find(0);
+        if (!found) {
+          throw new EasyCucumberException(ErrorCode.EZCU028, "Unable to find floating point parameter as big decimal: " + jStepStr.substring(j));
+        }
+        parameters.add(new BigDecimal(matcher.group()));
+        return j + matcher.end();
+      default:
+        throw new EasyCucumberException(ErrorCode.EZCU011, "Invalid parameter type: " + parameterType);
+    }
+  }
+
+  boolean isSameKeyword(AbstractJStep jStep, AbstractJStepMatcher jStepMatcher) {
+    if (jStep instanceof GivenStep) {
+      return jStepMatcher instanceof GivenJStepMatcher;
+    } else if (jStep instanceof WhenStep) {
+      return jStepMatcher instanceof WhenJStepMatcher;
+    } else if (jStep instanceof ThenStep) {
+      return jStepMatcher instanceof ThenJStepMatcher;
+    } else if (jStep instanceof AndStep) {
+      return jStepMatcher instanceof AndJStepMatcher;
+    } else if (jStep instanceof ButStep) {
+      return jStepMatcher instanceof ButJStepMatcher;
+    } else {
+      throw new EasyCucumberException(ErrorCode.EZCU008, "we are seeing unknown type here??");
+    }
+  }
+}

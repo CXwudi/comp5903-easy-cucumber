@@ -1,0 +1,7 @@
+Feature: CMS can handle race condition between two students
+
+  Scenario: two students try to register for the last spot
+    Given student one and student two
+    And both are at the course registration page
+    When student one and student two click the register button on COMP3004 at the same time
+    Then only one of them should be registered for the course

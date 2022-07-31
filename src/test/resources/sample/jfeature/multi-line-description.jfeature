@@ -1,0 +1,13 @@
+Feature: This is a feature with description and comments
+  I am a comments
+  Given a tricky comments
+  # and some comments
+
+  Scenario: This is a scenario with description and comments
+    I can write description here as well
+    Examples: a tricky description
+    # above two lines are all description
+    Given I have an apple
+    When I eat it
+    Then I am full
+    # and this is a comment

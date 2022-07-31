@@ -1,0 +1,7 @@
+Feature: CMS can handle registration
+
+  Scenario: A student register a course
+    Given a student
+    And the student is at the course registration page
+    When the student clicks the register button on a course
+    Then the student is registered for the course
