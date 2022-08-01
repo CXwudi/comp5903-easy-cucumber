@@ -1,7 +1,15 @@
 package scs.comp5903.cucumber.builder;
 
+import org.jooq.lambda.Unchecked;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+
+import java.util.HashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -10,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @date 2022-07-19
  */
 class EasyCachingObjectProviderTest {
+
+  private static final Logger log = org.slf4j.LoggerFactory.getLogger(EasyCachingObjectProviderTest.class);
 
   private EasyCachingObjectProvider easyCachingObjectProvider;
 
@@ -46,6 +56,52 @@ class EasyCachingObjectProviderTest {
     var cachedInstance = easyCachingObjectProvider.get(TestInterface.class);
     assertEquals(1, easyCachingObjectProvider.getObjects().size());
     assertEquals(instance, cachedInstance);
+  }
+
+  @Test
+  void raceCondition() throws InterruptedException {
+    // given
+    var getCount = new AtomicInteger();
+    var putCount = new AtomicInteger();
+    // create a map to capture the number of get and put operations
+    var methodCallCountMap = new HashMap<Class<?>, Object>() {
+      @Override
+      public Object get(Object key) {
+        getCount.incrementAndGet();
+        return super.get(key);
+      }
+
+      @Override
+      public Object put(Class<?> key, Object value) {
+        putCount.incrementAndGet();
+        return super.put(key, value);
+      }
+    };
+    easyCachingObjectProvider.setObjects(methodCallCountMap);
+    var countDownLatch = new CountDownLatch(100);
+    var threadPoolExecutor = new ThreadPoolExecutor(100, 100, 0,
+        TimeUnit.MILLISECONDS, new java.util.concurrent.LinkedBlockingQueue<>());
+
+    // when
+    for (int i = 0; i < 100; i++) {
+      int finalI = i;
+      threadPoolExecutor.submit(Unchecked.runnable(() -> {
+        countDownLatch.countDown();
+        // here we should be able to archive that all 100 threads are waiting each other so that
+        // all 100 threads can start getting the TestClass instance at the same time
+        countDownLatch.await();
+        var testClass = easyCachingObjectProvider.get(TestClass.class);
+        log.debug("testClass: {} {}", testClass, finalI);
+      }));
+    }
+
+    threadPoolExecutor.shutdown();
+    threadPoolExecutor.awaitTermination(1, TimeUnit.MINUTES);
+
+    // then
+    assertEquals(1, putCount.get());
+    assertEquals(99, getCount.get());
+
   }
 
 }

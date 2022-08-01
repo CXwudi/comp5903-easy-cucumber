@@ -14,7 +14,8 @@ import java.util.Map;
  * @date 2022-06-23
  */
 public class EasyCachingObjectProvider implements BaseObjectProvider {
-  private final Map<Class<?>, Object> objects;
+  private Map<Class<?>, Object> objects;
+  private final Object lock = new Object();
 
   public EasyCachingObjectProvider() {
     objects = new HashMap<>();
@@ -47,34 +48,36 @@ public class EasyCachingObjectProvider implements BaseObjectProvider {
    */
   @Override
   public <T> T get(Class<T> clazz) {
-    if (!objects.containsKey(clazz)) {
-      // also check if the input class is a superclass of a class in the map
-      var classes = objects.keySet();
-      for (var classItem : classes) {
-        if (clazz.isAssignableFrom(classItem)) {
-          return (T) objects.get(classItem);
+    synchronized (lock) { // unfortunately, we don't know how to use read write lock for this kind of logic
+      if (!objects.containsKey(clazz)) {
+        // also check if the input class is a superclass of a class in the map
+        var classes = objects.keySet();
+        for (var classItem : classes) {
+          if (clazz.isAssignableFrom(classItem)) {
+            return (T) objects.get(classItem);
+          }
         }
+        // else, create new instance and cache it in the map
+        try {
+          var newInstance = clazz.getConstructor().newInstance();
+          objects.put(clazz, newInstance);
+          return newInstance;
+        } catch (InvocationTargetException e) {
+          throw new EasyCucumberException(ErrorCode.EZCU007, "Failed to create object of class " + clazz.getName() + ". " +
+              "Your public empty constructor throws this exception:", e);
+        } catch (InstantiationException e) {
+          throw new EasyCucumberException(ErrorCode.EZCU029, "Failed to create object of class " + clazz.getName() + ". " +
+              "I can't create an instance of an abstract class or an interface, you know", e);
+        } catch (IllegalAccessException e) {
+          throw new EasyCucumberException(ErrorCode.EZCU030, "Failed to create object of class " + clazz.getName() + ". " +
+              "You sure I have the access to the empty constructor", e);
+        } catch (NoSuchMethodException e) {
+          throw new EasyCucumberException(ErrorCode.EZCU031, "Failed to create object of class " + clazz.getName() + ". " +
+              "Maybe you forgot to create a public empty constructor", e);
+        }
+      } else {
+        return (T) objects.get(clazz);
       }
-      // else, create new instance and cache it in the map
-      try {
-        var newInstance = clazz.getConstructor().newInstance();
-        objects.put(clazz, newInstance);
-        return newInstance;
-      } catch (InvocationTargetException e) {
-        throw new EasyCucumberException(ErrorCode.EZCU007, "Failed to create object of class " + clazz.getName() + ". " +
-            "Your public empty constructor throws this exception:", e);
-      } catch (InstantiationException e) {
-        throw new EasyCucumberException(ErrorCode.EZCU029, "Failed to create object of class " + clazz.getName() + ". " +
-            "I can't create an instance of an abstract class or an interface, you know", e);
-      } catch (IllegalAccessException e) {
-        throw new EasyCucumberException(ErrorCode.EZCU030, "Failed to create object of class " + clazz.getName() + ". " +
-            "You sure I have the access to the empty constructor", e);
-      } catch (NoSuchMethodException e) {
-        throw new EasyCucumberException(ErrorCode.EZCU031, "Failed to create object of class " + clazz.getName() + ". " +
-            "Maybe you forgot to create a public empty constructor", e);
-      }
-    } else {
-      return (T) objects.get(clazz);
     }
   }
 
@@ -83,5 +86,12 @@ public class EasyCachingObjectProvider implements BaseObjectProvider {
    */
   Map<Class<?>, Object> getObjects() {
     return objects;
+  }
+
+  /**
+   * for testing purpose
+   */
+  void setObjects(Map<Class<?>, Object> objects) {
+    this.objects = objects;
   }
 }
