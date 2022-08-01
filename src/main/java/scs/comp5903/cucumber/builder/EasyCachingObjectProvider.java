@@ -6,6 +6,8 @@ import scs.comp5903.cucumber.model.exception.ErrorCode;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * An object provider that creates the instance using empty constructor and cache it in the map for reuse
@@ -14,8 +16,12 @@ import java.util.Map;
  * @date 2022-06-23
  */
 public class EasyCachingObjectProvider implements BaseObjectProvider {
+  /**
+   * the internal map to store the step definition class and its instance <br/>
+   * the class in the key must not be the superclass or interface of the step definition class
+   */
   private Map<Class<?>, Object> objects;
-  private final Object lock = new Object();
+  private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
   public EasyCachingObjectProvider() {
     objects = new HashMap<>();
@@ -29,55 +35,47 @@ public class EasyCachingObjectProvider implements BaseObjectProvider {
   }
 
   /**
-   * Prefer to use {@link #EasyCachingObjectProvider(Object...)}, instead of hand writing the map to pass in <br/>
-   * This should only be used for maybe like transferring from a DI framework
-   */
-  public EasyCachingObjectProvider(Map<Class<?>, Object> objects) {
-    for (var entry : objects.entrySet()) {
-      if (!entry.getClass().isAssignableFrom(entry.getValue().getClass())) {
-        throw new EasyCucumberException(ErrorCode.EZCU032, "The class " + entry.getValue().getClass() + " is not the same, or the superclass or interface of the class of instance " + entry.getKey());
-      }
-    }
-    // create new mutable map to avoid modifying the original map
-    this.objects = new HashMap<>(objects);
-  }
-
-
-  /**
    * get the instance of this class or its subclasses.
    */
   @Override
   public <T> T get(Class<T> clazz) {
-    synchronized (lock) { // unfortunately, we don't know how to use read write lock for this kind of logic
-      if (!objects.containsKey(clazz)) {
-        // also check if the input class is a superclass of a class in the map
-        var classes = objects.keySet();
-        for (var classItem : classes) {
-          if (clazz.isAssignableFrom(classItem)) {
-            return (T) objects.get(classItem);
-          }
-        }
-        // else, create new instance and cache it in the map
-        try {
-          var newInstance = clazz.getConstructor().newInstance();
-          objects.put(clazz, newInstance);
-          return newInstance;
-        } catch (InvocationTargetException e) {
-          throw new EasyCucumberException(ErrorCode.EZCU007, "Failed to create object of class " + clazz.getName() + ". " +
-              "Your public empty constructor throws this exception:", e);
-        } catch (InstantiationException e) {
-          throw new EasyCucumberException(ErrorCode.EZCU029, "Failed to create object of class " + clazz.getName() + ". " +
-              "I can't create an instance of an abstract class or an interface, you know", e);
-        } catch (IllegalAccessException e) {
-          throw new EasyCucumberException(ErrorCode.EZCU030, "Failed to create object of class " + clazz.getName() + ". " +
-              "You sure I have the access to the empty constructor", e);
-        } catch (NoSuchMethodException e) {
-          throw new EasyCucumberException(ErrorCode.EZCU031, "Failed to create object of class " + clazz.getName() + ". " +
-              "Maybe you forgot to create a public empty constructor", e);
-        }
-      } else {
-        return (T) objects.get(clazz);
+    lock.readLock().lock();
+    try {
+      var result = (Optional<T>) tryGet(clazz);
+      if (result.isPresent()) {
+        return result.get();
       }
+    } finally {
+      lock.readLock().unlock();
+    }
+
+    lock.writeLock().lock();
+    // else, create new instance and cache it in the map
+    try {
+      // do the read again in write block because in extreme race condition,
+      // we can have multiple thread waiting on write for the same class
+      var result = (Optional<T>) tryGet(clazz);
+      if (result.isPresent()) {
+        return result.get();
+      }
+      // by here, there should be only one thread calling the put() for a same class
+      var newInstance = clazz.getConstructor().newInstance();
+      objects.put(clazz, newInstance);
+      return newInstance;
+    } catch (InvocationTargetException e) {
+      throw new EasyCucumberException(ErrorCode.EZCU007, "Failed to create object of class " + clazz.getName() + ". " +
+          "Your public empty constructor throws this exception:", e);
+    } catch (InstantiationException e) {
+      throw new EasyCucumberException(ErrorCode.EZCU029, "Failed to create object of class " + clazz.getName() + ". " +
+          "I can't create an instance of an abstract class or an interface, you know", e);
+    } catch (IllegalAccessException e) {
+      throw new EasyCucumberException(ErrorCode.EZCU030, "Failed to create object of class " + clazz.getName() + ". " +
+          "You sure I have the access to the empty constructor", e);
+    } catch (NoSuchMethodException e) {
+      throw new EasyCucumberException(ErrorCode.EZCU031, "Failed to create object of class " + clazz.getName() + ". " +
+          "Maybe you forgot to create a public empty constructor", e);
+    } finally {
+      lock.writeLock().unlock();
     }
   }
 
@@ -93,5 +91,21 @@ public class EasyCachingObjectProvider implements BaseObjectProvider {
    */
   void setObjects(Map<Class<?>, Object> objects) {
     this.objects = objects;
+  }
+
+  private Optional<Object> tryGet(Class<?> clazz) {
+    // not calling containKey because internally it is calling get() == null
+    var firstResult = objects.get(clazz);
+    if (firstResult != null) {
+      return Optional.of(firstResult);
+    }
+    // then check if the input class is a superclass of a class in the map
+    var classes = objects.keySet();
+    for (var classItem : classes) {
+      if (clazz.isAssignableFrom(classItem)) {
+        return Optional.of(objects.get(classItem));
+      }
+    }
+    return Optional.empty();
   }
 }
