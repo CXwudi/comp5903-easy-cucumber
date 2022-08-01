@@ -14,8 +14,10 @@ TODO: finish this part when published with JitPack
 
 ## How to use
 
-Call [`EasyCucumber.build()`](src\main\java\scs\comp5903\cucumber\EasyCucumber.java) method to parse and create a cucumber test,
-it will return an executable instance of [`JFeature`](src/main/java/scs/comp5903/cucumber/execution/JFeature.java) that can run the cucumber test through calling `JFeature.execute()`.  
+Call [`EasyCucumber.build()`](src/main/java/scs/comp5903/cucumber/EasyCucumber.java) method to parse and create a
+cucumber test,
+it will return an executable instance of [`JFeature`](src/main/java/scs/comp5903/cucumber/execution/JFeature.java) that
+can run the cucumber test through calling `JFeature.execute()`.
 
 Currently, this project is still WIP (work in progress), but at least it is in a usable stage.
 
@@ -38,6 +40,9 @@ Currently, this project is still WIP (work in progress), but at least it is in a
 
 ## Extra Features that Official Cucumber does not support
 
-- Several `EasyCucumber.build()` methods can take the instance of your step definition class as parameter. In this case, the cucumber will use your instance to run the step, instead of create a fresh new instance of the step definition class using Java Reflection API
-  - This can be useful for sharing states between different cucumber tests
+- Several `EasyCucumber.build()` methods can take the instance of your step definition class as parameter. In this case,
+  the cucumber will use your instance to run the step, instead of create a fresh new instance of the step definition
+  class using Java Reflection API
+    - This can be useful for sharing states between different cucumber tests,
+      or sharing the same step definition class instance across multiple cucumber tests
 - TODO: more to come
