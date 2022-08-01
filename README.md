@@ -44,7 +44,7 @@ Step 2. Add the dependency
  <dependency>
      <groupId>com.github.CXwudi</groupId>
      <artifactId>comp5903-easy-cucumber</artifactId>
-     <version>0.1.0</version>
+     <version>the latest version</version>
  </dependency>
 ```
 
@@ -65,7 +65,7 @@ Step 2. Add the dependency
 
 ``` gradle
 dependencies {
-  implementation 'com.github.CXwudi:comp5903-easy-cucumber:0.1.0'
+  implementation 'com.github.CXwudi:comp5903-easy-cucumber:<the latest version>'
 }
 ```
 
