@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Charles Chen 101035684
@@ -96,7 +97,7 @@ class EasyCachingObjectProviderTest {
     }
 
     threadPoolExecutor.shutdown();
-    threadPoolExecutor.awaitTermination(1, TimeUnit.MINUTES);
+    assertTrue(threadPoolExecutor.awaitTermination(1, TimeUnit.MINUTES), "this should not take more than 1 minute");
 
     // then
     assertEquals(1, putCount.get());
