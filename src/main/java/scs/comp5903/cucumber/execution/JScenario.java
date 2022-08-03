@@ -1,14 +1,19 @@
 package scs.comp5903.cucumber.execution;
 
+import org.slf4j.Logger;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Objects;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author Charles Chen 101035684
  * @date 2022-06-23
  */
 public class JScenario {
+  private static final Logger log = getLogger(JScenario.class);
   private final String title;
   private final List<String> tags;
   private final List<MethodExecution> steps;
@@ -35,6 +40,7 @@ public class JScenario {
    * actual execute the scenario
    */
   public void execute() throws InvocationTargetException, IllegalAccessException {
+    log.info("Executing scenario: {}", title);
     for (MethodExecution step : steps) {
       step.execute();
     }

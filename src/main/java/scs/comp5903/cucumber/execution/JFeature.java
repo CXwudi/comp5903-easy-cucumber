@@ -1,5 +1,6 @@
 package scs.comp5903.cucumber.execution;
 
+import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
 
@@ -8,11 +9,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 /**
  * @author Charles Chen 101035684
  * @date 2022-06-23
  */
 public class JFeature {
+
+  private static final Logger log = getLogger(JFeature.class);
+
   private final String title;
   private final List<String> tags;
   private final List<JScenario> scenarios;
@@ -59,6 +65,7 @@ public class JFeature {
    * execute all scenarios in this feature with respect to the order
    */
   public void execute() throws InvocationTargetException, IllegalAccessException {
+    log.info("Start executing the feature: {}", title);
     HashMap<Integer, JScenario> orderToScenarioMap = new HashMap<>(scenarios.size());
     for (int i = 0; i < scenarios.size(); i++) {
       orderToScenarioMap.put(scenarioOrders.get(i), scenarios.get(i));
@@ -74,6 +81,7 @@ public class JFeature {
         orderToScenarioOutlineMap.get(i).execute();
       }
     }
+    log.info("Done executing the feature: {}", title);
   }
 
   @Override

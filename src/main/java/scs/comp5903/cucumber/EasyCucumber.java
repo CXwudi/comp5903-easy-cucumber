@@ -1,5 +1,6 @@
 package scs.comp5903.cucumber;
 
+import org.slf4j.Logger;
 import scs.comp5903.cucumber.builder.BaseObjectProvider;
 import scs.comp5903.cucumber.builder.EasyCachingObjectProvider;
 import scs.comp5903.cucumber.builder.JFeatureBuilder;
@@ -15,6 +16,8 @@ import scs.comp5903.cucumber.util.ReflectionUtil;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * The facade class of building the runnable {@link JFeature}. <br/>
@@ -33,12 +36,15 @@ import java.util.List;
  */
 public class EasyCucumber {
 
+  private static final Logger log = getLogger(EasyCucumber.class);
+
   private EasyCucumber() {
   }
 
   /**
    * Build the runnable {@link JFeature} from the given feature file and one or more instances of step definition classes.
-   * @param featureFile the feature file to be parsed and ran
+   *
+   * @param featureFile             the feature file to be parsed and ran
    * @param stepDefinitionInstances the instances of step definition classes
    * @return the runnable {@link JFeature}
    */
@@ -126,6 +132,7 @@ public class EasyCucumber {
     if (stepDefinitionClasses.isEmpty()) {
       throw new EasyCucumberException(ErrorCode.EZCU033, "Need at least one step definition class");
     }
+    log.info("Start building the runnable JFeature from feature file: {} with step definition classes: {}", featureFile, stepDefinitionClasses);
     var jStepBuilder = new DetailBuilder();
     var jStepParameterExtractor = new JStepParameterExtractor();
     var jFeatureFileParser = new JFeatureFileParser(jStepBuilder);
@@ -135,6 +142,8 @@ public class EasyCucumber {
     // parse step definition class to detail object
     var jStepDefDetail = jStepDefinitionParser.parse(stepDefinitionClasses);
     // build runnable feature
-    return new JFeatureBuilder(jStepParameterExtractor).build(featureDetail, jStepDefDetail, objectProvider);
+    var jFeature = new JFeatureBuilder(jStepParameterExtractor).build(featureDetail, jStepDefDetail, objectProvider);
+    log.info("Successfully built the runnable JFeature: {}", jFeature.getTitle());
+    return jFeature;
   }
 }
