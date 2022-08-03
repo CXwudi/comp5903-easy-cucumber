@@ -3,11 +3,11 @@ package scs.comp5903.cucumber.sample;
 import org.junit.jupiter.api.Test;
 import scs.comp5903.cucumber.EasyCucumber;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
+import scs.comp5903.cucumber.model.exception.ErrorCode;
 
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Charles Chen 101035684
@@ -17,7 +17,8 @@ class EmptyFeatureTest {
 
   @Test
   void emptyFeatureFile() {
-    assertThrows(EasyCucumberException.class, () -> EasyCucumber.build(Path.of("src/test/resources/sample/jfeature/empty-file.jfeature"), RummikubDummyJStepDefs.class));
+    var exp = assertThrows(EasyCucumberException.class, () -> EasyCucumber.build(Path.of("src/test/resources/sample/jfeature/empty-file.jfeature"), RummikubDummyJStepDefs.class));
+    assertTrue(exp.getMessage().contains(ErrorCode.EZCU014.toString()));
   }
 
   @Test
