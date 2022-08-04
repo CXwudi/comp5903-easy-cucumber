@@ -1,5 +1,6 @@
 package scs.comp5903.cucumber.parser;
 
+import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.JFeatureDetail;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
@@ -8,11 +9,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 /**
  * @author Charles Chen 101035684
  * @date 2022-07-05
  */
 public class JFeatureFileParser {
+
+  private static final Logger log = getLogger(JFeatureFileParser.class);
+
   private final DetailBuilder detailBuilder;
 
   public JFeatureFileParser(DetailBuilder detailBuilder) {
@@ -20,6 +26,7 @@ public class JFeatureFileParser {
   }
 
   public JFeatureDetail parse(Path featureFile) {
+    log.info("Start parsing feature file: {}", featureFile.getFileName());
     var jFeatureDetailBuilder = JFeatureDetail.builder();
     // we have to new this instance to support multi-threading, as the jFeatureDetailBuilder is created once per thread
     var lineByLineParser = new JFeatureFileLineByLineParser(jFeatureDetailBuilder, detailBuilder);
@@ -39,6 +46,7 @@ public class JFeatureFileParser {
     if (jFeatureDetail.getTitle() == null || jFeatureDetail.getTitle().isBlank()) {
       throw new EasyCucumberException(ErrorCode.EZCU014, "A feature must have a valid title, or is there a syntax issue in your feature file" + featureFile + "?");
     }
+    log.info("Done parsing feature file: {}", featureFile.getFileName());
     return jFeatureDetail;
   }
 }

@@ -1,5 +1,6 @@
 package scs.comp5903.cucumber.parser;
 
+import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.JScenarioDetail;
 import scs.comp5903.cucumber.model.JScenarioOutlineDetail;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.slf4j.LoggerFactory.getLogger;
 import static scs.comp5903.cucumber.model.exception.ErrorCode.EZCU002;
 import static scs.comp5903.cucumber.model.exception.ErrorCode.EZCU003;
 
@@ -19,6 +21,8 @@ import static scs.comp5903.cucumber.model.exception.ErrorCode.EZCU003;
  * @date 2022-06-28
  */
 public class DetailBuilder {
+
+  private static final Logger log = getLogger(DetailBuilder.class);
 
   /**
    * this method takes the raw literal of scenario outline
@@ -31,6 +35,8 @@ public class DetailBuilder {
    * @return a list of scenarios
    */
   public JScenarioOutlineDetail buildJScenarioOutlineDetail(String title, List<String> stepsLiteral, List<String> examplesLiteral, List<String> scenarioOutlineTagsLiteral) {
+    // TODO: handle scenario tags literals
+    log.debug("Building data class for scenario outline: {}", title);
     List<String> paramNames = new ArrayList<>();
     for (String s1 : examplesLiteral.get(0).split("\\|")) {
       String trim = s1.trim();
@@ -82,6 +88,7 @@ public class DetailBuilder {
    */
   public JScenarioDetail buildJScenarioDetail(String title, List<String> stepsLiteral, List<String> tagsLiteral) {
     //TODO: handle tags literal
+    log.debug("Building data class for scenario: {}", title);
     List<AbstractJStep> steps = new ArrayList<>();
     for (String s : stepsLiteral) {
       AbstractJStep abstractJStep = parseStep(s);

@@ -1,5 +1,6 @@
 package scs.comp5903.cucumber.builder;
 
+import org.slf4j.Logger;
 import scs.comp5903.cucumber.execution.JFeature;
 import scs.comp5903.cucumber.execution.JScenario;
 import scs.comp5903.cucumber.execution.JScenarioOutline;
@@ -11,11 +12,15 @@ import scs.comp5903.cucumber.model.jstep.AbstractJStep;
 
 import java.util.*;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 /**
  * @author Charles Chen 101035684
  * @date 2022-06-23
  */
 public class JFeatureBuilder {
+
+  private static final Logger log = getLogger(JFeatureBuilder.class);
 
   final JStepParameterExtractor jStepParameterExtractor;
 
@@ -34,12 +39,14 @@ public class JFeatureBuilder {
   }
 
   public JFeature build(JFeatureDetail featureDetail, JStepDefDetail stepDefDetail, BaseObjectProvider objectProvider) {
+    log.info("Start building runnable JFeature using data classes from the feature file and step definitions");
     // extract all AbstractJStep from featureDetail into a linked has set
     var allSteps = extractAllSteps(featureDetail);
     // for each step def method detail, find the matching step in the linked hash set, and remove it from the linked hash set and add it into the HashMap
     HashMap<AbstractJStep, MatchResult> matchingStepToMethodMap = mapAllStepsToStepDefMethods(allSteps, stepDefDetail.getSteps());
     // with the filled map of matching steps to step def method details, create the method execution for each pair
     // lastly, create the JFeature object using all information we computed before
+    log.info("Done building runnable JFeature using data classes from the feature file and step definitions");
     return buildJFeature(featureDetail, matchingStepToMethodMap, objectProvider);
   }
 
@@ -72,6 +79,7 @@ public class JFeatureBuilder {
    * for each step def method detail, find the matching step in the linked hash set, and remove it from the linked hash set and add it into the HashMap
    */
   private HashMap<AbstractJStep, MatchResult> mapAllStepsToStepDefMethods(Set<AbstractJStep> allSteps, List<JStepDefMethodDetail> jStepDefMethodDetails) {
+    log.debug("Start matching {} steps to {} step definitions provided", allSteps.size(), jStepDefMethodDetails.size());
     var stepsCopy = new LinkedList<>(allSteps);
     var results = new HashMap<AbstractJStep, MatchResult>();
 
@@ -91,6 +99,7 @@ public class JFeatureBuilder {
       var parametersOpt = jStepParameterExtractor.tryExtractParameters(step, stepDefDetail);
       if (parametersOpt.isPresent()) {
         var parameters = parametersOpt.get();
+        log.debug("  Matched step {} with step definition {}", step, stepDefDetail.getMatcher());
         return Optional.of(new MatchResult(stepDefDetail, parameters.toArray()));
       }
     }

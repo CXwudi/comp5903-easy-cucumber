@@ -1,5 +1,6 @@
 package scs.comp5903.cucumber.parser;
 
+import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.JFeatureDetail;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
@@ -10,6 +11,7 @@ import scs.comp5903.cucumber.util.ThrowingConsumer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.slf4j.LoggerFactory.getLogger;
 import static scs.comp5903.cucumber.parser.JFeatureFileLineByLineParser.ParseState.*;
 
 /**
@@ -21,6 +23,8 @@ import static scs.comp5903.cucumber.parser.JFeatureFileLineByLineParser.ParseSta
  * @date 2022-07-05
  */
 class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
+
+  private static final Logger log = getLogger(JFeatureFileLineByLineParser.class);
 
   private final JFeatureDetail.JFeatureDetailBuilder jFeatureDetailBuilder;
   private final DetailBuilder detailBuilder;
@@ -73,11 +77,13 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
    */
   @Override
   public void acceptThrows(String line) throws Exception {
+    log.trace("  line: {}", line);
     // WARNING: at here, state is the previous state
     // SENSE: detect the properties of this line
     var senceResult = sense(line);
     // THINK: based on the state from previous line, and the detection result, decide the new state
     think(senceResult);
+    log.trace("  state determined: {}", state);
     // WARNING: only at here, state is the new value of the current state
     // REACT: do what to do based on the new state
     react(line);
