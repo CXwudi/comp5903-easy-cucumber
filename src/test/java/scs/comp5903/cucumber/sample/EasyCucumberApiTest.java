@@ -2,7 +2,7 @@ package scs.comp5903.cucumber.sample;
 
 import org.junit.jupiter.api.Test;
 import scs.comp5903.cucumber.EasyCucumber;
-import scs.comp5903.cucumber.sample.samplestepdef.RummikubDummySaperatedJStepDefs;
+import scs.comp5903.cucumber.sample.samplestepdef.RummikubDummySeparatedJStepDefs;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -21,8 +21,8 @@ class EasyCucumberApiTest {
   void canBuildWithClasses() {
     assertDoesNotThrow(() -> EasyCucumber.build(
         Path.of("src/test/resources/sample/jfeature/rummikub/initial_points.jfeature"),
-        RummikubDummySaperatedJStepDefs.class,
-        RummikubDummySaperatedJStepDefs.RummikubDummySaperatedJStepDefs2.class
+        RummikubDummySeparatedJStepDefs.class,
+        RummikubDummySeparatedJStepDefs.RummikubDummySeparatedJStepDefs2.class
     ).execute());
   }
 
@@ -30,8 +30,8 @@ class EasyCucumberApiTest {
   void canBuildWithObjects() {
     assertDoesNotThrow(() -> EasyCucumber.build(
         Path.of("src/test/resources/sample/jfeature/rummikub/initial_points.jfeature"),
-        new RummikubDummySaperatedJStepDefs(),
-        new RummikubDummySaperatedJStepDefs.RummikubDummySaperatedJStepDefs2()
+        new RummikubDummySeparatedJStepDefs(),
+        new RummikubDummySeparatedJStepDefs.RummikubDummySeparatedJStepDefs2()
     ).execute());
   }
 
@@ -40,8 +40,8 @@ class EasyCucumberApiTest {
     assertDoesNotThrow(() -> EasyCucumber.build(
         Path.of("src/test/resources/sample/jfeature/rummikub/initial_points.jfeature"),
         List.of(
-            RummikubDummySaperatedJStepDefs.class,
-            RummikubDummySaperatedJStepDefs.RummikubDummySaperatedJStepDefs2.class
+            RummikubDummySeparatedJStepDefs.class,
+            RummikubDummySeparatedJStepDefs.RummikubDummySeparatedJStepDefs2.class
         )
     ).execute());
   }
@@ -51,8 +51,8 @@ class EasyCucumberApiTest {
     assertDoesNotThrow(() -> EasyCucumber.build(
         Path.of("src/test/resources/sample/jfeature/rummikub/initial_points.jfeature"),
         List.of(
-            new RummikubDummySaperatedJStepDefs(),
-            new RummikubDummySaperatedJStepDefs.RummikubDummySaperatedJStepDefs2()
+            new RummikubDummySeparatedJStepDefs(),
+            new RummikubDummySeparatedJStepDefs.RummikubDummySeparatedJStepDefs2()
         )
     ).execute());
   }
@@ -62,8 +62,8 @@ class EasyCucumberApiTest {
     assertDoesNotThrow(() -> EasyCucumber.build(
         Path.of("src/test/resources/sample/jfeature/rummikub/initial_points.jfeature"),
         List.of(
-            new RummikubDummySaperatedJStepDefs(),
-            RummikubDummySaperatedJStepDefs.RummikubDummySaperatedJStepDefs2.class
+            new RummikubDummySeparatedJStepDefs(),
+            RummikubDummySeparatedJStepDefs.RummikubDummySeparatedJStepDefs2.class
         )
     ).execute());
   }

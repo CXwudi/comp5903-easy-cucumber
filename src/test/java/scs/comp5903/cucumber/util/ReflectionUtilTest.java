@@ -2,7 +2,7 @@ package scs.comp5903.cucumber.util;
 
 import org.junit.jupiter.api.Test;
 import scs.comp5903.cucumber.sample.cmsutil.SeleniumFactory;
-import scs.comp5903.cucumber.sample.samplestepdef.RummikubDummySaperatedJStepDefs;
+import scs.comp5903.cucumber.sample.samplestepdef.RummikubDummySeparatedJStepDefs;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,7 +28,7 @@ class ReflectionUtilTest {
   @Test
   void canFindClassesInNestedClasses2() {
     var classSet = ReflectionUtil.findAllClassesUsingClassLoader("scs.comp5903.cucumber.sample.samplestepdef");
-    assertTrue(classSet.contains(RummikubDummySaperatedJStepDefs.RummikubDummySaperatedJStepDefs2.class));
+    assertTrue(classSet.contains(RummikubDummySeparatedJStepDefs.RummikubDummySeparatedJStepDefs2.class));
   }
 
 }

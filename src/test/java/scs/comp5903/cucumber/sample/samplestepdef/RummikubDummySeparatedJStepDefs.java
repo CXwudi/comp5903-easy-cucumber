@@ -5,8 +5,11 @@ import scs.comp5903.cucumber.model.JStep;
 
 import static scs.comp5903.cucumber.model.JStepKeyword.*;
 
-public class RummikubDummySaperatedJStepDefs {
-  private final static Logger log = org.slf4j.LoggerFactory.getLogger(RummikubDummySaperatedJStepDefs.class);
+/**
+ * just exactly same step definition of {@link scs.comp5903.cucumber.sample.RummikubDummyJStepDefs}, but separated into different class
+ */
+public class RummikubDummySeparatedJStepDefs {
+  private final static Logger log = org.slf4j.LoggerFactory.getLogger(RummikubDummySeparatedJStepDefs.class);
 
   @JStep(keyword = GIVEN, value = "Test Server is started")
   public void test_server_is_started() {
@@ -65,8 +68,8 @@ public class RummikubDummySaperatedJStepDefs {
 
   // belows are same step defs but with and keywords, not all step defs below are used
 
-  public static class RummikubDummySaperatedJStepDefs2 {
-    private final static Logger log = org.slf4j.LoggerFactory.getLogger(RummikubDummySaperatedJStepDefs.class);
+  public static class RummikubDummySeparatedJStepDefs2 {
+    private final static Logger log = org.slf4j.LoggerFactory.getLogger(RummikubDummySeparatedJStepDefs2.class);
 
     @JStep(keyword = AND, value = "Player {int} hand starts with {string}")
     public void and_player_hand_starts_with(int pNum, String tiles) {
