@@ -3,6 +3,7 @@ package scs.comp5903.cucumber.parser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import scs.comp5903.cucumber.model.JFeatureDetail;
+import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.jstep.GivenStep;
 import scs.comp5903.cucumber.model.jstep.ThenStep;
 import scs.comp5903.cucumber.model.jstep.WhenStep;
@@ -10,7 +11,7 @@ import scs.comp5903.cucumber.model.jstep.WhenStep;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static scs.comp5903.cucumber.parser.JFeatureFileLineByLineParser.ParseState.*;
 
 /**
@@ -38,7 +39,7 @@ class JFeatureFileLineByLineParserTest {
     // then
     assertEquals("This is a feature title", jFeatureDetail.getTitle());
     assertEquals(FEATURE, lineByLineParser.getState());
-    assertEquals(null, lineByLineParser.getParentState());
+    assertNull(lineByLineParser.getParentState());
   }
 
   @Test
@@ -115,6 +116,71 @@ class JFeatureFileLineByLineParserTest {
     assertEquals("This is a scenario outline title", lineByLineParser.getTempScenarioTitle());
     assertEquals(SCENARIO_OUTLINE, lineByLineParser.getState());
     assertEquals(FEATURE, lineByLineParser.getParentState());
+  }
+
+  @Test
+  void tagBetweenFeatureAndScenarioTitles() {
+    // given
+    jFeatureDetailBuilder.title("This is a feature title");
+    lineByLineParser.setState(FEATURE);
+    // when
+    lineByLineParser.accept("@tag1 @tag2");
+    // then
+    assertEquals(TAG, lineByLineParser.getState());
+    assertEquals(FEATURE, lineByLineParser.getParentState());
+    assertEquals(1, lineByLineParser.getTempTagsLiteral().size());
+    // and when
+    lineByLineParser.accept("@anotherTag");
+    // then
+    assertEquals(TAG, lineByLineParser.getState());
+    assertEquals(FEATURE, lineByLineParser.getParentState());
+    assertEquals(2, lineByLineParser.getTempTagsLiteral().size());
+    // and when
+    lineByLineParser.accept("Scenario: This is a scenario title");
+    // then
+    assertEquals("This is a scenario title", lineByLineParser.getTempScenarioTitle());
+    assertEquals(SCENARIO, lineByLineParser.getState());
+    assertEquals(FEATURE, lineByLineParser.getParentState());
+  }
+
+  @Test
+  void tagBetweenFeatureAndScenarioOutlineTitles() {
+    // given
+    jFeatureDetailBuilder.title("This is a feature title");
+    lineByLineParser.setState(FEATURE);
+    // when
+    lineByLineParser.accept("@tag1 @tag2");
+    // then
+    assertEquals(TAG, lineByLineParser.getState());
+    assertEquals(FEATURE, lineByLineParser.getParentState());
+    assertEquals(1, lineByLineParser.getTempTagsLiteral().size());
+    // and when
+    lineByLineParser.accept("@anotherTag");
+    // then
+    assertEquals(TAG, lineByLineParser.getState());
+    assertEquals(FEATURE, lineByLineParser.getParentState());
+    assertEquals(2, lineByLineParser.getTempTagsLiteral().size());
+    // and when
+    lineByLineParser.accept("Scenario Outline: This is a scenario outline title");
+    // then
+    assertEquals("This is a scenario outline title", lineByLineParser.getTempScenarioTitle());
+    assertEquals(SCENARIO_OUTLINE, lineByLineParser.getState());
+    assertEquals(FEATURE, lineByLineParser.getParentState());
+  }
+
+  @Test
+  void canNotSwitchFromTagToDescription() {
+    var exp = assertThrows(EasyCucumberException.class, () -> {
+      // given
+      jFeatureDetailBuilder.title("This is a feature title");
+      lineByLineParser.setState(TAG);
+      lineByLineParser.setParentState(FEATURE);
+      lineByLineParser.setTempTagsLiteral(new ArrayList<>(List.of("@tag1 @tag2", "@anotherTag")));
+      // when
+      lineByLineParser.accept("I am a description");
+      fail("Should not be able to switch from tag to description");
+    });
+    assertTrue(exp.getMessage().contains("After tags, only scenario, scenario outline or more tags are allowed"));
   }
 
   @Test

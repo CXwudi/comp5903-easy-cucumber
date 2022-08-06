@@ -395,6 +395,10 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
     return scenarioOutlineOrderList;
   }
 
+  List<String> getTempTagsLiteral() {
+    return tempTagsLiteral;
+  }
+
   ArrayList<String> getTempScenarioOutlineExamples() {
     return tempScenarioOutlineExamples;
   }
@@ -429,6 +433,10 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
 
   void setTempScenarioOutlineExamples(ArrayList<String> tempScenarioOutlineExamples) {
     this.tempScenarioOutlineExamples = tempScenarioOutlineExamples;
+  }
+
+  void setTempTagsLiteral(List<String> tempTagsLiteral) {
+    this.tempTagsLiteral = new ArrayList<>(tempTagsLiteral);
   }
 }
 
