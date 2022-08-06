@@ -55,7 +55,7 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
   private ParseState parentState = null;
   /**
    * The current state from the result of the think() method. <br/>
-   * It is also the previous state from the previous line. <br/>
+   * It is also the previous state from the previous {@link JFeatureFileLineByLineParser#acceptThrows(String)} method call. <br/>
    */
   private ParseState state = START;
 
@@ -91,29 +91,7 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
 
   SenceResult sense(String line) {
     var senceResult = new SenceResult();
-    //    if (LineUtil.isFeatureTitle(line)) {
-//      senceResult.sawFeature = true;
-//    }
-//    if (LineUtil.isScenarioTitle(line)) {
-//      senceResult.sawScenario = true;
-//    }
-//    if (LineUtil.isScenarioOutlineTitle(line)) {
-//      senceResult.sawScenarioOutline = true;
-//    }
-//    if (LineUtil.isStep(line)) {
-//      senceResult.sawStep = true;
-//    }
-//    if (LineUtil.isExampleKeyword(line)) {
-//      senceResult.sawExampleKeyword = true;
-//    }
-//    if (LineUtil.isExampleContent(line)) {
-//      senceResult.sawExampleContent = true;
-//    }
-//    if (LineUtil.isTag(line)) {
-//      senceResult.sawTag = true;
-//    }
-    // state here is the previous state from the previous line
-    // we can simplify this method to above code, but we didn't due to performance concern
+    // `state` here is the previous state from the previous method call of acceptThrows()
     // using switch statement, we can eliminate the # of checks to be called per line
     switch (state) {
       case START:
@@ -126,6 +104,8 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
           senceResult.sawScenario = true;
         } else if (LineUtil.isScenarioOutlineTitle(line)) {
           senceResult.sawScenarioOutline = true;
+        } else if (LineUtil.isTag(line)) {
+          senceResult.sawTag = true;
         }
         break;
       case SCENARIO:
@@ -140,6 +120,7 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
         break;
       case DESCRIPTION:
         var previousState = state;
+        // temporally assign state to the current parent state
         // base on parent, delegate to the proper switch block
         if (parentState == FEATURE) {
           state = FEATURE;
@@ -153,6 +134,21 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
         }
         // this should only happen once per line
         var result = /*re*/sense(line);
+        state = previousState;
+        // return the delegated actual result based on parent state
+        return result;
+      case TAG:
+        previousState = state;
+        // temporally assign state to the current parent state
+        // base on parent, delegate to the proper switch block
+        if (parentState == FEATURE) {
+          state = FEATURE;
+        } else {
+          // to prevent infinite recursion
+          throw new EasyCucumberException(ErrorCode.EZCU034, "Illegal state transition from " + parentState + " to " + TAG);
+        }
+        // this should only happen once per line
+        result = /*re*/sense(line);
         state = previousState;
         // return the delegated actual result based on parent state
         return result;
@@ -200,12 +196,10 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
         parentState = FEATURE;
         if (senceResult.sawScenario) {
           state = SCENARIO;
-        }
-//        else if (senceResult.isTag) { // un-comment when tag is supported
-//          state = TAG;
-//        }
-        else if (senceResult.sawScenarioOutline) {
+        } else if (senceResult.sawScenarioOutline) {
           state = SCENARIO_OUTLINE;
+        } else if (senceResult.sawTag) {
+          state = TAG;
         } else { // this is description
           state = DESCRIPTION;
         }
@@ -241,6 +235,25 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
         /*re*/
         think(senceResult);
         break;
+      case TAG:
+        if (!senceResult.sawTag) {
+          // base on parent, delegate to the proper switch block
+          if (parentState == FEATURE) {
+            state = FEATURE;
+          } else {
+            throw new EasyCucumberException(ErrorCode.EZCU035, "Illegal state transition from " + parentState + " to " + TAG);
+          }
+          // this should only recurse once per line
+          /*re*/
+          think(senceResult);
+          // in case if a tag -> description transition happened, which is illegal
+          if (state != SCENARIO && state != SCENARIO_OUTLINE) {
+            throw new EasyCucumberException(ErrorCode.EZCU036, "Illegal state transition from " + TAG + " to " + state +
+                ". After tags, only scenario, scenario outline or more tags are allowed");
+          }
+        }
+        // else, keep in the same state, tag
+        break;
       case STEP:
         if (!senceResult.sawStep) {
           if (parentState == SCENARIO_OUTLINE && senceResult.sawExampleKeyword) {
@@ -255,7 +268,7 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
             throw new EasyCucumberException(ErrorCode.EZCU021, "After a step, another step, example or a new scenario or scenario outline are allowed");
           }
         }
-        // else, keep in step state
+        // else, keep in the same state, step
         break;
       case EXAMPLE_KEYWORD:
         parentState = EXAMPLE_KEYWORD;
@@ -291,6 +304,9 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
       case FEATURE:
         jFeatureDetailBuilder.title(line.replace(JFeatureKeyword.FEATURE, "").trim());
         break;
+      case TAG:
+        tempTagsLiteral.add(line);
+        break;
       case SCENARIO:
         checkTempAndBuildScenarioOrScenarioOutline();
         tempScenarioTitle = line.replace(JFeatureKeyword.SCENARIO, "").trim();
@@ -314,6 +330,7 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
       case EXAMPLE_CONTENT:
         tempScenarioOutlineExamples.add(line);
         break;
+
 
     }
   }
