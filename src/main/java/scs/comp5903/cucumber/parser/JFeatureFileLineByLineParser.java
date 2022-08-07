@@ -161,6 +161,8 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
           senceResult.sawScenario = true;
         } else if (LineUtil.isScenarioOutlineTitle(line)) {
           senceResult.sawScenarioOutline = true;
+        } else if (LineUtil.isTag(line)) {
+          senceResult.sawTag = true;
         }
         break;
       case EXAMPLE_KEYWORD:
@@ -175,6 +177,8 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
           senceResult.sawScenario = true;
         } else if (LineUtil.isScenarioOutlineTitle(line)) {
           senceResult.sawScenarioOutline = true;
+        } else if (LineUtil.isTag(line)) {
+          senceResult.sawTag = true;
         }
         break;
     }
@@ -264,6 +268,9 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
           } else if (parentState == SCENARIO && senceResult.sawScenarioOutline) {
             state = SCENARIO_OUTLINE;
             parentState = FEATURE;
+          } else if (parentState == SCENARIO && senceResult.sawTag) {
+            state = TAG;
+            parentState = FEATURE;
           } else {
             throw new EasyCucumberException(ErrorCode.EZCU021, "After a step, another step, example or a new scenario or scenario outline are allowed");
           }
@@ -290,8 +297,11 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
           } else if (senceResult.sawScenarioOutline) {
             state = SCENARIO_OUTLINE;
             parentState = FEATURE;
+          } else if (senceResult.sawTag) {
+            state = TAG;
+            parentState = FEATURE;
           } else {
-            throw new EasyCucumberException(ErrorCode.EZCU024, "After an example content, another example content, scenario or scenario outline are allowed");
+            throw new EasyCucumberException(ErrorCode.EZCU024, "After an example content, another example content, scenario, scenario outline or more tags are allowed");
           }
         }
         // else, keep in example content state
@@ -305,6 +315,7 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
         jFeatureDetailBuilder.title(line.replace(JFeatureKeyword.FEATURE, "").trim());
         break;
       case TAG:
+        checkTempAndBuildScenarioOrScenarioOutline();
         tempTagsLiteral.add(line);
         break;
       case SCENARIO:
