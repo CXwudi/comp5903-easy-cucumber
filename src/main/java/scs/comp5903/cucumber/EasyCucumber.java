@@ -9,6 +9,7 @@ import scs.comp5903.cucumber.execution.JFeature;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
 import scs.comp5903.cucumber.parser.DetailBuilder;
+import scs.comp5903.cucumber.parser.JFeatureFileLineByLineParser;
 import scs.comp5903.cucumber.parser.JFeatureFileParser;
 import scs.comp5903.cucumber.parser.JStepDefinitionParser;
 import scs.comp5903.cucumber.util.ReflectionUtil;
@@ -133,10 +134,11 @@ public class EasyCucumber {
       throw new EasyCucumberException(ErrorCode.EZCU033, "Need at least one step definition class");
     }
     log.info("Start building the runnable JFeature from feature file: {} with step definition classes: {}", featureFile, stepDefinitionClasses);
-    var jStepBuilder = new DetailBuilder();
-    var jStepParameterExtractor = new JStepParameterExtractor();
-    var jFeatureFileParser = new JFeatureFileParser(jStepBuilder);
+    var detailBuilder = new DetailBuilder();
+    var lineByLineParser = new JFeatureFileLineByLineParser(detailBuilder);
+    var jFeatureFileParser = new JFeatureFileParser(lineByLineParser);
     var jStepDefinitionParser = new JStepDefinitionParser();
+    var jStepParameterExtractor = new JStepParameterExtractor();
     // parse jfeature file to detail object
     var featureDetail = jFeatureFileParser.parse(featureFile);
     // parse step definition class to detail object

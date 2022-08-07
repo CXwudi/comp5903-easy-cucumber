@@ -22,16 +22,39 @@ import static scs.comp5903.cucumber.parser.JFeatureFileLineByLineParser.ParseSta
  * @author Charles Chen 101035684
  * @date 2022-07-05
  */
-class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
+public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
 
   private static final Logger log = getLogger(JFeatureFileLineByLineParser.class);
 
-  private final JFeatureDetail.JFeatureDetailBuilder jFeatureDetailBuilder;
+  private JFeatureDetail.JFeatureDetailBuilder jFeatureDetailBuilder;
   private final DetailBuilder detailBuilder;
 
-  JFeatureFileLineByLineParser(JFeatureDetail.JFeatureDetailBuilder jFeatureDetailBuilder, DetailBuilder detailBuilder) {
-    this.jFeatureDetailBuilder = jFeatureDetailBuilder;
+  public JFeatureFileLineByLineParser(DetailBuilder detailBuilder) {
     this.detailBuilder = detailBuilder;
+  }
+
+  /**
+   * Call this before calling {@link #acceptThrows(String)}
+   *
+   * @return the newly created {@link JFeatureDetail.JFeatureDetailBuilder} to be used internally
+   */
+  public JFeatureDetail.JFeatureDetailBuilder initNewJFeatureDetailBuilder() {
+    jFeatureDetailBuilder = JFeatureDetail.builder();
+    return getJFeatureDetailBuilder();
+  }
+
+  public JFeatureDetail.JFeatureDetailBuilder getJFeatureDetailBuilder() {
+    return jFeatureDetailBuilder;
+  }
+
+  /**
+   * Call this after parsed the whole feature file
+   *
+   * @return the newly created {@link JFeatureDetail}
+   */
+  public JFeatureDetail buildJFeatureDetail() {
+    checkTempAndBuildScenarioOrScenarioOutline();
+    return jFeatureDetailBuilder.build();
   }
 
   enum ParseState {
@@ -366,7 +389,7 @@ class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
 
   private class SenceResult {
     boolean sawFeature;
-    boolean sawDescription;
+    // there is no sawDescription as it doesn't have a fixed keyword
     boolean sawTag;
     boolean sawScenario;
     boolean sawScenarioOutline;

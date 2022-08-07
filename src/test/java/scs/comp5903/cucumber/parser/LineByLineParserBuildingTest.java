@@ -25,8 +25,8 @@ class LineByLineParserBuildingTest {
 
   @BeforeEach
   void setUp() {
-    jFeatureDetailBuilder = JFeatureDetail.builder();
-    lineByLineParser = new JFeatureFileLineByLineParser(jFeatureDetailBuilder, detailBuilder);
+    lineByLineParser = new JFeatureFileLineByLineParser(detailBuilder);
+    jFeatureDetailBuilder = lineByLineParser.initNewJFeatureDetailBuilder();
   }
 
   @Test
