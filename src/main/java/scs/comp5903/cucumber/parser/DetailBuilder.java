@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.JScenarioDetail;
 import scs.comp5903.cucumber.model.JScenarioOutlineDetail;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
+import scs.comp5903.cucumber.model.exception.ErrorCode;
 import scs.comp5903.cucumber.model.jstep.*;
 
 import java.util.ArrayList;
@@ -35,7 +36,6 @@ public class DetailBuilder {
    * @return a list of scenarios
    */
   public JScenarioOutlineDetail buildJScenarioOutlineDetail(String title, List<String> stepsLiteral, List<String> examplesLiteral, List<String> scenarioOutlineTagsLiteral) {
-    // TODO: handle scenario tags literals
     log.debug("Building data class for scenario outline: {}", title);
     List<String> paramNames = new ArrayList<>();
     for (String s1 : examplesLiteral.get(0).split("\\|")) {
@@ -94,7 +94,18 @@ public class DetailBuilder {
       AbstractJStep abstractJStep = parseStep(s);
       steps.add(abstractJStep);
     }
-    return new JScenarioDetail(title, new ArrayList<>(), steps);
+    List<String> tags = new ArrayList<>();
+    for (String tagLiteral : tagsLiteral) {
+      var tagsRaw = tagLiteral.split("@");
+      for (var tag : tagsRaw) {
+        var trimmed = tag.trim();
+        if (trimmed.isBlank()) {
+          throw new EasyCucumberException(ErrorCode.EZCU037, "Tag should not be a blank string: " + tagLiteral);
+        }
+        tags.add(trimmed);
+      }
+    }
+    return new JScenarioDetail(title, tags, steps);
   }
 
   AbstractJStep parseStep(String line) {
