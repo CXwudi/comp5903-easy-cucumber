@@ -78,7 +78,7 @@ public class DetailBuilder {
         extractedStepsLiteral.add(line);
       }
       // once the steps are extracted, create a scenario with no tags
-      var scenarioDetail = buildJScenarioDetail(title + " - Example " + ++counter, extractedStepsLiteral, scenarioOutlineTagsLiteral);
+      var scenarioDetail = buildJScenarioDetail(title + " - Example " + ++counter, extractedStepsLiteral, new ArrayList<>());
       // then recreate the scenario with tags that is already been parsed
       // we recreate scenario mainly due to the immutability of the detail object class
       var scenarioDetailWithTags = new JScenarioDetail(scenarioDetail.getTitle(), tags, scenarioDetail.getSteps());
