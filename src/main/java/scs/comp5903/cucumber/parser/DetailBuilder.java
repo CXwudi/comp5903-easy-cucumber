@@ -107,7 +107,7 @@ public class DetailBuilder {
     return new JScenarioDetail(title, tags, steps);
   }
 
-  private List<String> parseTagLiteral(List<String> tagsLiteral) {
+  public List<String> parseTagLiteral(List<String> tagsLiteral) {
     List<String> tags = new ArrayList<>();
     for (String tagLiteral : tagsLiteral) {
       var splitTagLiteral = tagLiteral.split("@");

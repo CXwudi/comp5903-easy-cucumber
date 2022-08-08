@@ -36,7 +36,30 @@ class LineByLineParserParsingTest {
     // then
     assertEquals("This is a feature title", jFeatureDetail.getTitle());
     assertEquals(FEATURE, lineByLineParser.getState());
-    assertNull(lineByLineParser.getParentState());
+    assertEquals(START, lineByLineParser.getParentState());
+  }
+
+  @Test
+  void featureTitleWithTags() {
+    // given
+    // when
+    lineByLineParser.accept("@tag1 @tag2");
+    // then
+    assertEquals(1, lineByLineParser.getTempFeatureTagsLiteral().size());
+    assertEquals(TAG, lineByLineParser.getState());
+    assertEquals(START, lineByLineParser.getParentState());
+    // and when
+    lineByLineParser.accept("@anotherTag");
+    // then
+    assertEquals(2, lineByLineParser.getTempFeatureTagsLiteral().size());
+    assertEquals(TAG, lineByLineParser.getState());
+    assertEquals(START, lineByLineParser.getParentState());
+    // and when
+    lineByLineParser.accept("Feature: This is a feature title");
+    // then
+    assertEquals("This is a feature title", jFeatureDetailBuilder.build().getTitle());
+    assertEquals(FEATURE, lineByLineParser.getState());
+    assertEquals(START, lineByLineParser.getParentState());
   }
 
   @Test
@@ -125,13 +148,13 @@ class LineByLineParserParsingTest {
     // then
     assertEquals(TAG, lineByLineParser.getState());
     assertEquals(FEATURE, lineByLineParser.getParentState());
-    assertEquals(1, lineByLineParser.getTempTagsLiteral().size());
+    assertEquals(1, lineByLineParser.getTempScenarioOrScenarioOutlineTagsLiteral().size());
     // and when
     lineByLineParser.accept("@anotherTag");
     // then
     assertEquals(TAG, lineByLineParser.getState());
     assertEquals(FEATURE, lineByLineParser.getParentState());
-    assertEquals(2, lineByLineParser.getTempTagsLiteral().size());
+    assertEquals(2, lineByLineParser.getTempScenarioOrScenarioOutlineTagsLiteral().size());
     // and when
     lineByLineParser.accept("Scenario: This is a scenario title");
     // then
@@ -150,13 +173,13 @@ class LineByLineParserParsingTest {
     // then
     assertEquals(TAG, lineByLineParser.getState());
     assertEquals(FEATURE, lineByLineParser.getParentState());
-    assertEquals(1, lineByLineParser.getTempTagsLiteral().size());
+    assertEquals(1, lineByLineParser.getTempScenarioOrScenarioOutlineTagsLiteral().size());
     // and when
     lineByLineParser.accept("@anotherTag");
     // then
     assertEquals(TAG, lineByLineParser.getState());
     assertEquals(FEATURE, lineByLineParser.getParentState());
-    assertEquals(2, lineByLineParser.getTempTagsLiteral().size());
+    assertEquals(2, lineByLineParser.getTempScenarioOrScenarioOutlineTagsLiteral().size());
     // and when
     lineByLineParser.accept("Scenario Outline: This is a scenario outline title");
     // then
@@ -172,12 +195,12 @@ class LineByLineParserParsingTest {
       jFeatureDetailBuilder.title("This is a feature title");
       lineByLineParser.setState(TAG);
       lineByLineParser.setParentState(FEATURE);
-      lineByLineParser.setTempTagsLiteral(new ArrayList<>(List.of("@tag1 @tag2", "@anotherTag")));
+      lineByLineParser.setTempScenarioOrScenarioOutlineTagsLiteral(new ArrayList<>(List.of("@tag1 @tag2", "@anotherTag")));
       // when
       lineByLineParser.accept("I am a description");
       fail("Should not be able to switch from tag to description");
     });
-    assertTrue(exp.getMessage().contains("After tags, only scenario, scenario outline or more tags are allowed"));
+    assertTrue(exp.getMessage().contains("After tags, only feature (title), scenario, scenario outline or more tags are allowed"));
   }
 
   @Test

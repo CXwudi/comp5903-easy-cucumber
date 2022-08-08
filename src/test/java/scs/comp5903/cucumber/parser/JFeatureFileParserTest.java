@@ -9,6 +9,7 @@ import scs.comp5903.cucumber.model.jstep.WhenStep;
 import scs.comp5903.cucumber.util.ResourceUtil;
 
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -87,5 +88,26 @@ class JFeatureFileParserTest {
     assertEquals(WhenStep.class, scenario.getSteps().get(1).getClass());
     assertEquals("I am full", scenario.getSteps().get(2).getStepString());
     assertEquals(ThenStep.class, scenario.getSteps().get(2).getClass());
+  }
+
+  @Test
+  void canParseTags() throws URISyntaxException {
+    var jFeatureDetail = new JFeatureFileParser(lineByLineParser).parse(ResourceUtil.getResourcePath("sample/jfeature/multi-line-description-with-tags.jfeature"));
+    assertEquals("This is a feature with description and comments", jFeatureDetail.getTitle());
+    assertIterableEquals(Arrays.asList("tag1", "tag2", "tag3"), jFeatureDetail.getTags());
+    assertEquals(1, jFeatureDetail.getScenarios().size());
+    assertEquals(0, jFeatureDetail.getScenarioOutlines().size());
+    assertEquals(1, jFeatureDetail.getScenarioOrders().size());
+    assertEquals(0, jFeatureDetail.getScenarioOutlineOrders().size());
+    var scenario = jFeatureDetail.getScenarios().get(0);
+    assertIterableEquals(Arrays.asList("tag4", "tag5"), scenario.getTags());
+    assertEquals("This is a scenario with description and comments", scenario.getTitle());
+    assertEquals("I have an apple", scenario.getSteps().get(0).getStepString());
+    assertEquals(GivenStep.class, scenario.getSteps().get(0).getClass());
+    assertEquals("I eat it", scenario.getSteps().get(1).getStepString());
+    assertEquals(WhenStep.class, scenario.getSteps().get(1).getClass());
+    assertEquals("I am full", scenario.getSteps().get(2).getStepString());
+    assertEquals(ThenStep.class, scenario.getSteps().get(2).getClass());
+
   }
 }

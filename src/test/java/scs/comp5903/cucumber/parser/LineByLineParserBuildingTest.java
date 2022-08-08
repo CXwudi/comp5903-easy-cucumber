@@ -194,7 +194,7 @@ class LineByLineParserBuildingTest {
     assertEquals(TAG, lineByLineParser.getState());
     assertEquals(FEATURE, lineByLineParser.getParentState());
     assertEquals("", lineByLineParser.getTempScenarioTitle());
-    assertEquals("@tag1 @tag2", lineByLineParser.getTempTagsLiteral().get(0));
+    assertEquals("@tag1 @tag2", lineByLineParser.getTempScenarioOrScenarioOutlineTagsLiteral().get(0));
     assertEquals(0, lineByLineParser.getTempScenarioSteps().size());
 
     var jFeatureDetail = jFeatureDetailBuilder.build();
@@ -227,7 +227,7 @@ class LineByLineParserBuildingTest {
     assertEquals(TAG, lineByLineParser.getState());
     assertEquals(FEATURE, lineByLineParser.getParentState());
     assertEquals("", lineByLineParser.getTempScenarioTitle());
-    assertEquals("@tag1 @tag2", lineByLineParser.getTempTagsLiteral().get(0));
+    assertEquals("@tag1 @tag2", lineByLineParser.getTempScenarioOrScenarioOutlineTagsLiteral().get(0));
     assertEquals(0, lineByLineParser.getTempScenarioSteps().size());
     assertEquals(0, lineByLineParser.getTempScenarioOutlineExamples().size());
 

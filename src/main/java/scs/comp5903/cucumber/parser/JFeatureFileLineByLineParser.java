@@ -53,7 +53,11 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
    * @return the newly created {@link JFeatureDetail}
    */
   public JFeatureDetail buildJFeatureDetail() {
+    // flush the last scenario or scenario outline in the temp storage
     checkTempAndBuildScenarioOrScenarioOutline();
+    // also added tags for feature
+    jFeatureDetailBuilder.tags(detailBuilder.parseTagLiteral(tempFeatureTagsLiteral));
+    // finally, build up everything
     return jFeatureDetailBuilder.build();
   }
 
@@ -84,12 +88,13 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
 
 
   private String tempScenarioTitle = "";
+  private ArrayList<String> tempFeatureTagsLiteral = new ArrayList<>();
   private ArrayList<String> tempScenarioSteps = new ArrayList<>();
   private ArrayList<String> tempScenarioOutlineExamples = new ArrayList<>();
   /**
    * currently unused until implementation
    */
-  private ArrayList<String> tempTagsLiteral = new ArrayList<>();
+  private ArrayList<String> tempScenarioOrScenarioOutlineTagsLiteral = new ArrayList<>();
   private int order = 0;
   private List<Integer> scenarioOrderList = new ArrayList<>();
   private List<Integer> scenarioOutlineOrderList = new ArrayList<>();
@@ -120,6 +125,8 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
       case START:
         if (LineUtil.isFeatureTitle(line)) {
           senceResult.sawFeature = true;
+        } else if (LineUtil.isTag(line)) {
+          senceResult.sawTag = true;
         }
         break;
       case FEATURE:
@@ -157,6 +164,7 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
         }
         // this should only happen once per line
         var result = /*re*/sense(line);
+        // restore the previous state
         state = previousState;
         // return the delegated actual result based on parent state
         return result;
@@ -164,7 +172,9 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
         previousState = state;
         // temporally assign state to the current parent state
         // base on parent, delegate to the proper switch block
-        if (parentState == FEATURE) {
+        if (parentState == START) {
+          state = START;
+        } else if (parentState == FEATURE) {
           state = FEATURE;
         } else {
           // to prevent infinite recursion
@@ -172,6 +182,7 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
         }
         // this should only happen once per line
         result = /*re*/sense(line);
+        // restore the previous state
         state = previousState;
         // return the delegated actual result based on parent state
         return result;
@@ -213,10 +224,13 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
     // state here is the previous state from the previous line
     switch (state) {
       case START:
+        parentState = START;
         if (senceResult.sawFeature) {
           state = FEATURE;
+        } else if (senceResult.sawTag) {
+          state = TAG;
         } else {
-          throw new EasyCucumberException(ErrorCode.EZCU016, "The feature file must start with \"Feature:\" ");
+          throw new EasyCucumberException(ErrorCode.EZCU016, "The feature file must start with \"Feature:\" or tags");
         }
         break;
       case FEATURE:
@@ -265,7 +279,9 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
       case TAG:
         if (!senceResult.sawTag) {
           // base on parent, delegate to the proper switch block
-          if (parentState == FEATURE) {
+          if (parentState == START) {
+            state = START;
+          } else if (parentState == FEATURE) {
             state = FEATURE;
           } else {
             throw new EasyCucumberException(ErrorCode.EZCU035, "Illegal state transition from " + parentState + " to " + TAG);
@@ -274,9 +290,9 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
           /*re*/
           think(senceResult);
           // in case if a tag -> description transition happened, which is illegal
-          if (state != SCENARIO && state != SCENARIO_OUTLINE) {
+          if (state == DESCRIPTION) {
             throw new EasyCucumberException(ErrorCode.EZCU036, "Illegal state transition from " + TAG + " to " + state +
-                ". After tags, only scenario, scenario outline or more tags are allowed");
+                ". After tags, only feature (title), scenario, scenario outline or more tags are allowed");
           }
         }
         // else, keep in the same state, tag
@@ -338,8 +354,12 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
         jFeatureDetailBuilder.title(line.replace(JFeatureKeyword.FEATURE, "").trim());
         break;
       case TAG:
-        checkTempAndBuildScenarioOrScenarioOutline();
-        tempTagsLiteral.add(line);
+        if (parentState != START) {
+          checkTempAndBuildScenarioOrScenarioOutline();
+          tempScenarioOrScenarioOutlineTagsLiteral.add(line);
+        } else {
+          tempFeatureTagsLiteral.add(line);
+        }
         break;
       case SCENARIO:
         checkTempAndBuildScenarioOrScenarioOutline();
@@ -372,16 +392,16 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
   public boolean checkTempAndBuildScenarioOrScenarioOutline() {
     if (tempScenarioTitle != null && !tempScenarioTitle.isEmpty()) {
       if (tempScenarioOutlineExamples.isEmpty()) {
-        jFeatureDetailBuilder.addScenario(detailBuilder.buildJScenarioDetail(tempScenarioTitle, tempScenarioSteps, tempTagsLiteral));
+        jFeatureDetailBuilder.addScenario(detailBuilder.buildJScenarioDetail(tempScenarioTitle, tempScenarioSteps, tempScenarioOrScenarioOutlineTagsLiteral));
         jFeatureDetailBuilder.addScenarioOrder(order++);
       } else {
-        jFeatureDetailBuilder.addScenarioOutline(detailBuilder.buildJScenarioOutlineDetail(tempScenarioTitle, tempScenarioSteps, tempScenarioOutlineExamples, tempTagsLiteral));
+        jFeatureDetailBuilder.addScenarioOutline(detailBuilder.buildJScenarioOutlineDetail(tempScenarioTitle, tempScenarioSteps, tempScenarioOutlineExamples, tempScenarioOrScenarioOutlineTagsLiteral));
         jFeatureDetailBuilder.addScenarioOutlineOrder(order++);
       }
       tempScenarioTitle = "";
       tempScenarioSteps.clear();
       tempScenarioOutlineExamples.clear();
-      tempTagsLiteral.clear();
+      tempScenarioOrScenarioOutlineTagsLiteral.clear();
       return true;
     }
     return false;
@@ -413,6 +433,10 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
     return tempScenarioTitle;
   }
 
+  ArrayList<String> getTempFeatureTagsLiteral() {
+    return tempFeatureTagsLiteral;
+  }
+
   ArrayList<String> getTempScenarioSteps() {
     return tempScenarioSteps;
   }
@@ -429,8 +453,8 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
     return scenarioOutlineOrderList;
   }
 
-  List<String> getTempTagsLiteral() {
-    return tempTagsLiteral;
+  List<String> getTempScenarioOrScenarioOutlineTagsLiteral() {
+    return tempScenarioOrScenarioOutlineTagsLiteral;
   }
 
   ArrayList<String> getTempScenarioOutlineExamples() {
@@ -469,8 +493,8 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
     this.tempScenarioOutlineExamples = tempScenarioOutlineExamples;
   }
 
-  void setTempTagsLiteral(List<String> tempTagsLiteral) {
-    this.tempTagsLiteral = new ArrayList<>(tempTagsLiteral);
+  void setTempScenarioOrScenarioOutlineTagsLiteral(List<String> tempScenarioOrScenarioOutlineTagsLiteral) {
+    this.tempScenarioOrScenarioOutlineTagsLiteral = new ArrayList<>(tempScenarioOrScenarioOutlineTagsLiteral);
   }
 }
 
