@@ -8,6 +8,7 @@ import scs.comp5903.cucumber.model.exception.ErrorCode;
 import scs.comp5903.cucumber.model.jstep.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class DetailBuilder {
   public JScenarioOutlineDetail buildJScenarioOutlineDetail(String title, List<String> stepsLiteral, List<String> examplesLiteral, List<String> scenarioOutlineTagsLiteral) {
     log.debug("Building data class for scenario outline: {}", title);
     List<String> paramNames = new ArrayList<>();
+    // first, parse the example title. e.g. | param1 | param2 |
     for (String s1 : examplesLiteral.get(0).split("\\|")) {
       String trim = s1.trim();
       if (!trim.isEmpty()) {
@@ -52,6 +54,9 @@ public class DetailBuilder {
     }
     var scenarios = new ArrayList<JScenarioDetail>();
     var counter = 0;
+    var tags = parseTagLiteral(scenarioOutlineTagsLiteral);
+    // then, based on the example content, create one scenario for each line in example content.
+    // e.g. | value1 | value2 | as one scenario
     for (var paramLine : examplesLiteral.subList(1, examplesLiteral.size())) {
       var params = new ArrayList<String>();
       for (String s : paramLine.split("\\|")) {
@@ -72,9 +77,14 @@ public class DetailBuilder {
         }
         extractedStepsLiteral.add(line);
       }
-      scenarios.add(buildJScenarioDetail(title + " - Example " + ++counter, extractedStepsLiteral, scenarioOutlineTagsLiteral));
+      // once the steps are extracted, create a scenario with no tags
+      var scenarioDetail = buildJScenarioDetail(title + " - Example " + ++counter, extractedStepsLiteral, scenarioOutlineTagsLiteral);
+      // then recreate the scenario with tags that is already been parsed
+      // we recreate scenario mainly due to the immutability of the detail object class
+      var scenarioDetailWithTags = new JScenarioDetail(scenarioDetail.getTitle(), tags, scenarioDetail.getSteps());
+      scenarios.add(scenarioDetailWithTags);
     }
-    return new JScenarioOutlineDetail(title, new ArrayList<>(), scenarios);
+    return new JScenarioOutlineDetail(title, tags, scenarios);
   }
 
 
@@ -87,16 +97,21 @@ public class DetailBuilder {
    * @return a {@link JScenarioDetail}
    */
   public JScenarioDetail buildJScenarioDetail(String title, List<String> stepsLiteral, List<String> tagsLiteral) {
-    //TODO: handle tags literal
     log.debug("Building data class for scenario: {}", title);
     List<AbstractJStep> steps = new ArrayList<>();
     for (String s : stepsLiteral) {
       AbstractJStep abstractJStep = parseStep(s);
       steps.add(abstractJStep);
     }
+    List<String> tags = parseTagLiteral(tagsLiteral);
+    return new JScenarioDetail(title, tags, steps);
+  }
+
+  private List<String> parseTagLiteral(List<String> tagsLiteral) {
     List<String> tags = new ArrayList<>();
     for (String tagLiteral : tagsLiteral) {
-      var tagsRaw = tagLiteral.split("@");
+      var splitTagLiteral = tagLiteral.split("@");
+      var tagsRaw = Arrays.copyOfRange(splitTagLiteral, 1, splitTagLiteral.length);
       for (var tag : tagsRaw) {
         var trimmed = tag.trim();
         if (trimmed.isBlank()) {
@@ -105,7 +120,7 @@ public class DetailBuilder {
         tags.add(trimmed);
       }
     }
-    return new JScenarioDetail(title, tags, steps);
+    return tags;
   }
 
   AbstractJStep parseStep(String line) {

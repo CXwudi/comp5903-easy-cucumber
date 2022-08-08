@@ -10,7 +10,10 @@ import java.util.Objects;
 public class JScenarioOutlineDetail {
   private final String title;
   /**
-   * tags on the scenario outline title
+   * tags on the scenario outline title </br>
+   * <p>
+   * while this scenario outline is basically just a collection of scenarios, and we can rely on the tags of the scenarios, </br>
+   * but let's just use tags on the scenario outline to do the same thing
    */
   private final List<String> tags;
   private final List<JScenarioDetail> scenarios;

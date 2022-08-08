@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.jstep.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,7 +31,8 @@ class DetailBuilderTest {
         "When I eat them",
         "Then I should not be hungry",
         "But I should feel too full");
-    var scenarioDetail = detailBuilder.buildJScenarioDetail(title, steps, new ArrayList<>());
+    var tags = List.of("@tag1 @tag2", "@tag3");
+    var scenarioDetail = detailBuilder.buildJScenarioDetail(title, steps, tags);
     assertEquals(title, scenarioDetail.getTitle());
     assertEquals(steps.size(), scenarioDetail.getSteps().size());
     var expectedClasses = List.of(
@@ -47,7 +47,7 @@ class DetailBuilderTest {
       assertEquals(expectedString, scenarioDetail.getSteps().get(i).getStepString());
       assertEquals(expectedClasses.get(i), scenarioDetail.getSteps().get(i).getClass());
     }
-    //TODO: add tests of tags when implemented tags
+    assertIterableEquals(List.of("tag1", "tag2", "tag3"), scenarioDetail.getTags());
   }
 
   @Test
@@ -64,7 +64,8 @@ class DetailBuilderTest {
         "| fruit1 | fruit2 |",
         "| apple | orange |",
         "| banana | peer |");
-    var scenarioOutlineDetail = detailBuilder.buildJScenarioOutlineDetail(title, steps, examples, new ArrayList<>());
+    var tags = List.of("@tag1 @tag2", "@tag3");
+    var scenarioOutlineDetail = detailBuilder.buildJScenarioOutlineDetail(title, steps, examples, tags);
     assertEquals(title, scenarioOutlineDetail.getTitle());
     assertEquals(steps.size(), scenarioOutlineDetail.getScenarios().get(0).getSteps().size());
     assertEquals(examples.size() - 1, scenarioOutlineDetail.getScenarios().size());
@@ -80,6 +81,7 @@ class DetailBuilderTest {
     assertEquals("I should not be hungry", scenarioOutlineDetail.getScenarios().get(1).getSteps().get(3).getStepString());
     assertEquals("I should feel too full", scenarioOutlineDetail.getScenarios().get(1).getSteps().get(4).getStepString());
     //TODO: as well add test for tags when tags are implemented
+    assertIterableEquals(List.of("tag1", "tag2", "tag3"), scenarioOutlineDetail.getTags());
   }
 
 }
