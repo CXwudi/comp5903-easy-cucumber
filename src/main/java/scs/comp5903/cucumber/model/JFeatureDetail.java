@@ -10,6 +10,10 @@ import java.util.Objects;
  */
 public class JFeatureDetail {
   private final String title;
+  /**
+   * the tags on the JFeatureDetail has nothing to do with this easy cucumber tool </br>
+   * it is just here give users the convenience to manage a collection of JFeatureDetail
+   */
   private final List<String> tags;
   private final List<JScenarioDetail> scenarios;
   private final List<JScenarioOutlineDetail> scenarioOutlines;
