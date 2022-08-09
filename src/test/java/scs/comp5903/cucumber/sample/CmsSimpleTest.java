@@ -22,7 +22,7 @@ class CmsSimpleTest {
     assertDoesNotThrow(() -> {
       var jFeatureFile = getSingleStudentRegisterCourseJFeaturePath();
       var registerCourseStepDefInstance = new CmsSimpleRegisterCourseStepDefs(1, "COMP3004");
-      EasyCucumber.build(jFeatureFile, registerCourseStepDefInstance).execute();
+      EasyCucumber.build(jFeatureFile, registerCourseStepDefInstance).executeAll();
     });
   }
 
@@ -31,7 +31,7 @@ class CmsSimpleTest {
     assertDoesNotThrow(() -> {
       var jFeatureFile = getSingleStudentRegisterCourseJFeaturePath();
       var registerCourseStepDefInstance = new CmsSimpleRegisterCourseStepDefs(2, "JAPA1001");
-      EasyCucumber.build(jFeatureFile, registerCourseStepDefInstance).execute();
+      EasyCucumber.build(jFeatureFile, registerCourseStepDefInstance).executeAll();
     });
   }
 

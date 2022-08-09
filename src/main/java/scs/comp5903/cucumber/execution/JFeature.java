@@ -64,7 +64,7 @@ public class JFeature {
   /**
    * execute all scenarios in this feature with respect to the order
    */
-  public void execute() throws InvocationTargetException, IllegalAccessException {
+  public void executeAll() throws InvocationTargetException, IllegalAccessException {
     log.info("Start executing the feature: {}", title);
     HashMap<Integer, JScenario> orderToScenarioMap = new HashMap<>(scenarios.size());
     for (int i = 0; i < scenarios.size(); i++) {

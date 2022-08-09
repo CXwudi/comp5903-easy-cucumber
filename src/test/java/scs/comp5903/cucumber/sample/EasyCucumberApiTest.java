@@ -23,7 +23,7 @@ class EasyCucumberApiTest {
         Path.of("src/test/resources/sample/jfeature/rummikub/initial_points.jfeature"),
         RummikubDummySeparatedJStepDefs.class,
         RummikubDummySeparatedJStepDefs.RummikubDummySeparatedJStepDefs2.class
-    ).execute());
+    ).executeAll());
   }
 
   @Test
@@ -32,7 +32,7 @@ class EasyCucumberApiTest {
         Path.of("src/test/resources/sample/jfeature/rummikub/initial_points.jfeature"),
         new RummikubDummySeparatedJStepDefs(),
         new RummikubDummySeparatedJStepDefs.RummikubDummySeparatedJStepDefs2()
-    ).execute());
+    ).executeAll());
   }
 
   @Test
@@ -43,7 +43,7 @@ class EasyCucumberApiTest {
             RummikubDummySeparatedJStepDefs.class,
             RummikubDummySeparatedJStepDefs.RummikubDummySeparatedJStepDefs2.class
         )
-    ).execute());
+    ).executeAll());
   }
 
   @Test
@@ -54,7 +54,7 @@ class EasyCucumberApiTest {
             new RummikubDummySeparatedJStepDefs(),
             new RummikubDummySeparatedJStepDefs.RummikubDummySeparatedJStepDefs2()
         )
-    ).execute());
+    ).executeAll());
   }
 
   @Test
@@ -65,7 +65,7 @@ class EasyCucumberApiTest {
             new RummikubDummySeparatedJStepDefs(),
             RummikubDummySeparatedJStepDefs.RummikubDummySeparatedJStepDefs2.class
         )
-    ).execute());
+    ).executeAll());
   }
 
 
@@ -74,6 +74,6 @@ class EasyCucumberApiTest {
     assertDoesNotThrow(() -> EasyCucumber.build(
         Path.of("src/test/resources/sample/jfeature/rummikub/initial_points.jfeature"),
         "scs.comp5903.cucumber.sample.samplestepdef"
-    ).execute());
+    ).executeAll());
   }
 }

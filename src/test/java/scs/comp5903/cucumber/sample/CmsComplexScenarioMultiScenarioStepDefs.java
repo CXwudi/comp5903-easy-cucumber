@@ -45,8 +45,8 @@ public class CmsComplexScenarioMultiScenarioStepDefs {
 
   @JStep(keyword = AND, value = "both are at the course registration page")
   public void both_are_at_the_course_registration_page() {
-    student1RegisterCourseThread = new Thread(Unchecked.runnable(() -> student1RegisterCourseScenario.execute()));
-    student2RegisterCourseThread = new Thread(Unchecked.runnable(() -> student2RegisterCourseScenario.execute()));
+    student1RegisterCourseThread = new Thread(Unchecked.runnable(() -> student1RegisterCourseScenario.executeAll()));
+    student2RegisterCourseThread = new Thread(Unchecked.runnable(() -> student2RegisterCourseScenario.executeAll()));
     student1RegisterCourseThread.setUncaughtExceptionHandler((e, t) -> student1Registration.setFalse());
     student2RegisterCourseThread.setUncaughtExceptionHandler((e, t) -> student2Registration.setFalse());
     student1RegisterCourseThread.start();

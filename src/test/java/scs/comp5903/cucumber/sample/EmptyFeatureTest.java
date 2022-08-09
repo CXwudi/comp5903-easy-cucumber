@@ -23,6 +23,6 @@ class EmptyFeatureTest {
 
   @Test
   void featureFileWithZeroScenarios() {
-    assertDoesNotThrow(() -> EasyCucumber.build(Path.of("src/test/resources/sample/jfeature/zero-scenarios.jfeature"), RummikubDummyJStepDefs.class).execute());
+    assertDoesNotThrow(() -> EasyCucumber.build(Path.of("src/test/resources/sample/jfeature/zero-scenarios.jfeature"), RummikubDummyJStepDefs.class).executeAll());
   }
 }

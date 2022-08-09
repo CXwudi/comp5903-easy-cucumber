@@ -24,7 +24,7 @@ class RummikubEasyCucumberIntegrationTest {
   void canRunRummikubJFeature(Path jFeatureFile) {
     assertDoesNotThrow(() -> {
       var jFeature = EasyCucumber.build(jFeatureFile, RummikubDummyJStepDefs.class);
-      jFeature.execute();
+      jFeature.executeAll();
     });
   }
 
@@ -38,7 +38,7 @@ class RummikubEasyCucumberIntegrationTest {
   void canRunRummikubJFeature2(Path jFeatureFile) {
     assertDoesNotThrow(() -> {
       var jFeature = EasyCucumber.build(jFeatureFile, RummikubDummyJStepDefsWithRandomMethodName.class);
-      jFeature.execute();
+      jFeature.executeAll();
     });
   }
 

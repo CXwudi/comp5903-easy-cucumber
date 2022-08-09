@@ -15,7 +15,7 @@ class DecimalAndBigIntTest {
 
   @Test
   void canParseOtherParameterTypes() {
-    assertDoesNotThrow(() -> EasyCucumber.build(Path.of("src/test/resources/sample/jfeature/floating-point-and-big-integer-decimal.jfeature"), DecimalAndBigIntStepDef.class).execute());
+    assertDoesNotThrow(() -> EasyCucumber.build(Path.of("src/test/resources/sample/jfeature/floating-point-and-big-integer-decimal.jfeature"), DecimalAndBigIntStepDef.class).executeAll());
   }
 }
 

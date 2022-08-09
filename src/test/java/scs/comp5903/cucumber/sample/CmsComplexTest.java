@@ -18,7 +18,7 @@ class CmsComplexTest {
   void complexTestThroughMultithreadStepDef() {
     assertDoesNotThrow(() -> {
       var jFeatureFile = ResourceUtil.getResourcePath("sample/jfeature/cms/two_students_race_for_one_spot.jfeature");
-      EasyCucumber.build(jFeatureFile, CmsComplexScenarioMultithreadStepDefs.class).execute();
+      EasyCucumber.build(jFeatureFile, CmsComplexScenarioMultithreadStepDefs.class).executeAll();
     });
   }
 
@@ -26,7 +26,7 @@ class CmsComplexTest {
   void complexTestThroughMultipleScenarios() {
     assertDoesNotThrow(() -> {
       var jFeatureFile = ResourceUtil.getResourcePath("sample/jfeature/cms/two_students_race_for_one_spot.jfeature");
-      EasyCucumber.build(jFeatureFile, CmsComplexScenarioMultiScenarioStepDefs.class).execute();
+      EasyCucumber.build(jFeatureFile, CmsComplexScenarioMultiScenarioStepDefs.class).executeAll();
     });
   }
 
