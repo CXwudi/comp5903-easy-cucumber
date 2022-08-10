@@ -12,7 +12,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Charles Chen 101035684
  * @date 2022-06-23
  */
-public class JScenarioOutline implements JExecutable {
+public class JScenarioOutline implements JExecutable, TagsContainer {
 
   private static final Logger log = getLogger(JScenarioOutline.class);
 
@@ -30,6 +30,7 @@ public class JScenarioOutline implements JExecutable {
     return title;
   }
 
+  @Override
   public List<String> getTags() {
     return tags;
   }

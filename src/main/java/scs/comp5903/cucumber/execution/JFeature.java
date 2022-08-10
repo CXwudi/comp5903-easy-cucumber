@@ -5,6 +5,7 @@ import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -21,11 +22,9 @@ public class JFeature {
 
   private final String title;
   private final List<String> tags;
-  private final List<JScenario> scenarios;
-  private final List<JScenarioOutline> scenarioOutlines;
 
   /**
-   * similar to {@link scs.comp5903.cucumber.model.JFeatureDetail}'s order list, we need to remember which goes first
+   * save the order and scenario/scenario outline as a map for convenience
    */
   private final HashMap<Integer, JScenario> orderToScenarioMap;
   private final HashMap<Integer, JScenarioOutline> orderToScenarioOutlineMap;
@@ -33,8 +32,6 @@ public class JFeature {
   public JFeature(String title, List<String> tags, List<JScenario> scenarios, List<JScenarioOutline> scenarioOutlines, List<Integer> scenarioOrders, List<Integer> scenarioOutlineOrders) {
     this.title = title;
     this.tags = tags;
-    this.scenarios = scenarios;
-    this.scenarioOutlines = scenarioOutlines;
     if (scenarioOrders.size() != scenarios.size()) {
       throw new EasyCucumberException(ErrorCode.EZCU005, "scenarioOrders.size() != scenarios.size()");
     }
@@ -64,11 +61,11 @@ public class JFeature {
   }
 
   public List<JScenario> getScenarios() {
-    return scenarios;
+    return new ArrayList<>(orderToScenarioMap.values());
   }
 
   public List<JScenarioOutline> getScenarioOutlines() {
-    return scenarioOutlines;
+    return new ArrayList<>(orderToScenarioOutlineMap.values());
   }
 
   /**
@@ -76,7 +73,7 @@ public class JFeature {
    */
   public void executeAll() throws InvocationTargetException, IllegalAccessException {
     log.info("Start executing the feature: {}", title);
-    for (int i = 0; i < scenarios.size() + scenarioOutlines.size(); i++) {
+    for (int i = 0; i < orderToScenarioMap.size() + orderToScenarioOutlineMap.size(); i++) {
       if (orderToScenarioMap.containsKey(i)) {
         orderToScenarioMap.get(i).execute();
       } else {
