@@ -12,7 +12,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Charles Chen 101035684
  * @date 2022-06-23
  */
-public class JScenarioOutline {
+public class JScenarioOutline implements JExecutable {
 
   private static final Logger log = getLogger(JScenarioOutline.class);
 
@@ -38,6 +38,7 @@ public class JScenarioOutline {
     return extractedScenarios;
   }
 
+  @Override
   public void execute() throws InvocationTargetException, IllegalAccessException {
     log.info("Executing scenario outline: {}", title);
     for (JScenario scenario : extractedScenarios) {

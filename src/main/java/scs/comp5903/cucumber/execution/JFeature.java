@@ -27,21 +27,31 @@ public class JFeature {
   /**
    * similar to {@link scs.comp5903.cucumber.model.JFeatureDetail}'s order list, we need to remember which goes first
    */
-  private final List<Integer> scenarioOrders;
-  private final List<Integer> scenarioOutlineOrders;
+  private final HashMap<Integer, JScenario> orderToScenarioMap;
+  private final HashMap<Integer, JScenarioOutline> orderToScenarioOutlineMap;
 
   public JFeature(String title, List<String> tags, List<JScenario> scenarios, List<JScenarioOutline> scenarioOutlines, List<Integer> scenarioOrders, List<Integer> scenarioOutlineOrders) {
     this.title = title;
     this.tags = tags;
     this.scenarios = scenarios;
     this.scenarioOutlines = scenarioOutlines;
-    this.scenarioOrders = scenarioOrders;
-    this.scenarioOutlineOrders = scenarioOutlineOrders;
     if (scenarioOrders.size() != scenarios.size()) {
       throw new EasyCucumberException(ErrorCode.EZCU005, "scenarioOrders.size() != scenarios.size()");
     }
     if (scenarioOutlineOrders.size() != scenarioOutlines.size()) {
       throw new EasyCucumberException(ErrorCode.EZCU006, "scenarioOutlineOrders.size() != scenarioOutlines.size()");
+    }
+    orderToScenarioMap = new HashMap<>(scenarios.size());
+    orderToScenarioOutlineMap = new HashMap<>(scenarios.size());
+    buildOrderMaps(scenarios, scenarioOrders, scenarioOutlines, scenarioOutlineOrders);
+  }
+
+  private void buildOrderMaps(List<JScenario> scenarios, List<Integer> scenarioOrders, List<JScenarioOutline> scenarioOutlines, List<Integer> scenarioOutlineOrders) {
+    for (int i = 0; i < scenarios.size(); i++) {
+      orderToScenarioMap.put(scenarioOrders.get(i), scenarios.get(i));
+    }
+    for (int i = 0; i < scenarioOutlines.size(); i++) {
+      orderToScenarioOutlineMap.put(scenarioOutlineOrders.get(i), scenarioOutlines.get(i));
     }
   }
 
@@ -66,14 +76,6 @@ public class JFeature {
    */
   public void executeAll() throws InvocationTargetException, IllegalAccessException {
     log.info("Start executing the feature: {}", title);
-    HashMap<Integer, JScenario> orderToScenarioMap = new HashMap<>(scenarios.size());
-    for (int i = 0; i < scenarios.size(); i++) {
-      orderToScenarioMap.put(scenarioOrders.get(i), scenarios.get(i));
-    }
-    HashMap<Integer, JScenarioOutline> orderToScenarioOutlineMap = new HashMap<>(scenarios.size());
-    for (int i = 0; i < scenarioOutlines.size(); i++) {
-      orderToScenarioOutlineMap.put(scenarioOutlineOrders.get(i), scenarioOutlines.get(i));
-    }
     for (int i = 0; i < scenarios.size() + scenarioOutlines.size(); i++) {
       if (orderToScenarioMap.containsKey(i)) {
         orderToScenarioMap.get(i).execute();
