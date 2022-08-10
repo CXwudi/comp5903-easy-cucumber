@@ -3,6 +3,8 @@ package scs.comp5903.cucumber.execution.tag;
 import scs.comp5903.cucumber.execution.TagsContainer;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.StringJoiner;
 
 /**
  * @author CX无敌
@@ -28,5 +30,15 @@ public class OrTags implements BaseFilteringTag {
       }
     }
     return false;
+  }
+
+  @Override
+  public String toString() {
+    StringJoiner joiner = new StringJoiner(" or ", "(", ")");
+    for (BaseFilteringTag tag : tags) {
+      String s = Objects.toString(tag);
+      joiner.add(s);
+    }
+    return joiner.toString();
   }
 }

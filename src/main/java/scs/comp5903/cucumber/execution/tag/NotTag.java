@@ -18,4 +18,9 @@ public class NotTag implements BaseFilteringTag {
   public boolean isTagMatch(TagsContainer tagsContainer) {
     return !tagToNegate.isTagMatch(tagsContainer);
   }
+
+  @Override
+  public String toString() {
+    return "not " + tagToNegate;
+  }
 }

@@ -1,6 +1,8 @@
 package scs.comp5903.cucumber.execution;
 
 import org.slf4j.Logger;
+import scs.comp5903.cucumber.execution.tag.AlwaysTrueTag;
+import scs.comp5903.cucumber.execution.tag.BaseFilteringTag;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
 
@@ -72,15 +74,19 @@ public class JFeature {
    * execute all scenarios in this feature with respect to the order
    */
   public void executeAll() throws InvocationTargetException, IllegalAccessException {
-    log.info("Start executing the feature: {}", title);
+    executeByTag(AlwaysTrueTag.INSTANCE);
+  }
+
+  public void executeByTag(BaseFilteringTag tag) throws InvocationTargetException, IllegalAccessException {
+    log.info("Start executing the feature: '{}' by tag expression: '{}'", title, tag);
     for (int i = 0; i < orderToScenarioMap.size() + orderToScenarioOutlineMap.size(); i++) {
       if (orderToScenarioMap.containsKey(i)) {
-        orderToScenarioMap.get(i).execute();
+        orderToScenarioMap.get(i).executeConditionallyBy(tag);
       } else {
-        orderToScenarioOutlineMap.get(i).execute();
+        orderToScenarioOutlineMap.get(i).executeConditionallyBy(tag);
       }
     }
-    log.info("Done executing the feature: {}", title);
+    log.info("Done executing the feature: '{}' by tag conditionally", title);
   }
 
   @Override

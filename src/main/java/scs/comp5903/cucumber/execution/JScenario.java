@@ -1,6 +1,7 @@
 package scs.comp5903.cucumber.execution;
 
 import org.slf4j.Logger;
+import scs.comp5903.cucumber.execution.tag.BaseFilteringTag;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -12,7 +13,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Charles Chen 101035684
  * @date 2022-06-23
  */
-public class JScenario implements JExecutable, TagsContainer {
+public class JScenario implements TagsContainer {
   private static final Logger log = getLogger(JScenario.class);
   private final String title;
   private final List<String> tags;
@@ -40,11 +41,16 @@ public class JScenario implements JExecutable, TagsContainer {
   /**
    * actual execute the scenario
    */
-  @Override
   public void execute() throws InvocationTargetException, IllegalAccessException {
     log.info("Executing scenario: {}", title);
     for (MethodExecution step : steps) {
       step.execute();
+    }
+  }
+
+  public void executeConditionallyBy(BaseFilteringTag tag) throws InvocationTargetException, IllegalAccessException {
+    if (tag.isTagMatch(this)) {
+      execute();
     }
   }
 

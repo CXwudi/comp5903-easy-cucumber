@@ -6,21 +6,20 @@ import scs.comp5903.cucumber.execution.TagsContainer;
  * @author CX无敌
  * @date 2022-08-10
  */
-public class SingleTag implements BaseFilteringTag {
+public class AlwaysTrueTag implements BaseFilteringTag {
 
-  private final String tag;
+  public static final AlwaysTrueTag INSTANCE = new AlwaysTrueTag();
 
-  public SingleTag(String tag) {
-    this.tag = tag;
+  private AlwaysTrueTag() {
   }
 
   @Override
   public boolean isTagMatch(TagsContainer tagsContainer) {
-    return tagsContainer.getTags().contains(tag);
+    return true;
   }
 
   @Override
   public String toString() {
-    return tag;
+    return "always true";
   }
 }

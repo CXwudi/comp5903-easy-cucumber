@@ -1,6 +1,7 @@
 package scs.comp5903.cucumber.execution;
 
 import org.slf4j.Logger;
+import scs.comp5903.cucumber.execution.tag.BaseFilteringTag;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -12,7 +13,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Charles Chen 101035684
  * @date 2022-06-23
  */
-public class JScenarioOutline implements JExecutable, TagsContainer {
+public class JScenarioOutline implements TagsContainer {
 
   private static final Logger log = getLogger(JScenarioOutline.class);
 
@@ -39,11 +40,16 @@ public class JScenarioOutline implements JExecutable, TagsContainer {
     return extractedScenarios;
   }
 
-  @Override
   public void execute() throws InvocationTargetException, IllegalAccessException {
     log.info("Executing scenario outline: {}", title);
     for (JScenario scenario : extractedScenarios) {
       scenario.execute();
+    }
+  }
+
+  public void executeConditionallyBy(BaseFilteringTag tag) throws InvocationTargetException, IllegalAccessException {
+    if (tag.isTagMatch(this)) {
+      execute();
     }
   }
 
