@@ -7,6 +7,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static scs.comp5903.cucumber.execution.tag.BaseFilteringTag.*;
 
 /**
  * @author CX无敌
@@ -50,6 +51,19 @@ class BaseFilteringTagTest {
   void canBuildXorTags() {
     // A xor B = (A and (not B)) or ((not A) and B)
     var tag = new OrTags(new AndTags(new SingleTag("tag1"), new NotTag(new SingleTag("tag2"))), new AndTags(new NotTag(new SingleTag("tag1")), new SingleTag("tag2")));
+    var tagsContainer = new DummyTagsContainer("tag1", "tag2");
+    assertFalse(tag.isTagMatch(tagsContainer));
+    tagsContainer = new DummyTagsContainer("tag1");
+    assertTrue(tag.isTagMatch(tagsContainer));
+    tagsContainer = new DummyTagsContainer("tag2");
+    assertTrue(tag.isTagMatch(tagsContainer));
+    tagsContainer = new DummyTagsContainer();
+    assertFalse(tag.isTagMatch(tagsContainer));
+  }
+
+  @Test
+  void canBuildXorTags2() {
+    BaseFilteringTag tag = or(and(tag("tag1"), not(tag("tag2"))), and(not(tag("tag1")), tag("tag2")));
     var tagsContainer = new DummyTagsContainer("tag1", "tag2");
     assertFalse(tag.isTagMatch(tagsContainer));
     tagsContainer = new DummyTagsContainer("tag1");
