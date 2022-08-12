@@ -1,0 +1,26 @@
+@root
+Feature: a feature file with tags
+  Try to run selected scenarios based on tags
+
+  @s1 @s2
+  Scenario: scenario 1
+    Given a scenario 1
+    When a step
+    Then a step
+
+  @s2 @s3
+  Scenario: scenario 2
+    Given a scenario 2
+    When a step
+    Then a step
+
+  @s1 @s3
+  Scenario Outline: scenario 3
+    Given a scenario 3
+    When a step
+    Then a step
+    # in my implementation, this table should just do nothing
+    Examples:
+      | a | b |
+      | 1 | 2 |
+      | 3 | 4 |
