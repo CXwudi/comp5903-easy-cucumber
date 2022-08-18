@@ -2,22 +2,30 @@
 
 [![](https://jitpack.io/v/CXwudi/comp5903-easy-cucumber.svg)](https://jitpack.io/#CXwudi/comp5903-easy-cucumber)
 
-This the graduate project for COMP5903 at Carleton University. It is the enhancement of Alexei's original ["Cucumberized" JUnit](https://github.com/alexeikrumshyn/cucumberized-junit)
+COMP5903 project at Carleton University. It is the enhancement of Alexei's
+original ["Cucumberized" JUnit](https://github.com/alexeikrumshyn/cucumberized-junit)
 
 List of improvement, UML diagram for improved Cucumberized JUnit can be found in `doc` directory
 
 TOC:
 
-- [To develop or check code](#to-develop-or-check-code)
-- [How to import](#how-to-import)
-  - [Maven](#maven)
-  - [Gradle](#gradle)
-- [How to use](#how-to-use)
-- [Supported Cucumber Keywords](#supported-cucumber-keywords)
-- [Supported Cucumber Features](#supported-cucumber-features)
-- [Extra Features that Official Cucumber does not support](#extra-features-that-official-cucumber-does-not-support)
+<!-- TOC -->
 
-## To develop or check code
+* [Prerequisite](#prerequisite)
+* [How to import](#how-to-import)
+    * [Maven](#maven)
+    * [Gradle](#gradle)
+* [How to use](#how-to-use)
+* [Supported Features](#supported-features)
+    * [Supported Cucumber Keywords](#supported-cucumber-keywords)
+    * [Supported Cucumber Features](#supported-cucumber-features)
+    * [Extra Features that Official Cucumber does not support](#extra-features-that-official-cucumber-does-not-support)
+
+<!-- TOC -->
+
+## Prerequisite
+
+To use or develop this tool, you only need:
 
 - Java 11 or above
 
@@ -72,34 +80,39 @@ dependencies {
 ## How to use
 
 Call [`EasyCucumber.build()`](src/main/java/scs/comp5903/cucumber/EasyCucumber.java) method to parse and create a
-cucumber test,
-it will return an executable instance of [`JFeature`](src/main/java/scs/comp5903/cucumber/execution/JFeature.java) that
-can run the cucumber test through calling `JFeature.execute()`.
+cucumber test, it will return an executable instance
+of [`JFeature`](src/main/java/scs/comp5903/cucumber/execution/JFeature.java)
 
-Currently, this project is still WIP (work in progress), but at least it is in a usable stage.
+Once you got the instance of `JFeature`, you can run the cucumber test through calling `JFeature.executeAll()`.
 
-## Supported Cucumber Keywords
+## Supported Features
+
+Only a subset of keywords and features that official cucumber have are supported.
+
+### Supported Cucumber Keywords
 
 - `Feature`: the title of the feature file
 - `Scenario`: the scenario
-- `Scenario Outline`: the scenario outline
+- `Scenario Outline`: the scenario outline, also an alias of `Scenario Template`
 - `Given`, `When`, `Then`, `And`, `But`: the step definition
-- `Examples`: the examples of the scenario outline
-- TODO: more to come
+- `Examples`: the examples of the scenario outline, also an alias of `Example`
+- `@`: the tag, only above `Feature`, `Scenario` or `Scenario Outline` keywords
 
-## Supported Cucumber Features
+### Supported Cucumber Features
 
 - Able to parse `{int}`, `{string}`, `{double}`, `{biginteger}` and `{bigdecimal}` in step definition
   - see <https://github.com/cucumber/cucumber-expressions#parameter-types> for more details
 - Can ignore comments began with `#`
 - Can ignore multi-line description placed under `Feature`, `Scenario` or `Scenario Outline`
-- TODO: more to come
 
-## Extra Features that Official Cucumber does not support
+### Extra Features that Official Cucumber does not support
 
 - Several `EasyCucumber.build()` methods can take the instance of your step definition class as parameter. In this case,
   the cucumber will use your instance to run the step, instead of create a fresh new instance of the step definition
   class using Java Reflection API
-  - This can be useful for sharing states between different cucumber tests,
-      or sharing the same step definition class instance across multiple cucumber tests
-- TODO: more to come
+    - For example, you can pass in `new MyStepDefinition()` instead of `MyStepDefinition.class` as the parameter
+      to `EasyCucumber.build()`
+    - This can be useful for sharing states between different cucumber tests,
+      or sharing the same step definition class instance across multiple cucumber tests.
+      TODO: more explain on this in another doc
+
