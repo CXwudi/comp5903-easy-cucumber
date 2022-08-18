@@ -10,6 +10,7 @@ import scs.comp5903.cucumber.model.exception.ErrorCode;
 import scs.comp5903.cucumber.model.matcher.*;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,12 +40,21 @@ public class JStepDefinitionParser {
   }
 
   List<JStepDefMethodDetail> extractOneClass(Class<?> stepDefinitionClass) {
+
     var list = new ArrayList<JStepDefMethodDetail>();
     // be aware that the order of methods can vary depends on OS
-    for (Method method : stepDefinitionClass.getMethods()) {
+    var clazzIsPublic = false;
+    for (Method method : stepDefinitionClass.getMethods()) { // this gets only public methods
       var jStepAnnotation = method.getAnnotation(JStep.class);
       if (Objects.isNull(jStepAnnotation)) {
         continue;
+      }
+      // once we see at least one method with @JStep annotation, we know this is step definition class and then can perform check of class modifier
+      if (!clazzIsPublic) {
+        clazzIsPublic = Modifier.isPublic(stepDefinitionClass.getModifiers());
+        if (!clazzIsPublic) {
+          throw new EasyCucumberException(ErrorCode.EZCU038, "Step definition class must be public: " + stepDefinitionClass.getName());
+        }
       }
       var keyword = jStepAnnotation.keyword();
       var stepMatcherString = jStepAnnotation.value();

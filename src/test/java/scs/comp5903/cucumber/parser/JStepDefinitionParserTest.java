@@ -3,12 +3,15 @@ package scs.comp5903.cucumber.parser;
 import org.junit.jupiter.api.Test;
 import scs.comp5903.cucumber.model.JStep;
 import scs.comp5903.cucumber.model.JStepKeyword;
+import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.matcher.GivenJStepMatcher;
 import scs.comp5903.cucumber.model.matcher.ThenJStepMatcher;
 import scs.comp5903.cucumber.model.matcher.WhenJStepMatcher;
+import scs.comp5903.cucumber.parser.samplestepdef.AnotherSampleStepDefinition;
+import scs.comp5903.cucumber.parser.samplestepdef.SampleStepDefinition;
+import scs.comp5903.cucumber.parser.samplestepdef.SampleSubClass;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Charles Chen 101035684
@@ -50,49 +53,25 @@ class JStepDefinitionParserTest {
 
   }
 
+  @Test
+  void shouldThrowOnNonPublicStepDefClass() {
+    var exp = assertThrows(EasyCucumberException.class, () -> new JStepDefinitionParser().extractOneClass(NonPublicStepDefClass.class));
+    assertTrue(exp.getMessage().contains("Step definition class must be public"));
+  }
+
+  @Test
+  void doesNotThrowIfTheClassIsNotStepDef() {
+    assertDoesNotThrow(() -> new JStepDefinitionParser().extractOneClass(NonStepDefClass.class));
+  }
 }
 
-class SampleStepDefinition {
-
-  private static void notAStepDefinitionMethod() {
-
-  }
-
-  public void notAStepDefinition() {
-
-  }
-
+class NonPublicStepDefClass {
   @JStep(keyword = JStepKeyword.GIVEN, value = "I have {int} apples")
-  public void givenIHaveApples(int count) {
-
+  public void iHaveApples(int apples) {
   }
-
-  @JStep(keyword = JStepKeyword.WHEN, value = "I eat {int} apples")
-  public void whenIEatApples(int count) {
-
-  }
-
-  @JStep(keyword = JStepKeyword.THEN, value = "I should have {int} apples")
-  public void thenIShouldHaveApples(int count) {
-
-  }
-
 }
 
-class SampleSubClass extends SampleStepDefinition {
-}
-
-class AnotherSampleStepDefinition {
-
-  @JStep(keyword = JStepKeyword.GIVEN, value = "I have {int} oranges")
-  public void givenIHaveOranges(int count) {
-  }
-
-  @JStep(keyword = JStepKeyword.WHEN, value = "I eat {int} oranges")
-  public void whenIEatOranges(int count) {
-  }
-
-  @JStep(keyword = JStepKeyword.THEN, value = "I should have {int} oranges")
-  public void thenIShouldHaveOranges(int count) {
+class NonStepDefClass {
+  public void aMethod() {
   }
 }
