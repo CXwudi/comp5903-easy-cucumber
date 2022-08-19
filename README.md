@@ -83,7 +83,8 @@ The API is divided into build phase and runtime phase.
 
 ### Build the test
 
-1. First, write your feature file. The feature file can be stored in any directory that you can access using
+1. First, write the feature file like following. The feature file can be stored in any directory that you can access
+   using
    Java's `Path`.
 
     ```gherkin
@@ -109,7 +110,8 @@ The API is divided into build phase and runtime phase.
           | 10    | 5        | 5         |
     ```
 
-2. Create your step definition class(es), these classes must be public and all step definition must be public as well.
+2. Create the step definition class(es). These classes must be public and all step definition must be public as well,
+   like following:
     ```java
     // MyStepDefinition.java
     import scs.comp5903.cucumber.model.JStep;
@@ -151,11 +153,44 @@ The API is divided into build phase and runtime phase.
 
 ### Run the test
 
-//TODO: more detailed explanation
-
 Once you get the executable instance of [`JFeature`](src/main/java/scs/comp5903/cucumber/execution/JFeature.java),
-you can run the cucumber test through calling `JFeature.executeAll()`or `JFeature.executeByTag(BaseFilteringTag tag)`
-method to execute selected scenarios and scenario outlines that matching the input tag
+you can run the cucumber test through calling `JFeature.executeAll()` or `JFeature.executeByTag(BaseFilteringTag tag)`.
+
+`JFeature.executeAll()` will run all scenarios and scenario outlines in the feature file.
+
+`JFeature.executeByTag(BaseFilteringTag tag)` take an instance
+of [`BaseFilteringTag`](src/main/java/scs/comp5903/cucumber/execution/tag/BaseFilteringTag.java). Then, each scenario or
+scenario outline will be examined by the input tag to check should it be run. The input tag can be created by any public
+static method in that class including:
+
+1. `static BaseFilteringTag tag(String tag)`: which create a simple tag instance of the
+   given string
+2. `static BaseFilteringTag or(BaseFilteringTag... tags)`: which create an or-tag so that
+   any one of the input tags matches will result in the or-tag is matched
+3. `static BaseFilteringTag and(BaseFilteringTag... tags)`: which create an and-tag so
+   that all input tags need to be matched to result in the and-tag is matched
+4. `static BaseFilteringTag not(BaseFilteringTag tag)`: which create a not-tag so that
+   negating the match result of the input tag
+
+These 4 methods can be combined to create complex tag expression. For example, you can create an xor-tag so that
+scenario or
+scenario outline with either `@tag1` or `@tag2` will be run, but not both or neither, like following:
+
+```java
+// import these static methods for convenience
+
+import static scs.comp5903.cucumber.execution.tag.BaseFilteringTag.*;
+// then you can create a convenient helper method:
+private BaseFilteringTag creatXor(String tag1Str,String tag2Str){
+    return or(and(tag(tag1Str),not(tag(tag2Str))),and(not(tag(tag1Str)),tag(tag2Str)));
+    }
+```
+
+Then, then somewhere in your test code:
+
+```java
+myJFeature.executeByTag(createXor("tag1","tag2")); // will only run scenarios with either `@tag1` or `@tag2`, but not both or neither
+```
 
 ## Supported Features
 
