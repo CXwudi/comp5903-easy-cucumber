@@ -221,5 +221,5 @@ Only a subset of keywords and features that official cucumber have are supported
     to `EasyCucumber.build()`
   - This can be useful for sharing states between different cucumber tests,
     or sharing the same step definition class instance across multiple cucumber tests.
-    TODO: more explain on this in [another doc](./doc/complex scenario guide.md)
+    TODO: more explain on this in [another doc](./doc/complex%20scenario%20guide.md)
 
