@@ -1,19 +1,14 @@
 # How to write complex scenario
 
-A complex scenario is scenario that involve testing of concurrency, which usually involve multi-thread, resource
-contention, and etc.
+A complex scenario is scenario that involve testing of concurrency, which usually involve multi-thread, resource contention, and etc.
 
-However, Cucumber, as a sequential executed test framework, does not natively supports running multiple tests
-concurrently. Although attempts has been made to encounter this inability (TODO: need reference of Mudit;s paper), but
-either the solution is very fragile, or not fully completed.
+However, Cucumber, as a sequential executed test framework, does not natively supports running multiple tests concurrently. Although attempts has been made to encounter this inability (TODO: need reference of Mudit;s paper), but either the solution is very fragile, or not fully completed.
 
-In this guide, I would like to share two ways of writing the complex scenario
+In this guide, I would like to share two ways of writing the complex scenario 
 
-## Sample scenario we are going to use
+## Sample scenario we are going to use 
 
-Imaging a Course Management System (CMS), where there is only one spot left for a course, and there are two students
-trying to register the course. We want to test that when both students click the confirmation button at the same time,
-only one of them can be registered, and another one would receive an error message saying the course is already full.
+Imaging a Course Management System (CMS), where there is only one spot left for a course, and there are two students trying to register the course. We want to test that when both students click the confirmation button at the same time, only one of them can be registered, and another one would receive an error message saying the course is already full.
 
 ## Way 1: map the any code line-by-line inside one step definition class
 
@@ -21,19 +16,11 @@ This method works for both the official Cucumber and this project implementation
 
 ### The idea
 
-The idea is to translate any piece of code into one step definition class. A piece of code is executed line-by-line from
-top to bottom. Similarly, a Cucumber scenario or scenario outline is also executed line-by-line from top to bottom.
-Therefore, we can map lines of codes into lines of Cucumber steps, which are also functions declared one after another
-in the step definition class.
+The idea is to translate any piece of code into one step definition class. A piece of code is executed line-by-line from top to bottom. Similarly, a Cucumber scenario or scenario outline is also executed line-by-line from top to bottom. Therefore, we can map lines of codes into lines of Cucumber steps, which are also functions declared one after another in the step definition class. 
 
-However, a piece of code can declare and reuse local variables, but in step definition class, a local variable in one
-function can not be accessed from another function. Therefore, the restriction of having only one step definition class
-comes in. If a scenario or scenario outline is executed by only one step definition class, then all local variables can
-be declared as mutable (non-final) fields in the step definition to achieve reusability between multiple step definition
-functions.
+However, a piece of code can declare and reuse local variables, but in step definition class, a local variable in one function can not be accessed from another function. Therefore, the restriction of having only one step definition class comes in. If a scenario or scenario outline is executed by only one step definition class, then all local variables can be declared as mutable (non-final) fields in the step definition to achieve reusability between multiple step definition functions.
 
-Therefore, in theory, any code, no matter if the code is multi-threaded or not, can be mapped into a single step
-definition class.
+Therefore, in theory, any code, no matter if the code is multi-threaded or not, can be mapped into a single step definition class.
 
 ### Examples
 
@@ -41,7 +28,7 @@ For example, given 5 lines of codes like following:
 
 ```java
 code1();
-int i=code2();
+int i = code2();
 code3(i);
 code4();
 code5();
@@ -49,7 +36,7 @@ code5();
 
 We can map these codes into a Cucumber test as following:
 
-- Scenario:
+- Scenario: 
 
   ```feature
   Scenario: demo
@@ -166,12 +153,9 @@ pro: easy understand
 
 con: poor reusability and extensibility, and hence we need the way 2 below
 
-The way of writing complex scenario is straight-forward and easy to understand.
+The way of writing complex scenario is straight-forward and easy to understand. 
 
-However, maintainability and reusability would be a problem when more tests are implemented. Due to the restriction of
-only one step definition class per complex scenario, it would be hard to refactor and reuse existing codes. For example,
-a small Cucumber test (maybe is just a single scenario where a student registers a course) may already contained the
-logic of course registration, but using this way, the complex scenario can not reuse such existing logic.
+However, maintainability and reusability would be a problem when more tests are implemented. Due to the restriction of only one step definition class per complex scenario, it would be hard to refactor and reuse existing codes. For example, a small Cucumber test (maybe is just a single scenario where a student registers a course) may already contained the logic of course registration, but using this way, the complex scenario can not reuse such existing logic.
 
 Hence, the second way below is introduced to solve the maintainability issue.
 
@@ -184,6 +168,8 @@ This way is only available in this tool. Official Cucumber does not support it.
 //TODO: explain the idea: given that we can create our own instance of step definition, and also given that running a
 test is basically some function call, then we run multiple cucumber tests inside a cucumber test, and each smaller test
 has shared resources
+
+
 
 //TODO:
 example: https://github.com/CXwudi/comp5903-easy-cucumber/blob/main/src/test/java/scs/comp5903/cucumber/sample/CmsComplexScenarioMultithreadStepDefs.java
