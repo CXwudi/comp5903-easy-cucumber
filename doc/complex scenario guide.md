@@ -41,10 +41,10 @@ For example, given 5 lines of codes like following:
 
 ```java
 code1();
-    int i=code2();
-    code3(i);
-    code4();
-    code5();
+int i=code2();
+code3(i);
+code4();
+code5();
 ```
 
 We can map these codes into a Cucumber test as following:
