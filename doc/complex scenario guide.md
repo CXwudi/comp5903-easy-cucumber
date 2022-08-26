@@ -12,7 +12,7 @@ Imaging a Course Management System (CMS), where there is only one spot left for 
 
 ## Way 1: map the any code line-by-line inside one step definition class
 
-This method works for both the official Cucumber and this project implementation.
+This method works for both the official Cucumber and this tool. 
 
 ### The idea
 
@@ -169,7 +169,34 @@ This way is only available in this tool. Official Cucumber does not support it.
 test is basically some function call, then we run multiple cucumber tests inside a cucumber test, and each smaller test
 has shared resources
 
+To achieve reusability, two characteristic of this tool is needed.
 
+First characteristic is that Cucumber tests are ran by function call. The developer simply calls `EasyCucumber.build()` and `JFeature.executeXXX()` method to build and run the test at anywhere that a piece of Java code can run. This includes implementation of `Runnable` interface which is used to create a new thread. Therefore, the following piece of code like can achieve concurrent execution of multiple Cucumber tests: (TODO: need reference from Alexei's report)
+
+```java
+for (Path featureFile: allFeatureFiles) {
+    JFeature jFeature = EasyCucumber.build(featureFile, MyStepDef.class);
+    new Thread(() -> {
+        try {
+            jFeature.executeAll();
+            // if you want, you can also create each thread for each scenario or scenario outline in the jFeature instance.
+            Systen.out.println("test success:" + jFeature.getTitle());
+        } catch (Exception e) {
+            Systen.out.println("test fail:" + jFeature.getTitle());
+        }
+    }).start();
+}
+```
+
+This piece of code also supports reporting out the result of each test. However, there is no way to control the execution of all threads. 
+
+Therefore, the second characteristic of this tool comes to help, which is the support of using predefined instance of step definition class, instead of relying on Cucumber itself to create the instance of the step definition class. For example: `EasyCucumber.build(featureFile, new MyStepDef(myParameters))` instead of `EasyCucumber.build(featureFile, MyStepDef.class)`.
+
+By creating their predefined instance, developers can create custom constructors on step definition class. Since [object instances in java are reference variables](https://www.geeksforgeeks.org/reference-variable-in-java/), an instance of the step definition class can be shared into multiple `EasyCucumber.build()` function calls, or a dependency that a step definition class required can be shared in multiple instances of the step definition class. In the later case, such dependency can be in `java.util.concurrent` (e.g. [`Lock`](https://www.baeldung.com/java-concurrent-locks), `Semaphore`,  [`CyclicBarrier`](https://www.geeksforgeeks.org/java-util-concurrent-cyclicbarrier-java/?ref=lbp)) package that helps controlling the concurrency. 
+
+Therefore, a complex scenario can now be created that runs multiple smaller and simply scenario concurrently or asynchronously, depending on the test logic. The step definition implementation of the complex scenario would includes several `EasyCucumber.build(fileOfSmallFeature, stepDefinitionInstanceOfSmallFeature)` where each `stepDefinitionInstanceOfSmallFeature` is created by calling a custom constructor that accept an dependency from `java.util.concurrent` package. Lately, the step definition implementation of the small scenario will need to include the dependency 
+
+For example, the CMS scenario described can be rewritten as following:
 
 //TODO:
 example: https://github.com/CXwudi/comp5903-easy-cucumber/blob/main/src/test/java/scs/comp5903/cucumber/sample/CmsComplexScenarioMultithreadStepDefs.java
