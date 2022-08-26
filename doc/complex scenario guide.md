@@ -149,11 +149,7 @@ public class TwoStudentsRaceConditionStepDef {
 
 ### Pros and Cons
 
-pro: easy understand
-
-con: poor reusability and extensibility, and hence we need the way 2 below
-
-The way of writing complex scenario is straight-forward and easy to understand. 
+This way of writing complex scenario is straight-forward and easy to understand. 
 
 However, maintainability and reusability would be a problem when more tests are implemented. Due to the restriction of only one step definition class per complex scenario, it would be hard to refactor and reuse existing codes. For example, a small Cucumber test (maybe is just a single scenario where a student registers a course) may already contained the logic of course registration, but using this way, the complex scenario can not reuse such existing logic.
 
@@ -164,10 +160,6 @@ Hence, the second way below is introduced to solve the maintainability issue.
 This way is only available in this tool. Official Cucumber does not support it.
 
 ### Idea
-
-//TODO: explain the idea: given that we can create our own instance of step definition, and also given that running a
-test is basically some function call, then we run multiple cucumber tests inside a cucumber test, and each smaller test
-has shared resources
 
 To achieve reusability, two characteristic of this tool is needed.
 
@@ -192,18 +184,44 @@ This piece of code also supports reporting out the result of each test. However,
 
 Therefore, the second characteristic of this tool comes to help, which is the support of using predefined instance of step definition class, instead of relying on Cucumber itself to create the instance of the step definition class. For example: `EasyCucumber.build(featureFile, new MyStepDef(myParameters))` instead of `EasyCucumber.build(featureFile, MyStepDef.class)`.
 
-By creating their predefined instance, developers can create custom constructors on step definition class. Since [object instances in java are reference variables](https://www.geeksforgeeks.org/reference-variable-in-java/), an instance of the step definition class can be shared into multiple `EasyCucumber.build()` function calls, or a dependency that a step definition class required can be shared in multiple instances of the step definition class. In the later case, such dependency can be in `java.util.concurrent` (e.g. [`Lock`](https://www.baeldung.com/java-concurrent-locks), `Semaphore`,  [`CyclicBarrier`](https://www.geeksforgeeks.org/java-util-concurrent-cyclicbarrier-java/?ref=lbp)) package that helps controlling the concurrency. 
+By creating their predefined instance, developers can create custom constructors on step definition class. Since [object instances in java are reference variables](https://www.geeksforgeeks.org/reference-variable-in-java/), an instance of the step definition class can be shared into multiple `EasyCucumber.build()` function calls. Like following:
 
-Therefore, a complex scenario can now be created that runs multiple smaller and simply scenario concurrently or asynchronously, depending on the test logic. The step definition implementation of the complex scenario would includes several `EasyCucumber.build(fileOfSmallFeature, stepDefinitionInstanceOfSmallFeature)` where each `stepDefinitionInstanceOfSmallFeature` is created by calling a custom constructor that accept an dependency from `java.util.concurrent` package. Lately, the step definition implementation of the small scenario will need to include the dependency 
+```java
+MyStepDef stepDef = new MyStepDef(myParameter);
+EasyCucumber.build(featureFile, stepDef).executeAll();
+EasyCucumber.build(featureFile2, stepDef).executeAll();
+```
 
-For example, the CMS scenario described can be rewritten as following:
+Or multiple instances of the step definition class share a same dependency that a step definition class requires from the constructor, like following:
 
-//TODO:
-example: https://github.com/CXwudi/comp5903-easy-cucumber/blob/main/src/test/java/scs/comp5903/cucumber/sample/CmsComplexScenarioMultithreadStepDefs.java
-and https://github.com/CXwudi/comp5903-easy-cucumber/blob/main/src/test/resources/sample/jfeature/cms/two_students_race_for_one_spot.jfeature
+```java
+SomeSharedDependency sharedDep = new SomeSharedDependency();
+EasyCucumber.build(featureFile, new MyStepDef(sharedDep)).executeAll();
+EasyCucumber.build(featureFile2, new MyStepDef(sharedDep)).executeAll();
+```
 
-//TODO: pro and con:
+In the later case, such `SomeSharedDependency` can be any class from `java.util.concurrent` (e.g. [`Lock`](https://www.baeldung.com/java-concurrent-locks), `Semaphore`,  [`CyclicBarrier`](https://www.geeksforgeeks.org/java-util-concurrent-cyclicbarrier-java/?ref=lbp)) package that helps controlling the concurrency. 
 
-pro: reusable, maintainable, extensibillity
+Therefore, a complex scenario can now be created that runs multiple smaller and simply scenario concurrently or asynchronously. The step definition implementation of the complex scenario would includes several `EasyCucumber.build(fileOfSmallFeature, stepDefinitionInstanceOfSmallFeature)` where each `stepDefinitionInstanceOfSmallFeature` is created by calling a custom constructor that accept an dependency from `java.util.concurrent` package. Lately, the step definition implementation of the small scenario (which is the class`stepDefinitionInstanceOfSmallFeature`) will need to be refactored to accept the dependency.
 
-con: hacky step definition implementation with extra locking and threads managing.
+### Example
+
+Hence, the CMS scenario described above can be rewritten like [the example in `src/test/java/scs/comp5903/cucumber/sample/CmsComplexScenarioMultiScenarioStepDefs.java`](https://github.com/CXwudi/comp5903-easy-cucumber/blob/main/src/test/java/scs/comp5903/cucumber/sample/CmsComplexScenarioMultiScenarioStepDefs.java) (using the same feature file in way 1)
+
+In that example, you can see that two simple Cucumber test that check the normal logic of student registering course are created, with a shared `timingLock`.
+
+```java
+timingLock = new CountDownLatch(1);
+student1RegisterCourseScenario = EasyCucumber.build(jFeatureFile, new CmsSimpleRegisterCourseStepDefs(1, "COMP3004", timingLock));
+student2RegisterCourseScenario = EasyCucumber.build(jFeatureFile, new CmsSimpleRegisterCourseStepDefs(2, "COMP3004", timingLock));
+```
+
+A `CountDownLatch` is a lock that takes a counting number in the constructor. Each call of `await()` will block the calling thread. Then each call of `countDown()` will decrement the counting number by 1. When the counting number fall to 0, all threads that are waiting from calling `await()` will be released at the same time, which makes `CountDownLatch` a great tool for creating racing condition. 
+
+In the example, both `student1RegisterCourseScenario` and `student2RegisterCourseScenario` share a same `CountDownLatch` with a counting number `1`. When `timingLock.countDown()` is called during the step `When student one and student two click the register button on COMP3004 at the same time`, both student 1 and student 2 will try to press the registration button at the same time, see the implementation of [`CmsSimpleRegisterCourseStepDefs`](https://github.com/CXwudi/comp5903-easy-cucumber/blob/main/src/test/java/scs/comp5903/cucumber/sample/CmsSimpleRegisterCourseStepDefs.java) for more details.
+
+### Pro and cons
+
+This way of writing complex scenario has better maintainability, and code from smaller scenarios can be reused to form the bigger complex scenario, which increases the reusability. 
+
+The only drawback of this way is that refactoring of the step definition implementation in existing smaller scenario is required. Test developers need to "hack" their pre-existing step definition class by creating new constructor, new dependency to achieve code reusability. 
