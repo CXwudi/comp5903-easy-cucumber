@@ -220,6 +220,6 @@ Only a subset of keywords and features that official cucumber have are supported
   - For example, you can pass in `new MyStepDefinition()` instead of `MyStepDefinition.class` as the parameter
     to `EasyCucumber.build()`
   - This can be useful for sharing states between different cucumber tests,
-    or sharing the same step definition class instance across multiple cucumber tests.
-    TODO: more explain on this in [another doc](./doc/complex%20scenario%20guide.md)
+    which also support controlled concurrent execution of multiple Cucumber tests.
+    See [this document](./doc/complex%20scenario%20guide.md) for more detail.
 
