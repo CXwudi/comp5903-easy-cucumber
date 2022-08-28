@@ -10,17 +10,19 @@ List of improvement, UML diagram for improved Cucumberized JUnit can be found in
 TOC:
 
 <!-- TOC -->
-
-* [Prerequisite](#prerequisite)
-* [How to import](#how-to-import)
-  * [Maven](#maven)
-  * [Gradle](#gradle)
-* [How to use](#how-to-use)
-* [Supported Features](#supported-features)
-  * [Supported Cucumber Keywords](#supported-cucumber-keywords)
-  * [Supported Cucumber Features](#supported-cucumber-features)
-  * [Extra Features that Official Cucumber does not support](#extra-features-that-official-cucumber-does-not-support)
-
+* [Easy Cucumber](#easy-cucumber)
+  * [Prerequisite](#prerequisite)
+  * [How to import](#how-to-import)
+    * [Maven](#maven)
+    * [Gradle](#gradle)
+  * [How to use](#how-to-use)
+    * [Build the test](#build-the-test)
+    * [Run the test](#run-the-test)
+  * [Supported Features](#supported-features)
+    * [Supported Cucumber Keywords](#supported-cucumber-keywords)
+    * [Supported Cucumber Features](#supported-cucumber-features)
+    * [Extra Features that Official Cucumber does not support](#extra-features-that-official-cucumber-does-not-support)
+  * [For Developers](#for-developers)
 <!-- TOC -->
 
 ## Prerequisite
@@ -223,3 +225,6 @@ Only a subset of keywords and features that official cucumber have are supported
     which also support controlled concurrent execution of multiple Cucumber tests.
     See [this document](./doc/complex%20scenario%20guide.md) for more detail.
 
+## For Developers
+
+Please check the [design document](./doc/design%20doc.md) for more details.
