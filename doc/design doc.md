@@ -28,15 +28,23 @@ Here is also the associated UML flow chart to visualize the high level pseudocod
 
 ![Flow Chart](images/5903%20diagram-Overall%20Flow.drawio.png)
 
-In the pseudocode, the first 3 lines of codes are building the executable JFeature instance, where the last line, the 4th line, is executing the test. Hence the first 3 lines of codes are also called the buildtime logic, and the last line is also called the runtime logic.
+In the pseudocode, the first 3 lines of codes are building the executable `JFeature` instance, where the last line, the 4th line, is executing the test. Hence the first 3 lines of codes are also called the buildtime logic, and the last line is also called the runtime logic.
 
 Therefore, the tool only contains two groups of APIs, which are the [`EasyCucumber.build()`](../src/main/java/scs/comp5903/cucumber/EasyCucumber.java) APIs that implements the buildtime logic and the [`JFeature.executeXXX()`](../src/main/java/scs/comp5903/cucumber/execution/JFeature.java) APIs that implements the runtime logic.
 
 ## Internal Structure
 
-paste the UML class diagram into the document
+// TODO:paste the UML class diagram into the document
 
-Then detail explain each package and the structure
+// Then detail explain each package and the structure
+
+Design of the internal structure is more or less following the pseudocode. 
+
+In the first line `JfeatureDetail <- parseJfeatureFile(feature file) `, there is an entity class `JFeatureDetail` and a class for executing the `parseJfeatureFile()` method. For the later one, the class is designed as `JFeatureFileParser`. These two classes have two different roles. The `JFeatureDetail`, coded as POJO (Plain Old Java Object), is corresponding of recording the parsed information from `JFeatureFileParser.parseJfeatureFile()` method. Whereas `JFeatureFileParser` simply just executes the `parseJfeatureFile()` method. Therefore, these two classes belongs to two different packages.
+
+Similarly, in the second line `JStepDefDetail <- parseStepDefinition(classes) `, the entity class is `JStepDefDetail` and the class executing the `parseStepDefinition()` method is designed as `JStepDefinitionParser`. 
+
+
 
 ## How does this tool parse the feature file?
 
