@@ -107,4 +107,35 @@ and explain how the UML state-machine diagram is implemented, using the idea fro
 
 e.g. to switch to scenario state, sense, think, react, what did we do.
 
-When parsing the feature file. 
+When parsing the feature file.
+
+### The state machine
+
+The implementation is based on the concept of the state machine.
+
+When a feature file is parsed, the parser will go through the file line by line. Each line (except comments and empty
+line) would begin with a keyword. So, a typical workflow would be able to:
+
+1. Read a line, and sense the information out of the line. (e.g. keyword)
+2. Based on the information and the current state, think of what new state to switch to.
+3. Switch to the new state and react based on the new state.
+
+For example, let's say a parser currectly is at the `Feature` state. Then, when a next line began with `Scenario:` is
+read, the following happens:
+
+1. Read the line, the parser found out the line begins with `Scenario`.
+2. Since the parser is currently on the current state `Feature` and the next line begin with `Scenario`, the parser
+   thinks it should switch to the `scenario` state.
+3. The parser switches to the `scenario` state and react based on the new state.
+
+Here is an example of the implementation based on the 3 steps above: (This example is using a robot with sensors, but
+the idea is same here)
+
+![example state-machine](./images/example%20state-machine%20implementation.png)
+
+### The state-machine diagram for parsing feature file
+
+With the idea of the state machine, the state-machine diagram for parsing feature file is designed as following:
+
+![state-machine diagram](./images/5903%20diagram-State%20Machine%20Diagram%20for%20feature%20file%20parsing.drawio.png)
+
