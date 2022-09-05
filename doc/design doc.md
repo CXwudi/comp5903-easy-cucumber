@@ -37,10 +37,6 @@ that implements the runtime logic.
 
 ## Internal Structure
 
-// TODO:paste the UML class diagram into the document
-
-// Then detail explain each package and the structure
-
 Design of the internal structure is more or less following the pseudocode.
 
 ### The `models` and `parser` packages
@@ -103,10 +99,12 @@ Therefore, putting all packages together, the whole UML class diagram looks like
 
 ## How does this tool parse the feature file?
 
-Introduce the general idea from COMP2801, can just use https://github.com/CXwudi/comp5903-project/issues/4
+//TODO: Introduce the general idea from COMP2801, can just use https://github.com/CXwudi/comp5903-project/issues/4
 
 then paste the UML state-machine diagram
 
-and explain how UML state-machine diagram is implemented, using the idea from COMP2801.
+and explain how the UML state-machine diagram is implemented, using the idea from COMP2801.
 
-e.g. to swtich to scenario state, sence, think, react, what did we do.
+e.g. to switch to scenario state, sense, think, react, what did we do.
+
+When parsing the feature file. 
