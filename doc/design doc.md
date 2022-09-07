@@ -99,43 +99,60 @@ Therefore, putting all packages together, the whole UML class diagram looks like
 
 ## How does this tool parse the feature file?
 
-//TODO: Introduce the general idea from COMP2801, can just use https://github.com/CXwudi/comp5903-project/issues/4
+The `JFeatureFileParser` class is responsible for parsing the feature file,
+it uses the `JFeatureFileLineByLineParser` class to perform the parsing logic in a state machine manner,
+which will be explained below.
 
-then paste the UML state-machine diagram
+### The state machine and the "Sense, Think, React" framework
 
-and explain how the UML state-machine diagram is implemented, using the idea from COMP2801.
+The implementation of the parsing logic is based on the concept of the state machine.
 
-e.g. to switch to scenario state, sense, think, react, what did we do.
+When a feature file is parsed, the parser will go through the file line by line.
+Each line (except comments and empty line) is traded as a step in state machine diagram.
+In each step, the parser performs "Sense, Think, React" three actions as following:
 
-When parsing the feature file.
+1. Sense: Read a line, and extract the information out of the line. (e.g. keyword)
+2. Think: Based on the information and the current state, think of what new state to switch to.
+3. React: Switch to the new state and react based on the new state.
 
-### The state machine
+For example, a parser is currently at the `Feature` state.
+When a next line began with `Scenario` is read, the following happens:
 
-The implementation is based on the concept of the state machine.
-
-When a feature file is parsed, the parser will go through the file line by line. Each line (except comments and empty
-line) would begin with a keyword. So, a typical workflow would be able to:
-
-1. Read a line, and sense the information out of the line. (e.g. keyword)
-2. Based on the information and the current state, think of what new state to switch to.
-3. Switch to the new state and react based on the new state.
-
-For example, let's say a parser currectly is at the `Feature` state. Then, when a next line began with `Scenario:` is
-read, the following happens:
-
-1. Read the line, the parser found out the line begins with `Scenario`.
-2. Since the parser is currently on the current state `Feature` and the next line begin with `Scenario`, the parser
-   thinks it should switch to the `scenario` state.
-3. The parser switches to the `scenario` state and react based on the new state.
-
-Here is an example of the implementation based on the 3 steps above: (This example is using a robot with sensors, but
-the idea is same here)
-
-![example state-machine](./images/example%20state-machine%20implementation.png)
+1. Sense: Read the line, the parser found out the line begins with `Scenario`.
+2. Think: Since the parser is currently on the current state `Feature` and the next line begin with `Scenario`, the
+   parser thinks it should switch to the `Scenario` state.
+3. React: The parser switches to the `Scenario` state, read the next line, and records the title of this new scenario.
 
 ### The state-machine diagram for parsing feature file
 
-With the idea of the state machine, the state-machine diagram for parsing feature file is designed as following:
+With the idea of the state machine and the "Sense, Think, React" framework,
+the state-machine diagram for parsing feature file is designed as following:
 
 ![state-machine diagram](./images/5903%20diagram-State%20Machine%20Diagram%20for%20feature%20file%20parsing.drawio.png)
+
+Each direction line in the diagram represents a possible state transmissions.
+For example, there is a line from the `Feature` state to the `Scenario` states.
+So parser can switch from the `Feature` state to the `Scenario` states but not to the `Step` state.
+
+Most of the switching condition can be determined by the current state and the keyword from the next line.
+For example, at the `Feature` state, there are many states that parser can choose to switch to,
+but the parser has to switch to the `Scenario` state if the next line begins with `Scenario`.
+
+However, some switching conditions need more information than just the current state and the keyword from the next line.
+For examples, multi-line description can be put below the `Feature`, the `Scenario`, and the `Scenario Outline` line.
+So after multi-line description, the parser can go to any state that the `Feature`,
+the `Scenario`, and the `Scenario Outline`state can go to.
+Therefore, the parser always kept track of the parent state of the current state that it has visited.
+For example, the parent state of the `Scenario` state is the `Feature` state,
+and the parent state of the `Step` state is the `Scenario` or the `Scenario Outline` state.
+When the parser transfers from the `Scenario` state to the (multi-line) `Description` state, the parent state 
+is recorded as the `Scenario` state, because the parser just visited the `Scenario` state.
+
+### Implementation of the "Sense, Think, React" framework
+
+Just like the name of the "Sense, Think, React" framework, 
+the implementation of the framework is simply divided into 3 functions that are called one by one in a loop.
+Here is an example implementation: (This example is using a robot with sensors, but the idea is the same here)
+
+![example state-machine](./images/example%20state-machine%20implementation.png)
 
