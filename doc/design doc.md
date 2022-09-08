@@ -1,4 +1,4 @@
-# Design Doc of Enhanced "Cucumberized JUnit"
+# Design Document of the Enhanced "Cucumberized JUnit"
 
 For developers who want to hack and modify this tool,
 this is the document that helps you to understand the design and the internal structure of this tool.
@@ -42,26 +42,26 @@ Design of the internal structure is more or less following the pseudocode.
 ### The `models` and `parser` packages
 
 In the first line `JfeatureDetail <- parseJfeatureFile(feature file) `, there is an entity class `JFeatureDetail` and a
-class for executing the `parseJfeatureFile()` method. For the later one, the class is designed as `JFeatureFileParser`.
-These two classes have two different roles. The `JFeatureDetail`, coded as POJO (Plain Old Java Object), is
-corresponding of recording the parsed information from `JFeatureFileParser.parseJfeatureFile()` method.
-Whereas `JFeatureFileParser` simply just executes the `parseJfeatureFile()` method. Therefore, these two classes belongs
-to two different packages.
+control class `JFeatureFileParser` for executing the `parseJfeatureFile()` method.
+The entity class `JFeatureDetail` is coded as POJO (Plain Old Java Object).
+It stores the parsed information from `JFeatureFileParser.parseJfeatureFile()` method.
+Therefore, these two classes belongs to two different packages.
 
 Similarly, in the second line `JStepDefDetail <- parseStepDefinition(classes) `, the entity class is `JStepDefDetail`
-and the class executing the `parseStepDefinition()` method is designed as `JStepDefinitionParser`.
+and the control class is `JStepDefinitionParser` which contains the `parseStepDefinition()` method.
 
-Both `JFeatureDetail` and `JStepDefDetail` are entity classes. So they are placed in the same package called `models`.
-Likewise, both `JStepDefinitionParser` and `JFeatureFileParser` are parsers. So these two classes are placed in the same
-package called `parser`. Hence, the first two line of the pseudocode ends up with a partial UML class diagram as
-following:
+Both `JFeatureDetail` and `JStepDefDetail` are entity classes. 
+So they are placed in the same package called `models`.
+Likewise, both `JStepDefinitionParser` and `JFeatureFileParser` are parsers, which are also control classes. 
+So these two classes are placed in the same package called `parser`. 
+Hence, the first two lines of the pseudocode ends up with a partial UML class diagram as following:
 
 ![models](./images/5903%20diagram-UML%20Class%20Diagram.drawio-models.png)
 ![parser](./images/5903%20diagram-UML%20Class%20Diagram.drawio-parser.png)
 
 In the `models` package, `JFeatureDetail`
 contains a list of `JScenarioDetail` and a list of `JScenarioOutlineDetail`.
-The `JScenarioOutlineDetail` also contains a list of `JScenarioDetail`,
+The `JScenarioOutlineDetail` is designed to contain a list of `JScenarioDetail`,
 because the example table in a scenario outline is
 preprocessed and converted into a list of scenarios for simplicity.
 The `JStepDefDetail` simply contains a list of `JStepDefMethodDetail`,
@@ -70,20 +70,20 @@ which holds information of a step definition method from a step definition class
 In the `parser` package, there is `JStepDefinitionParser` and `JFeatureFileParser`.
 `JFeatureFileParser` contains some dependencies that will be explained in the later sections of the document.
 
-### The `execution` and `builder` package
+### The `builder` package
 
-The third line of the pseudocode, `executableJFeature <- createExecutable(JfeatureDetail, JStepDefDetail)`, is where all
-detail objects are combined to create the executable `JFeature` instance.
+The third line of the pseudocode, `executableJFeature <- createExecutable(JfeatureDetail, JStepDefDetail)`, 
+literally just combine the instance of `JFeatureDetail` and `JStepDefDetail` into an executable `JFeature` instance.
 
-Hence, a class called `JFeatureBuilder` is designed to execute the `createExecutable()` method.
-The class is also placed in the `builder` package.
+Hence, a control class called `JFeatureBuilder` is designed to run the `createExecutable()` method.
+The class is placed in the `builder` package.
 
 ![builder](./images/5903%20diagram-UML%20Class%20Diagram.drawio-builder.png)
 
 // TODO: explain the optional `BaseObjectProvider` class
 
-`createExecutable()` method produces an `executableJFeature`.
-Hence, a new entity class `JFeature` that represents is created.
+### The `execution` package
+
 The structure of the `JFeature` is very similar to the `JFeatureDetail` in the `models` package, except `JFeature` has
 several methods to perform the Cucumber test execution,
 which are the `executeXXX()` methods that implements the runtime logic mentioned in the pseudocode section of this
@@ -99,9 +99,9 @@ Therefore, putting all packages together, the whole UML class diagram looks like
 
 ## How does this tool parse the feature file?
 
-The `JFeatureFileParser` class is responsible for parsing the feature file,
-it uses the `JFeatureFileLineByLineParser` class to perform the parsing logic in a state machine manner,
-which will be explained below.
+One highlight of this project is the innovative way
+of parsing the feature file that utilizes the concept of the state machine.
+The implementation is done in the control class `JFeatureFileLineByLineParser`.
 
 ### The state machine and the "Sense, Think, React" framework
 
@@ -148,11 +148,16 @@ and the parent state of the `Step` state is the `Scenario` or the `Scenario Outl
 When the parser transfers from the `Scenario` state to the (multi-line) `Description` state, the parent state 
 is recorded as the `Scenario` state, because the parser just visited the `Scenario` state.
 
-### Implementation of the "Sense, Think, React" framework
+### How to implement the "Sense, Think, React" framework
 
-Just like the name of the "Sense, Think, React" framework, 
-the implementation of the framework is simply divided into 3 functions that are called one by one in a loop.
-Here is an example implementation: (This example is using a robot with sensors, but the idea is the same here)
+The "Sense, Think, React"
+framework is implemented in a loop where each iteration is one step in the state machine,
+like the following diagram:
 
 ![example state-machine](./images/example%20state-machine%20implementation.png)
 
+In this tool, loop is controlled by `JFeatureFileParser`, 
+and in each iteration, `JFeatureFileParser` calls the `JFeatureFileLineByLineParser.accept(String)` method.
+The `JFeatureFileLineByLineParser.accept(String)` method calls three methods `sense(String)`,
+`think(SenceResult)`, and `react(String)` 
+which each is self-explanatory of what they do in the "Sense, Think, React" framework.
