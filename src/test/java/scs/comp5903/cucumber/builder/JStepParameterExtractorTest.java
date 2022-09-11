@@ -63,6 +63,17 @@ class JStepParameterExtractorTest {
     assertTrue(exp.getMessage().contains("The amount of extracted parameters doesn't match the amount of parameters of the step definition"));
   }
 
+  @Test
+  void testExtractStringWithoutQuotes() throws NoSuchMethodException {
+    var parameters = jStepParameterExtractor.tryExtractParameters(new GivenStep("I have a string and an int 5"),
+            new JStepDefMethodDetail(this.getClass().getDeclaredMethod("aMethod", String.class, int.class), new GivenJStepMatcher("I have a {} and an int {int}")))
+        .orElseThrow();
+    assertEquals(2, parameters.size());
+    assertEquals(String.class, parameters.get(0).getClass());
+    assertEquals("string", parameters.get(0));
+    assertEquals(5, parameters.get(1));
+  }
+
 
   void aMethod(String a, int b) {
     // do nothing

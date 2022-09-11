@@ -27,8 +27,9 @@ Here is also the associated UML flow chart to visualize the high level pseudocod
 ![Flow Chart](images/5903%20diagram-Overall%20Flow.drawio.png)
 
 In the pseudocode, the first 3 lines of codes are building the executable `JFeature` instance, where the last line, the
-4th line, is executing the test. Hence the first 3 lines of codes are also called the buildtime logic, and the last line
-is also called the runtime logic.
+4th line, is executing the test.
+Hence, the first 3 lines of codes are also called the buildtime logic,
+and the last line is also called the runtime logic.
 
 Therefore, the tool only contains two groups of APIs, which are
 the [`EasyCucumber.build()`](../src/main/java/scs/comp5903/cucumber/EasyCucumber.java) APIs that implements the

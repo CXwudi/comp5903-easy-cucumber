@@ -89,9 +89,11 @@ public class JStepParameterExtractor {
    * @param jStepStr                the whole jstep string literal
    * @param j                       the starting index of jStepStr for beginning matching
    * @param endingCharOnMatchingStr the ending character right after the '}' in the matching string <br/>
-   *                                {@code null} means there is no more char after '}' and all string after index j are matched <br/>
-   *                                this parameter is useful if the extraction relays on reading the ending character instead of regex
-   * @param parameterType           the parameter type, e.g. "string" or "int" //TODO: support more types and custom type
+   *                                {@code null} means there is no more char after '}'
+   *                                and all string after index j are matched <br/>
+   *                                this parameter is useful if the extraction relays
+   *                                on reading the ending character instead of regex
+   * @param parameterType           the parameter type, e.g. "string" or "int"
    * @param parameters              this is the input/output parameter list, the extracted parameter will be added to this list
    * @return the next index of jStepStr that should continue checking the matching, after the parameter is extracted
    */
@@ -139,6 +141,16 @@ public class JStepParameterExtractor {
         }
         parameters.add(new BigDecimal(matcher.group()));
         return j + matcher.end();
+      case "": // the special case of {}, which needs the endingCharOnMatchingStr
+        if (endingCharOnMatchingStr == null) { // null == it is all the way to the end of jStepStr
+          parameters.add(jStepStr.substring(j));
+          return jStepStr.length();
+        } else {
+          var endIndex = jStepStr.indexOf(endingCharOnMatchingStr, j);
+          // the ending index should always be found here.
+          parameters.add(jStepStr.substring(j, endIndex));
+          return endIndex;
+        }
       default:
         throw new EasyCucumberException(ErrorCode.EZCU011, "Invalid parameter type: " + parameterType);
     }

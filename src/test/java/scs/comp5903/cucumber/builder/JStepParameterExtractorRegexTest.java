@@ -34,7 +34,9 @@ class JStepParameterExtractorRegexTest {
         Arguments.of("can match 3E2 as double", 10, ' ', "double", 3e2, 13, Double.class),
         Arguments.of("can match -3.7 as big decimal", 10, ' ', "bigdecimal", new BigDecimal("-3.7"), 14, BigDecimal.class),
         Arguments.of("can match very small -3.7e-5 as big decimal", 21, ' ', "bigdecimal", new BigDecimal("-3.7e-5"), 28, BigDecimal.class),
-        Arguments.of("can match very large 3.7e4 as big decimal", 21, ' ', "bigdecimal", new BigDecimal("3.7e4"), 26, BigDecimal.class)
+        Arguments.of("can match very large 3.7e4 as big decimal", 21, ' ', "bigdecimal", new BigDecimal("3.7e4"), 26, BigDecimal.class),
+        Arguments.of("can parse any string in step", 14, ' ', "", "string", 20, String.class),
+        Arguments.of("can parse ending string", 17, null, "", "string", 23, String.class)
     );
   }
 
