@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.JStepDefDetail;
 import scs.comp5903.cucumber.model.JStepDefMethodDetail;
 import scs.comp5903.cucumber.model.JStepKeyword;
-import scs.comp5903.cucumber.model.annotation.JStep;
+import scs.comp5903.cucumber.model.annotation.*;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
 import scs.comp5903.cucumber.model.matcher.*;
@@ -45,19 +45,35 @@ public class JStepDefinitionParser {
     // be aware that the order of methods can vary depends on OS
     var clazzIsPublic = false;
     for (Method method : stepDefinitionClass.getMethods()) { // this gets only public methods
-      var jStepAnnotation = method.getAnnotation(JStep.class);
-      if (Objects.isNull(jStepAnnotation)) {
-        continue;
-      }
-      // once we see at least one method with @JStep annotation, we know this is step definition class and then can perform check of class modifier
-      if (!clazzIsPublic) {
-        clazzIsPublic = Modifier.isPublic(stepDefinitionClass.getModifiers());
-        if (!clazzIsPublic) {
-          throw new EasyCucumberException(ErrorCode.EZCU038, "Step definition class must be public: " + stepDefinitionClass.getName());
+      JStepKeyword keyword = null;
+      String stepMatcherString = null;
+      for (var annotation : method.getAnnotations()) {
+        if (annotation instanceof JStep) {
+          keyword = ((JStep) annotation).keyword();
+          stepMatcherString = ((JStep) annotation).value();
+        } else if (annotation instanceof JGivenStep) {
+          keyword = JStepKeyword.GIVEN;
+          stepMatcherString = ((JGivenStep) annotation).value();
+        } else if (annotation instanceof JWhenStep) {
+          keyword = JStepKeyword.WHEN;
+          stepMatcherString = ((JWhenStep) annotation).value();
+        } else if (annotation instanceof JThenStep) {
+          keyword = JStepKeyword.THEN;
+          stepMatcherString = ((JThenStep) annotation).value();
+        } else if (annotation instanceof JAndStep) {
+          keyword = JStepKeyword.AND;
+          stepMatcherString = ((JAndStep) annotation).value();
+        } else if (annotation instanceof JButStep) {
+          keyword = JStepKeyword.BUT;
+          stepMatcherString = ((JButStep) annotation).value();
         }
       }
-      var keyword = jStepAnnotation.keyword();
-      var stepMatcherString = jStepAnnotation.value();
+      if (Objects.isNull(keyword)) { // means no jstep annotation
+        continue;
+      } else {
+        // once we see at least one method with @JStep annotation, we know this is step definition class and then can perform check of class modifier
+        clazzIsPublic = checkClazzIsPublicOrThrow(stepDefinitionClass, clazzIsPublic);
+      }
       var jStepMatcher = createMethodDetail(keyword, stepMatcherString);
       var methodDetail = new JStepDefMethodDetail(method, jStepMatcher);
       log.debug("Created data class for step definition method: {} {}", keyword, stepMatcherString);
@@ -81,6 +97,14 @@ public class JStepDefinitionParser {
       default:
         // this shouldn't happen
         throw new EasyCucumberException(ErrorCode.EZCU004, "Unknown step definition keyword: " + keyword);
+    }
+  }
+
+  private boolean checkClazzIsPublicOrThrow(Class<?> stepDefinitionClass, boolean isPublic) {
+    if (isPublic || Modifier.isPublic(stepDefinitionClass.getModifiers())) {
+      return true;
+    } else {
+      throw new EasyCucumberException(ErrorCode.EZCU038, "Step definition class must be public: " + stepDefinitionClass.getName());
     }
   }
 }
