@@ -1,4 +1,6 @@
-package scs.comp5903.cucumber.model;
+package scs.comp5903.cucumber.model.annotation;
+
+import scs.comp5903.cucumber.model.JStepKeyword;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

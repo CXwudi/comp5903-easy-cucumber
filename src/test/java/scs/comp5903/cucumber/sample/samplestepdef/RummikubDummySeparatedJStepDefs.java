@@ -1,7 +1,7 @@
 package scs.comp5903.cucumber.sample.samplestepdef;
 
 import org.slf4j.Logger;
-import scs.comp5903.cucumber.model.JStep;
+import scs.comp5903.cucumber.model.annotation.JStep;
 
 import static scs.comp5903.cucumber.model.JStepKeyword.*;
 

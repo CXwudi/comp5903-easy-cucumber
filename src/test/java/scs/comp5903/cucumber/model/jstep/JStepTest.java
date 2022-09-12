@@ -1,6 +1,6 @@
 package scs.comp5903.cucumber.model.jstep;
 
-import scs.comp5903.cucumber.model.JStep;
+import scs.comp5903.cucumber.model.annotation.JStep;
 
 import static scs.comp5903.cucumber.model.JStepKeyword.GIVEN;
 import static scs.comp5903.cucumber.model.JStepKeyword.WHEN;

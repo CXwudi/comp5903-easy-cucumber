@@ -1,8 +1,8 @@
 package scs.comp5903.cucumber.parser;
 
 import org.junit.jupiter.api.Test;
-import scs.comp5903.cucumber.model.JStep;
 import scs.comp5903.cucumber.model.JStepKeyword;
+import scs.comp5903.cucumber.model.annotation.JStep;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.matcher.GivenJStepMatcher;
 import scs.comp5903.cucumber.model.matcher.ThenJStepMatcher;

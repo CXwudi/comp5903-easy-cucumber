@@ -4,7 +4,7 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jooq.lambda.Unchecked;
 import scs.comp5903.cucumber.EasyCucumber;
 import scs.comp5903.cucumber.execution.JFeature;
-import scs.comp5903.cucumber.model.JStep;
+import scs.comp5903.cucumber.model.annotation.JStep;
 import scs.comp5903.cucumber.util.ResourceUtil;
 
 import java.net.URISyntaxException;
