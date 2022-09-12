@@ -1,5 +1,6 @@
 package scs.comp5903.cucumber.model.jstep;
 
+import scs.comp5903.cucumber.model.annotation.JGivenStep;
 import scs.comp5903.cucumber.model.annotation.JStep;
 
 import static scs.comp5903.cucumber.model.JStepKeyword.GIVEN;
@@ -18,6 +19,11 @@ class JStepTest {
 
   @JStep(keyword = WHEN, value = "I do something")
   void aFunction2() {
+    // do nothing, this test simply shows how to use @JStep
+  }
+
+  @JGivenStep("I am a step")
+  void aFunction3() {
     // do nothing, this test simply shows how to use @JStep
   }
 
