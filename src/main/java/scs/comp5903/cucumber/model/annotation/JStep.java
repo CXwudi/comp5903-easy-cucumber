@@ -2,10 +2,7 @@ package scs.comp5903.cucumber.model.annotation;
 
 import scs.comp5903.cucumber.model.JStepKeyword;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * @author Charles Chen 101035684
@@ -13,6 +10,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
+@Inherited
 public @interface JStep {
   JStepKeyword keyword();
 
