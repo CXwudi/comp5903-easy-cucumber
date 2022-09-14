@@ -67,6 +67,9 @@ public class JStepDefinitionParser {
           keyword = JStepKeyword.BUT;
           stepMatcherString = ((JButStep) annotation).value();
         }
+        if (keyword != null) {
+          break;
+        }
       }
       if (Objects.isNull(keyword)) { // means no jstep annotation
         continue;

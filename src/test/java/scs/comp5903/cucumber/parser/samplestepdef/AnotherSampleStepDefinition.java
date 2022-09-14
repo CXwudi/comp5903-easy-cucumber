@@ -9,7 +9,7 @@ import scs.comp5903.cucumber.model.annotation.JStep;
  */
 public class AnotherSampleStepDefinition {
 
-  @JStep(keyword = JStepKeyword.GIVEN, value = "I have {int} oranges")
+  @JStep(keyword = JStepKeyword.GIVEN, value = "I have {int} apples")
   public void givenIHaveOranges(int count) {
   }
 

@@ -8,6 +8,7 @@ import scs.comp5903.cucumber.model.matcher.GivenJStepMatcher;
 import scs.comp5903.cucumber.model.matcher.ThenJStepMatcher;
 import scs.comp5903.cucumber.model.matcher.WhenJStepMatcher;
 import scs.comp5903.cucumber.parser.samplestepdef.AnotherSampleStepDefinition;
+import scs.comp5903.cucumber.parser.samplestepdef.SampleStepDefWithNewAnnotation;
 import scs.comp5903.cucumber.parser.samplestepdef.SampleStepDefinition;
 import scs.comp5903.cucumber.parser.samplestepdef.SampleSubClass;
 
@@ -50,7 +51,18 @@ class JStepDefinitionParserTest {
     assertTrue(steps.getSteps().stream().anyMatch(jStepDefMethodDetail -> jStepDefMethodDetail.getMatcher().getMatchingString().equals("I have {int} oranges")));
     assertTrue(steps.getSteps().stream().anyMatch(jStepDefMethodDetail -> jStepDefMethodDetail.getMatcher().getMatchingString().equals("I eat {int} oranges")));
     assertTrue(steps.getSteps().stream().anyMatch(jStepDefMethodDetail -> jStepDefMethodDetail.getMatcher().getMatchingString().equals("I should have {int} oranges")));
+  }
 
+  @Test
+  void canExtractFromNewAnnotation() {
+    var steps = new JStepDefinitionParser().extractOneClass(SampleStepDefWithNewAnnotation.class);
+    assertEquals(3, steps.size());
+    assertTrue(steps.stream().anyMatch(jStepDefMethodDetail -> jStepDefMethodDetail.getMatcher() instanceof GivenJStepMatcher));
+    assertTrue(steps.stream().anyMatch(jStepDefMethodDetail -> jStepDefMethodDetail.getMatcher() instanceof WhenJStepMatcher));
+    assertTrue(steps.stream().anyMatch(jStepDefMethodDetail -> jStepDefMethodDetail.getMatcher() instanceof ThenJStepMatcher));
+    assertTrue(steps.stream().anyMatch(jStepDefMethodDetail -> jStepDefMethodDetail.getMatcher().getMatchingString().equals("I have {int} apples")));
+    assertTrue(steps.stream().anyMatch(jStepDefMethodDetail -> jStepDefMethodDetail.getMatcher().getMatchingString().equals("I eat {int} apples")));
+    assertTrue(steps.stream().anyMatch(jStepDefMethodDetail -> jStepDefMethodDetail.getMatcher().getMatchingString().equals("I should have {int} apples")));
   }
 
   @Test
