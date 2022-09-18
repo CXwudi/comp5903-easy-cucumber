@@ -249,10 +249,63 @@ class`stepDefinitionInstanceOfSmallFeature`) will need to be refactored to accep
 ### Example
 
 Hence, the CMS scenario described above can be rewritten
-like [the example in `src/test/java/scs/comp5903/cucumber/sample/CmsComplexScenarioMultiScenarioStepDefs.java`](https://github.com/CXwudi/comp5903-easy-cucumber/blob/main/src/test/java/scs/comp5903/cucumber/sample/CmsComplexScenarioMultiScenarioStepDefs.java) (
+as [`src/test/java/scs/comp5903/cucumber/sample/CmsComplexScenarioMultiScenarioStepDefs.java`](https://github.com/CXwudi/comp5903-easy-cucumber/blob/main/src/test/java/scs/comp5903/cucumber/sample/CmsComplexScenarioMultiScenarioStepDefs.java) (
 using the same feature file in way 1)
 
-In that example, you can see that two simple Cucumber test that check the normal logic of student registering course are
+```java
+public class CmsComplexScenarioMultiScenarioStepDefs {
+
+  private final Path jFeatureFile = ResourceUtil.getResourcePath("sample/jfeature/cms/a_student_register_course.jfeature");
+
+  private JFeature student1RegisterCourseScenario;
+  private JFeature student2RegisterCourseScenario;
+
+  private CountDownLatch timingLock;
+
+  private Thread student1RegisterCourseThread;
+  private Thread student2RegisterCourseThread;
+
+  private final MutableBoolean student1Registration = new MutableBoolean(true);
+  private final MutableBoolean student2Registration = new MutableBoolean(true);
+
+  public CmsComplexScenarioMultiScenarioStepDefs() throws URISyntaxException {
+  }
+
+  @JStep(keyword = GIVEN, value = "student one and student two")
+  public void student_one_and_student_two() {
+    timingLock = new CountDownLatch(1);
+    student1RegisterCourseScenario = EasyCucumber.build(jFeatureFile, new CmsSimpleRegisterCourseStepDefs(1, "COMP3004", timingLock));
+    student2RegisterCourseScenario = EasyCucumber.build(jFeatureFile, new CmsSimpleRegisterCourseStepDefs(2, "COMP3004", timingLock));
+  }
+
+  @JStep(keyword = AND, value = "both are at the course registration page")
+  public void both_are_at_the_course_registration_page() {
+    student1RegisterCourseThread = new Thread(Unchecked.runnable(() -> student1RegisterCourseScenario.executeAll()));
+    student2RegisterCourseThread = new Thread(Unchecked.runnable(() -> student2RegisterCourseScenario.executeAll()));
+    student1RegisterCourseThread.setUncaughtExceptionHandler((e, t) -> student1Registration.setFalse());
+    student2RegisterCourseThread.setUncaughtExceptionHandler((e, t) -> student2Registration.setFalse());
+    student1RegisterCourseThread.start();
+    student2RegisterCourseThread.start();
+  }
+
+  @JStep(keyword = WHEN, value = "student one and student two click the register button on COMP3004 at the same time")
+  public void student_one_and_student_two_click_the_register_button_on_comp3004_at_the_same_time() {
+    timingLock.countDown();
+  }
+
+  @JStep(keyword = THEN, value = "only one of them should be registered for the course")
+  public void only_one_of_them_should_be_registered_for_the_course() throws InterruptedException {
+    student1RegisterCourseThread.join();
+    student2RegisterCourseThread.join();
+    var student1Success = student1Registration.booleanValue();
+    var student2Success = student2Registration.booleanValue();
+    assertTrue((student1Success && !student2Success) || (!student1Success && student2Success));
+  }
+}
+```
+
+In that example,
+you can see that two instances of the simple Cucumber test that check the normal logic of student registering course are
 created, with a shared `timingLock`.
 
 ```java
