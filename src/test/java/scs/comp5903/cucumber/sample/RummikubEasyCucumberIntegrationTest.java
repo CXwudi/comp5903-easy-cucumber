@@ -35,9 +35,18 @@ class RummikubEasyCucumberIntegrationTest {
    */
   @ParameterizedTest
   @MethodSource("jFeatureFiles")
-  void canRunRummikubJFeature2(Path jFeatureFile) {
+  void canRunRummikubJFeatureWithRandomStepDefinitionMethodName(Path jFeatureFile) {
     assertDoesNotThrow(() -> {
       var jFeature = EasyCucumber.build(jFeatureFile, RummikubDummyJStepDefsWithRandomMethodName.class);
+      jFeature.executeAll();
+    });
+  }
+
+  @ParameterizedTest
+  @MethodSource("jFeatureFiles")
+  void canRunRummikubJFeatureWithAlternativeAnnotation(Path jFeatureFile) {
+    assertDoesNotThrow(() -> {
+      var jFeature = EasyCucumber.build(jFeatureFile, RummikubDummyJStepDefsWithAlternativeAnnotation.class);
       jFeature.executeAll();
     });
   }
