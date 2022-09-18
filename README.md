@@ -117,23 +117,27 @@ The API is divided into build phase and runtime phase.
     ```java
     // MyStepDefinition.java
     import scs.comp5903.cucumber.model.annotation.JStep;
+    import scs.comp5903.cucumber.model.annotation.JGivenStep;
+    import scs.comp5903.cucumber.model.annotation.JThenStep;
+    import scs.comp5903.cucumber.model.annotation.JWhenStep;
     import scs.comp5903.cucumber.model.JStepKeyword;
     
     public class MyStepDefinition {
     
       private int count;
     
-      @JStep(keyword = JStepKeyword.GIVEN, step = "I have {int} apple")
+      @JGivenStep("I have {int} apple")
+      // @JStep(keyword = JStepKeyword.GIVEN, step = "I have {int} apple") // alternatively, u can use @JStep
       public void iHave(int count) {
         this.count = count;
       }
     
-      @JStep(keyword = JStepKeyword.WHEN, step = "I eat {int} apple")
+      @JWhenStep("I eat {int} apple")
       public void iEat(int eatCount) {
         this.count -= eatCount;
       }
     
-      @JStep(keyword = JStepKeyword.THEN, step = "I should left {int} apple")
+      @JThenStep("I should left {int} apple")
       public void iShouldLeft(int leftCount) {
         assertEquals(leftCount, this.count);
       }
