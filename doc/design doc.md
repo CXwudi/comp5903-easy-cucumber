@@ -42,13 +42,15 @@ Design of the internal structure is more or less following the pseudocode.
 
 ### The `models` and `parser` packages
 
-In the first line `JfeatureDetail <- parseJfeatureFile(feature file) `, there is an entity class `JFeatureDetail` and a
-control class `JFeatureFileParser` for executing the `parseJfeatureFile()` method.
+In the first line of the pseudocode `JfeatureDetail <- parseJfeatureFile(feature file)`,
+there is an entity class `JFeatureDetail` and a control class
+`JFeatureFileParser` for executing the `parseJfeatureFile()` method.
 The entity class `JFeatureDetail` is coded as POJO (Plain Old Java Object).
 It stores the parsed information from `JFeatureFileParser.parseJfeatureFile()` method.
-Therefore, these two classes belongs to two different packages.
+Therefore, these two classes belong to two different packages.
 
-Similarly, in the second line `JStepDefDetail <- parseStepDefinition(classes) `, the entity class is `JStepDefDetail`
+Similarly, in the second line of the pseudocode `JStepDefDetail <- parseStepDefinition(classes) `,
+the entity class is `JStepDefDetail`
 and the control class is `JStepDefinitionParser` which contains the `parseStepDefinition()` method.
 
 Both `JFeatureDetail` and `JStepDefDetail` are entity classes. 
@@ -82,8 +84,10 @@ It contains the `build()` method which is the implementation of the `createExecu
 
 ![builder](./images/5903%20diagram-UML%20Class%20Diagram.drawio-builder.png)
 
-Notice that `build()` method takes an extra parameter other than `JFeatureDetail` and `JStepDefDetail`,
-called`BaseObjectProvider`. 
+### The `BaseObjectProvider` parameter
+
+Notice that `JFeatureBuilder.build()` method takes an extra parameter other than `JFeatureDetail` and `JStepDefDetail`,
+called `BaseObjectProvider`. 
 This is because the executable `JFeature` instance need to remember
 which instance of step definition classes to use to execute step definition methods.
 The `BaseObjectProvider` is designed to provide the answer to this question for the executable `JFeature`.
@@ -99,7 +103,7 @@ Then it will create a new instance of the step definition class, store it in a m
 
 The `EasyCucumber` class contains some APIs that allow users to provide their own `BaseObjectProvider` instance.
 For example,
-the `EasyCucumber.build(Path featureFile, List<Class<?>> stepDefinitionClasses, BaseObjectProvider objectProvider)` method.
+the `EasyCucumber.build(Path featureFile, List<Class<?>> stepDefinitionClasses, BaseObjectProviduuer objectProvider)` method.
 This is intentionally added to allow users to freely use their favourite dependency injection framework
 (Spring, Quarkus, Micronaut, Dagger2, etc.) to provide the instance of their step definition classes.
 Users only need to create an implementation class of `BaseObjectProvider` that
