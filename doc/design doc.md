@@ -77,11 +77,33 @@ The third line of the pseudocode, `executableJFeature <- createExecutable(Jfeatu
 literally just combine the instance of `JFeatureDetail` and `JStepDefDetail` into an executable `JFeature` instance.
 
 Hence, a control class called `JFeatureBuilder` is designed to run the `createExecutable()` method.
-The class is placed in the `builder` package.
+The class is placed in the `builder` package. 
+It contains the `build()` method which is the implementation of the `createExecutable()` method.
 
 ![builder](./images/5903%20diagram-UML%20Class%20Diagram.drawio-builder.png)
 
-// TODO: explain the optional `BaseObjectProvider` class
+Notice that `build()` method takes an extra parameter other than `JFeatureDetail` and `JStepDefDetail`,
+called`BaseObjectProvider`. 
+This is because the executable `JFeature` instance need to remember
+which instance of step definition classes to use to execute step definition methods.
+The `BaseObjectProvider` is designed to provide the answer to this question for the executable `JFeature`.
+It only has one method `get(clazz: Class<T>): T` which receives an input of the step definition class and 
+return the instance of the step definition class.
+
+It is up to the implementation
+of `BaseObjectProvider` to decide how to provide the instance of the step definition class.
+So far, the tool only contains one implementation, which is `EasyCachingObjectProvider`.
+`EasyCachingObjectProvider` always returns the same instance of the same step definition class
+unless such instance is not created before.
+Then it will create a new instance of the step definition class, store it in a map and return it.
+
+The `EasyCucumber` class contains some APIs that allow users to provide their own `BaseObjectProvider` instance.
+For example,
+the `EasyCucumber.build(Path featureFile, List<Class<?>> stepDefinitionClasses, BaseObjectProvider objectProvider)` method.
+This is intentionally added to allow users to freely use their favourite dependency injection framework
+(Spring, Quarkus, Micronaut, Dagger2, etc.) to provide the instance of their step definition classes.
+Users only need to create an implementation class of `BaseObjectProvider` that
+delegate the method `get(clazz: Class<T>): T` to their own choice of dependency injection frameworks.
 
 ### The `execution` package
 
