@@ -225,8 +225,8 @@ Only a subset of keywords and features that official cucumber have are supported
   class using Java Reflection API
   - For example, you can pass in `new MyStepDefinition()` instead of `MyStepDefinition.class` as the parameter
     to `EasyCucumber.build()`
-  - This can be useful for sharing states between different cucumber tests,
-    which also support controlled concurrent execution of multiple Cucumber tests.
+  - This can be useful for **sharing states between different cucumber tests**,
+    which also **support controlled concurrent execution** of multiple Cucumber tests.
     See [this document](./doc/complex%20scenario%20guide.md) for more detail.
 
 ## For Developers
