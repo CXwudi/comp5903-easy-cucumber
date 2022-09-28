@@ -213,7 +213,7 @@ Only a subset of keywords and features that official cucumber have are supported
 
 ### Supported Cucumber Features
 
-- Able to parse `{int}`, `{string}`, `{double}`, `{biginteger}` and `{bigdecimal}` in step definition
+- Able to parse `{}` (parsed as string), `{int}`, `{string}`, `{double}`, `{biginteger}` and `{bigdecimal}` in step definition
   - see <https://github.com/cucumber/cucumber-expressions#parameter-types> for more details
 - Can ignore comments began with `#`
 - Can ignore multi-line description placed under `Feature`, `Scenario` or `Scenario Outline`
