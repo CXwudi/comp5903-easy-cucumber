@@ -86,7 +86,7 @@ public class JFeatureBuilder {
     while (!stepsCopy.isEmpty()) {
       var step = stepsCopy.poll();
       var matchResult = tryMatchStep(step, jStepDefMethodDetails).orElseThrow(
-          () -> new EasyCucumberException(ErrorCode.EZCU013, "Step definition not found for: " + stepsCopy.get(0)
+          () -> new EasyCucumberException(ErrorCode.EZCU013, "Step definition not found for: " + step
               + ". Are you sure you implemented this step definition? Or did you forget to make the method public?")
       );
       results.put(step, matchResult);
