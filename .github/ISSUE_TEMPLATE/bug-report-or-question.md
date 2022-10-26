@@ -1,7 +1,7 @@
 ---
 name: Bug report or question
 about: Report the bug or ask a question
-title: "[Bug/Question]"
+title: "[Bug/Question]<place your title here>"
 labels: ''
 assignees: CXwudi
 
