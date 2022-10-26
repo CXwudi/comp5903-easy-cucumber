@@ -58,6 +58,9 @@ public class JFeature {
     return title;
   }
 
+  /**
+   * get tags placed right above the "Feature" keyword
+   */
   public List<String> getTags() {
     return tags;
   }

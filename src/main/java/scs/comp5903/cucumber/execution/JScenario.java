@@ -29,6 +29,9 @@ public class JScenario implements TagsContainer {
     return title;
   }
 
+  /**
+   * get tags placed right above the "Scenario" keyword
+   */
   @Override
   public List<String> getTags() {
     return tags;

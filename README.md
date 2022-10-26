@@ -86,8 +86,7 @@ The API is divided into build phase and runtime phase.
 ### Build the test
 
 1. First, write the feature file like following. The feature file can be stored in any directory that you can access
-   using
-   Java's `Path`.
+   using Java's `Path`.
 
     ```gherkin
     # you can add comments
@@ -147,20 +146,40 @@ The API is divided into build phase and runtime phase.
 3. Call [`EasyCucumber.build()`](src/main/java/scs/comp5903/cucumber/EasyCucumber.java) method to parse and create a
    cucumber test like following:
     ```java
-    Path myFeatureFile=Paths.get("path/to/my/feature-file.feature");
-    JFeature jFeature=EasyCucumber.build(myFeatureFile,MyStepDefinition.class);
+    Path myFeatureFile = Paths.get("path/to/my/feature-file.feature");
+    JFeature jFeature = EasyCucumber.build(myFeatureFile, MyStepDefinition.class);
     // or you can use any one of following alternative
     // JFeature jFeature = EasyCucumber.build(myFeatureFile, MyStepDefinition1.class, MyStepDefinition2.class);
     // JFeature jFeature = EasyCucumber.build(myFeatureFile, new MyStepDefinition1(), new MyStepDefinition2());
     // JFeature jFeature = EasyCucumber.build(myFeatureFile, "package.to.stepdefinition");
     // JFeature jFeature = EasyCucumber.build(myFeatureFile, List.of(MyStepDefinition1.class, MyStepDefinition2.class), new EasyCachingObjectProvider());
-    // TODO: more explanation of using user-defined BaseObjectProvider 
+    // How BaseObjectProvider works can be found in design document mentioned at the end of this readme file
     ```
-
+   You can call `EasyCucumber.build()` at anywhere that Java code can execute. 
+   For example, in JUnit, you would likely do:
+   ```java
+   @Test
+   void myTest() {
+     Path myFeatureFile = Paths.get("path/to/my/feature-file.feature");
+     JFeature jFeature = EasyCucumber.build(myFeatureFile, MyStepDefinition.class);
+     // do something with jFeature
+   }
+   ```
 ### Run the test
 
 Once you get the executable instance of [`JFeature`](src/main/java/scs/comp5903/cucumber/execution/JFeature.java),
-you can run the cucumber test through calling `JFeature.executeAll()` or `JFeature.executeByTag(BaseFilteringTag tag)`.
+you can run the cucumber test through calling `JFeature.executeAll()` or `JFeature.executeByTag(BaseFilteringTag tag)`,
+like following:
+
+```java
+@Test
+void myTest() {
+  Path myFeatureFile = Paths.get("path/to/my/feature-file.feature");
+  JFeature jFeature = EasyCucumber.build(myFeatureFile, MyStepDefinition.class);
+  jFeature.executeAll();
+  // or JFeature.executeByTag(myTag);
+}
+```
 
 `JFeature.executeAll()` will run all scenarios and scenario outlines in the feature file.
 

@@ -31,11 +31,17 @@ public class JScenarioOutline implements TagsContainer {
     return title;
   }
 
+  /**
+   * get tags placed right above the "Scenario Outline" or "Scenario Template" keyword
+   */
   @Override
   public List<String> getTags() {
     return tags;
   }
 
+  /**
+   * get a list of scenarios where each scenario is parsed from a line in the "Examples" table
+   */
   public List<JScenario> getExtractedScenarios() {
     return extractedScenarios;
   }
