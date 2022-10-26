@@ -1,7 +1,7 @@
 ---
 name: Feature request
 about: Suggest a new feature for this project
-title: "[Feature Request]"
+title: "[Feature Request]<place the issue title here>"
 labels: ''
 assignees: CXwudi
 
