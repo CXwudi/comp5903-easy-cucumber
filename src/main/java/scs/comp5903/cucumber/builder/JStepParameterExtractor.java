@@ -66,7 +66,11 @@ public class JStepParameterExtractor {
           }
           var parameterType = matchingStr.substring(m + 1, endIndex);
           var endingChar = endIndex == matchingStr.length() - 1 ? null : matchingStr.charAt(endIndex + 1);
-          j = extractParameterValueAndGetNextIndex(jStepStr, j, endingChar, parameterType, parameters);
+          var jOpt = extractParameterValueAndGetNextIndex(jStepStr, j, endingChar, parameterType, parameters);
+          if (jOpt.isEmpty()) { // means a miss match is actually happened.
+            return Optional.empty();
+          }
+          j = jOpt.get();
           m = endIndex + 1;
         } else { // not matching
           return Optional.empty();
@@ -97,59 +101,84 @@ public class JStepParameterExtractor {
    * @param parameters              this is the input/output parameter list, the extracted parameter will be added to this list
    * @return the next index of jStepStr that should continue checking the matching, after the parameter is extracted
    */
-  int extractParameterValueAndGetNextIndex(String jStepStr, int j, Character endingCharOnMatchingStr, String parameterType, ArrayList<Object> parameters) {
+  Optional<Integer> extractParameterValueAndGetNextIndex(String jStepStr, int j, Character endingCharOnMatchingStr, String parameterType, ArrayList<Object> parameters) {
+    var jStepSubStr = jStepStr.substring(j);
     switch (parameterType.toLowerCase()) {
       case "int":
-        var matcher = INTEGER_PATTERN.matcher(jStepStr.substring(j));
+        var matcher = INTEGER_PATTERN.matcher(jStepSubStr);
         var found = matcher.find(0);
         if (!found) {
-          throw new EasyCucumberException(ErrorCode.EZCU009, "Unable to find integer parameter as int: " + jStepStr.substring(j));
+          throw new EasyCucumberException(ErrorCode.EZCU009, "Unable to find integer parameter as int: " + jStepSubStr);
         }
-        parameters.add(Integer.parseInt(matcher.group()));
-        return j + matcher.end();
+        var intStr = matcher.group();
+        if (jStepSubStr.indexOf(intStr) != 0) { // failed to match from index 0 == miss match
+          return Optional.empty();
+        } else {
+          parameters.add(Integer.parseInt(intStr));
+          return Optional.of(j + matcher.end());
+        }
       case "double":
-        matcher = FLOATING_POINT_PATTERN.matcher(jStepStr.substring(j));
+        matcher = FLOATING_POINT_PATTERN.matcher(jStepSubStr);
         found = matcher.find(0);
         if (!found) {
-          throw new EasyCucumberException(ErrorCode.EZCU027, "Unable to find floating point parameter as double: " + jStepStr.substring(j));
+          throw new EasyCucumberException(ErrorCode.EZCU027, "Unable to find floating point parameter as double: " + jStepSubStr);
         }
-        parameters.add(Double.parseDouble(matcher.group()));
-        return j + matcher.end();
+        var doubleStr = matcher.group();
+        if (jStepSubStr.indexOf(doubleStr) != 0) { // failed to match from index 0 == miss match
+          return Optional.empty();
+        } else {
+          parameters.add(Double.parseDouble(doubleStr));
+          return Optional.of(j + matcher.end());
+        }
       case "string":
-        matcher = STRING_PATTERN.matcher(jStepStr.substring(j));
+        matcher = STRING_PATTERN.matcher(jStepSubStr);
         found = matcher.find(0);
         if (!found) {
-          throw new EasyCucumberException(ErrorCode.EZCU010, "Unable to find string literals: " + jStepStr.substring(j) +
+          throw new EasyCucumberException(ErrorCode.EZCU010, "Unable to find string literals: " + jStepSubStr +
               ", the string literal should be in double or single quotes.");
         }
         var matchedStr = matcher.group();
-        parameters.add(matchedStr.substring(1, matchedStr.length() - 1));
-        return j + matcher.end();
+        if (jStepSubStr.indexOf(matchedStr) != 0) { // failed to match from index 0 == miss match
+          return Optional.empty();
+        } else {
+          parameters.add(matchedStr.substring(1, matchedStr.length() - 1));
+          return Optional.of(j + matcher.end());
+        }
       case "biginteger":
-        matcher = INTEGER_PATTERN.matcher(jStepStr.substring(j));
+        matcher = INTEGER_PATTERN.matcher(jStepSubStr);
         found = matcher.find(0);
         if (!found) {
-          throw new EasyCucumberException(ErrorCode.EZCU026, "Unable to find integer parameter as big integer: " + jStepStr.substring(j));
+          throw new EasyCucumberException(ErrorCode.EZCU026, "Unable to find integer parameter as big integer: " + jStepSubStr);
         }
-        parameters.add(new BigInteger(matcher.group()));
-        return j + matcher.end();
+        intStr = matcher.group();
+        if (jStepSubStr.indexOf(intStr) != 0) { // failed to match from index 0 == miss match
+          return Optional.empty();
+        } else {
+          parameters.add(new BigInteger(intStr));
+          return Optional.of(j + matcher.end());
+        }
       case "bigdecimal":
-        matcher = FLOATING_POINT_PATTERN.matcher(jStepStr.substring(j));
+        matcher = FLOATING_POINT_PATTERN.matcher(jStepSubStr);
         found = matcher.find(0);
         if (!found) {
-          throw new EasyCucumberException(ErrorCode.EZCU028, "Unable to find floating point parameter as big decimal: " + jStepStr.substring(j));
+          throw new EasyCucumberException(ErrorCode.EZCU028, "Unable to find floating point parameter as big decimal: " + jStepSubStr);
         }
-        parameters.add(new BigDecimal(matcher.group()));
-        return j + matcher.end();
+        doubleStr = matcher.group();
+        if (jStepSubStr.indexOf(doubleStr) != 0) { // failed to match from index 0 == miss match
+          return Optional.empty();
+        } else {
+          parameters.add(new BigDecimal(doubleStr));
+          return Optional.of(j + matcher.end());
+        }
       case "": // the special case of {}, which needs the endingCharOnMatchingStr
         if (endingCharOnMatchingStr == null) { // null == it is all the way to the end of jStepStr
-          parameters.add(jStepStr.substring(j));
-          return jStepStr.length();
+          parameters.add(jStepSubStr);
+          return Optional.of(jStepStr.length());
         } else {
           var endIndex = jStepStr.indexOf(endingCharOnMatchingStr, j);
           // the ending index should always be found here.
           parameters.add(jStepStr.substring(j, endIndex));
-          return endIndex;
+          return Optional.of(endIndex);
         }
       default:
         throw new EasyCucumberException(ErrorCode.EZCU011, "Invalid parameter type: " + parameterType);

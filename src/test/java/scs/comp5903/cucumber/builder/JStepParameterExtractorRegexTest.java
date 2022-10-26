@@ -21,9 +21,11 @@ class JStepParameterExtractorRegexTest {
 
   static Stream<Arguments> argumentsStream() {
     return Stream.of(
-        // String jStepStr, int j, Character endingChar, String parameterType, Object expectedExtractedValue, int expectedNextIndex, Class<?> expectedClass
-        Arguments.of("I have a \"string\" and an int 5", 9, ' ', "string", "string", 17, String.class),
-        Arguments.of("I have a \"string\" and an int 5", 29, null, "int", 5, 30, Integer.class),
+        // input: String jStepStr, int j, Character endingChar, String parameterType,
+        // expected output: Object expectedExtractedValue, int expectedNextIndex, Class<?> expectedClass
+        Arguments.of("I have a \"string1\" and an int 5", 9, ' ', "string", "string1", 18, String.class),
+        Arguments.of("I have a \"string1\" and another string \"string2\"", 9, ' ', "string", "string1", 18, String.class),
+        Arguments.of("I have a \"string1\" and an int 5", 30, null, "int", 5, 31, Integer.class),
         Arguments.of("'multi\"quota\"str' should works", 0, ' ', "string", "multi\"quota\"str", 17, String.class),
         Arguments.of("\"multi'quota'str\" should works", 0, ' ', "string", "multi'quota'str", 17, String.class),
         Arguments.of("match -10-10 should get -10", 6, '-', "int", -10, 9, Integer.class),
@@ -47,7 +49,7 @@ class JStepParameterExtractorRegexTest {
     var nextIndex = jStepParameterExtractor.extractParameterValueAndGetNextIndex(jStepStr, j, endingChar, parameterType, results);
     assertEquals(expectedClass, results.get(0).getClass());
     assertEquals(expectedExtractedValue, results.get(0));
-    assertEquals(expectedNextIndex, nextIndex);
+    assertEquals(expectedNextIndex, nextIndex.orElseThrow());
   }
 
   @Test
