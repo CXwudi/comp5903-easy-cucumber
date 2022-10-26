@@ -1,14 +1,15 @@
 ---
 name: Bug report or question
-about: Create a report to help us improve
+about: Report the bug or ask a question
 title: "[Bug/Question]"
 labels: ''
 assignees: CXwudi
 
 ---
+<!-- Please follow this template, failing to follow the template will result in issue being closed. -->
 
 **Describe the bug or Question**
-A clear and concise description of what the bug is.
+A clear and concise description of what the bug/question is.
 
 **(For bug report only) To Reproduce**
 Steps to reproduce the behavior:
