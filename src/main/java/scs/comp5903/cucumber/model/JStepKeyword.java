@@ -9,5 +9,15 @@ import scs.comp5903.cucumber.model.annotation.JStep;
  * @date 2022-06-16
  */
 public enum JStepKeyword {
-  GIVEN, WHEN, THEN, AND, BUT,
+  GIVEN("Given"), WHEN("When"), THEN("Then"), AND("And"), BUT("But");
+
+  private final String keyword;
+
+  JStepKeyword(String keyword) {
+    this.keyword = keyword;
+  }
+
+  public String getKeyword() {
+    return keyword;
+  }
 }

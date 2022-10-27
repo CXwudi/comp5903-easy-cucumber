@@ -23,9 +23,9 @@ public class LineUtil {
   }
 
   public static boolean isStep(String line) {
-    var firstWord = line.split(" ")[0].toLowerCase();
+    var firstWord = line.split(" ")[0];
     for (JStepKeyword keyword : JStepKeyword.values()) {
-      if (firstWord.equals(keyword.toString().toLowerCase())) {
+      if (firstWord.equals(keyword.getKeyword())) {
         return true;
       }
     }
