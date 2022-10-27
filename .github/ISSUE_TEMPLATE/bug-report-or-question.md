@@ -36,6 +36,7 @@ A clear and concise description of what you expected to happen.
  - OS: [e.g. macOS 13, Windows Pro 11]
  - Java version: [e.g. Java 11, Java 17]
  - Maven/Gradle version: [e.g. maven 3.8.2, gradle 7.5.1]
+ - easy-cucumber version: [e.g. 0.3.3]
  - IDE: [e.g. IntelliJ Ultimate 2022.2.2, Eclipse 2022.6]
 
 **Anything else**
