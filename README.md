@@ -251,7 +251,7 @@ Only a subset of keywords and features that official cucumber have are supported
 - Enforced Keyword Check: The step definition keyword in feature file must match the keyword in the annotation of the step definition method.
   - For examples: to match `Given a step`, you have to use `@JGivenStep("a step")` instead of `@JWhenStep("a step")` or `@JThenStep("a step")`. 
     This means if you have both `Given a step` and `When a step` in your feature file,
-    you have to have two step definition methods with `@JGivenStep("a step")` instead of `@JWhenStep("a step")` respectively.
+    you have to write two step definition methods with `@JGivenStep("a step")` and `@JWhenStep("a step")` respectively.
   - This is explicitly designed to allow better flexibility
 
 ## For Developers
