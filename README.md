@@ -241,8 +241,8 @@ Only a subset of keywords and features that official cucumber have are supported
 
 - Accept step definition class instances: Several `EasyCucumber.build()` methods can take the instance of your step definition class as parameter. 
   In this case,
-  the cucumber will use your instance to run the step, instead of create a fresh new instance of the step definition
-  class using Java Reflection API
+  the cucumber will use your instance to run the step, instead of creating a fresh new instance of the step definition
+  class itself using Java Reflection API
   - For example, you can pass in `new MyStepDefinition()` instead of `MyStepDefinition.class` as the parameter
     to `EasyCucumber.build()`
   - This can be useful for **sharing states between different cucumber tests**,
