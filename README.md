@@ -239,7 +239,8 @@ Only a subset of keywords and features that official cucumber have are supported
 
 ### Extra Features that Official Cucumber does not support
 
-- Several `EasyCucumber.build()` methods can take the instance of your step definition class as parameter. In this case,
+- Accept step definition class instances: Several `EasyCucumber.build()` methods can take the instance of your step definition class as parameter. 
+  In this case,
   the cucumber will use your instance to run the step, instead of create a fresh new instance of the step definition
   class using Java Reflection API
   - For example, you can pass in `new MyStepDefinition()` instead of `MyStepDefinition.class` as the parameter
@@ -247,6 +248,11 @@ Only a subset of keywords and features that official cucumber have are supported
   - This can be useful for **sharing states between different cucumber tests**,
     which also **support controlled concurrent execution** of multiple Cucumber tests.
     See [this document](./doc/complex%20scenario%20guide.md) for more detail.
+- Enforced Keyword Check: The step definition keyword in feature file must match the keyword in the annotation of the step definition method.
+  - For examples: to match `Given a step`, you have to use `@JGivenStep("a step")` instead of `@JWhenStep("a step")` or `@JThenStep("a step")`. 
+    This means if you have both `Given a step` and `When a step` in your feature file,
+    you have to have two step definition methods with `@JGivenStep("a step")` instead of `@JWhenStep("a step")` respectively.
+  - This is explicitly designed to allow better flexibility
 
 ## For Developers
 
