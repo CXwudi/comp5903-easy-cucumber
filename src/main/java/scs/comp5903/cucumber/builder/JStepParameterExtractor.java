@@ -1,5 +1,6 @@
 package scs.comp5903.cucumber.builder;
 
+import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.JStepDefMethodDetail;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
@@ -13,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 /**
  * It tries to match the {@link AbstractJStep} with the {@link JStepDefMethodDetail} <br/>
  * if they match, it will extract out parameters
@@ -21,6 +24,9 @@ import java.util.regex.Pattern;
  * @date 2022-06-29
  */
 public class JStepParameterExtractor {
+
+  private static final Logger log = getLogger(JStepParameterExtractor.class);
+
   /**
    * simply match the digits with an optional minus sign
    */
@@ -108,10 +114,12 @@ public class JStepParameterExtractor {
         var matcher = INTEGER_PATTERN.matcher(jStepSubStr);
         var found = matcher.find(0);
         if (!found) {
-          throw new EasyCucumberException(ErrorCode.EZCU009, "Unable to find integer parameter as int: " + jStepSubStr);
+          log.debug("    Unable to find integer parameter as int from '{}'. Likely the step '{}' is not the matching step", jStepSubStr, jStepStr);
+          return Optional.empty();
         }
         var intStr = matcher.group();
         if (jStepSubStr.indexOf(intStr) != 0) { // failed to match from index 0 == miss match
+          log.debug("    The found int string '{}' is not at the beginning of the string '{}'. Likely the step '{}' is not the matching step", intStr, jStepSubStr, jStepStr);
           return Optional.empty();
         } else {
           parameters.add(Integer.parseInt(intStr));
@@ -121,10 +129,12 @@ public class JStepParameterExtractor {
         matcher = FLOATING_POINT_PATTERN.matcher(jStepSubStr);
         found = matcher.find(0);
         if (!found) {
-          throw new EasyCucumberException(ErrorCode.EZCU027, "Unable to find floating point parameter as double: " + jStepSubStr);
+          log.debug("    Unable to find floating point parameter as double from '{}'. Likely the step '{}' is not the matching step", jStepSubStr, jStepStr);
+          return Optional.empty();
         }
         var doubleStr = matcher.group();
         if (jStepSubStr.indexOf(doubleStr) != 0) { // failed to match from index 0 == miss match
+          log.debug("    The found double string '{}' is not at the beginning of the string '{}'. Likely the step '{}' is not the matching step", doubleStr, jStepSubStr, jStepStr);
           return Optional.empty();
         } else {
           parameters.add(Double.parseDouble(doubleStr));
@@ -134,11 +144,14 @@ public class JStepParameterExtractor {
         matcher = STRING_PATTERN.matcher(jStepSubStr);
         found = matcher.find(0);
         if (!found) {
-          throw new EasyCucumberException(ErrorCode.EZCU010, "Unable to find string literals: " + jStepSubStr +
-              ", the string literal should be in double or single quotes.");
+          log.debug("    Unable to find string parameter from '{}'. Likely the step '{}' is not the matching step, " +
+              "or maybe the user failed to add double/single quotes around the string literal", jStepSubStr, jStepStr);
+          return Optional.empty();
         }
         var matchedStr = matcher.group();
         if (jStepSubStr.indexOf(matchedStr) != 0) { // failed to match from index 0 == miss match
+          log.debug("    The found string literal '{}' is not at the beginning of the string '{}'. Likely the step '{}' is not the matching step, " +
+              "or maybe the user failed to add double/single quotes around the string literal", matchedStr, jStepSubStr, jStepStr);
           return Optional.empty();
         } else {
           parameters.add(matchedStr.substring(1, matchedStr.length() - 1));
@@ -148,10 +161,12 @@ public class JStepParameterExtractor {
         matcher = INTEGER_PATTERN.matcher(jStepSubStr);
         found = matcher.find(0);
         if (!found) {
-          throw new EasyCucumberException(ErrorCode.EZCU026, "Unable to find integer parameter as big integer: " + jStepSubStr);
+          log.debug("    Unable to find integer parameter as big integer from '{}'. Likely the step '{}' is not the matching step", jStepSubStr, jStepStr);
+          return Optional.empty();
         }
         intStr = matcher.group();
         if (jStepSubStr.indexOf(intStr) != 0) { // failed to match from index 0 == miss match
+          log.debug("    The found big integer string '{}' is not at the beginning of the string '{}'. Likely the step '{}' is not the matching step", intStr, jStepSubStr, jStepStr);
           return Optional.empty();
         } else {
           parameters.add(new BigInteger(intStr));
@@ -161,10 +176,12 @@ public class JStepParameterExtractor {
         matcher = FLOATING_POINT_PATTERN.matcher(jStepSubStr);
         found = matcher.find(0);
         if (!found) {
-          throw new EasyCucumberException(ErrorCode.EZCU028, "Unable to find floating point parameter as big decimal: " + jStepSubStr);
+          log.debug("    Unable to find floating point parameter as big decimal from '{}'. Likely the step '{}' is not the matching step", jStepSubStr, jStepStr);
+          return Optional.empty();
         }
         doubleStr = matcher.group();
         if (jStepSubStr.indexOf(doubleStr) != 0) { // failed to match from index 0 == miss match
+          log.debug("    The found big decimal string '{}' is not at the beginning of the string '{}'. Likely the step '{}' is not the matching step", doubleStr, jStepSubStr, jStepStr);
           return Optional.empty();
         } else {
           parameters.add(new BigDecimal(doubleStr));

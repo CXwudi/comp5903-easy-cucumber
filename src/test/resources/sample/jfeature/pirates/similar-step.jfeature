@@ -1,0 +1,12 @@
+Feature: Test feature
+  This is the test feature file that try to cap the bug
+  when a pair of step literal and step definition got the first difference from the parameter
+  then in the old implementation, a hard error would be thrown
+  however, it is likely that there is another step definition that can match the step literal, or another way around
+
+  Scenario: Test scenario
+    Given Test given
+    When Test when
+    And 'Player3' gets 'GOLD' fortune card
+    And 'Player3' gets disqualified
+    Then Test then

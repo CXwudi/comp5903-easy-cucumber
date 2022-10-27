@@ -1,5 +1,5 @@
 Feature: Single Player Scoring
-  This feature tests and validates scoring for a single player
+  This is a test feature file that cap a bug where matching a regex would not be fixed in index 0 when using .fine(0)
 
   @R37
   Scenario: Die with three skulls on first roll

@@ -1,12 +1,16 @@
 package scs.comp5903.cucumber.builder;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
@@ -19,12 +23,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class JStepParameterExtractorRegexTest {
   private final JStepParameterExtractor jStepParameterExtractor = new JStepParameterExtractor();
 
-  static Stream<Arguments> argumentsStream() {
+  static Stream<Arguments> argumentsStreamForSuccessScenarios() {
     return Stream.of(
         // input: String jStepStr, int j, Character endingChar, String parameterType,
         // expected output: Object expectedExtractedValue, int expectedNextIndex, Class<?> expectedClass
         Arguments.of("I have a \"string1\" and an int 5", 9, ' ', "string", "string1", 18, String.class),
         Arguments.of("I have a \"string1\" and another string \"string2\"", 9, ' ', "string", "string1", 18, String.class),
+        Arguments.of("I have a \"string1\" and another string \"string2\"", 38, null, "string", "string2", 47, String.class),
         Arguments.of("I have a \"string1\" and an int 5", 30, null, "int", 5, 31, Integer.class),
         Arguments.of("'multi\"quota\"str' should works", 0, ' ', "string", "multi\"quota\"str", 17, String.class),
         Arguments.of("\"multi'quota'str\" should works", 0, ' ', "string", "multi'quota'str", 17, String.class),
@@ -43,8 +48,8 @@ class JStepParameterExtractorRegexTest {
   }
 
   @ParameterizedTest
-  @MethodSource("argumentsStream")
-  void testExtractWithRegex(String jStepStr, int j, Character endingChar, String parameterType, Object expectedExtractedValue, int expectedNextIndex, Class<?> expectedClass) {
+  @MethodSource("argumentsStreamForSuccessScenarios")
+  void successfulRegexTest(String jStepStr, int j, Character endingChar, String parameterType, Object expectedExtractedValue, int expectedNextIndex, Class<?> expectedClass) {
     var results = new ArrayList<>();
     var nextIndex = jStepParameterExtractor.extractParameterValueAndGetNextIndex(jStepStr, j, endingChar, parameterType, results);
     assertEquals(expectedClass, results.get(0).getClass());
@@ -52,7 +57,34 @@ class JStepParameterExtractorRegexTest {
     assertEquals(expectedNextIndex, nextIndex.orElseThrow());
   }
 
+
+  static Stream<Arguments> argumentsStreamForFailingScenarios() {
+    return Stream.of(
+        // input: String jStepStr, int j, Character endingChar, String parameterType,
+        // expected output: expected partial logging message
+        Arguments.of("I have a \"string\"", 9, ' ', "int", "Unable to find integer parameter as int from '\"string\"'"),
+        Arguments.of("I have a \"string\" and an int 5", 9, ' ', "int", "The found int string '5' is not at the beginning of the string '\"string\" and an int 5'")
+
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("argumentsStreamForFailingScenarios")
+  void failingRegexTest(String jStepStr, int j, Character endingChar, String parameterType, String expectedPartialLoggingMessage) {
+    var stdOut = System.out;
+    var logCapture = new ByteArrayOutputStream();
+    var logCaptureStream = new PrintStream(logCapture, true, StandardCharsets.UTF_8);
+    System.setOut(logCaptureStream);
+    var results = new ArrayList<>();
+    var nextIndex = jStepParameterExtractor.extractParameterValueAndGetNextIndex(jStepStr, j, endingChar, parameterType, results);
+    System.setOut(stdOut);
+    assertTrue(nextIndex.isEmpty());
+    assertTrue(logCapture.toString().contains(expectedPartialLoggingMessage));
+  }
+
+
   @Test
+  @Disabled("already verified as working")
   void pocParsing() {
     assertThrows(NumberFormatException.class, () -> Integer.parseInt("1.1e2"));
     assertDoesNotThrow(() -> Double.parseDouble("1.1e-2"));

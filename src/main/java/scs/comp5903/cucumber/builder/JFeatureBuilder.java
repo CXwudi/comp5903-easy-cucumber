@@ -86,9 +86,19 @@ public class JFeatureBuilder {
     while (!stepsCopy.isEmpty()) {
       var step = stepsCopy.poll();
       var matchResult = tryMatchStep(step, jStepDefMethodDetails).orElseThrow(
-          () -> new EasyCucumberException(ErrorCode.EZCU013, "Step definition not found for: " + step
-              + ". Are you sure you implemented this step definition? Or did you forget to make the method public? "
-              + "Or did you forget to add the correct annotation to method?")
+          () -> {
+            log.error("No matching step definition found for step: {}", step);
+            var expMsg = String.format(
+                "Step definition not found for: %s. There can be many reasons for this failure, please check that:\n" +
+                    "1. Are you sure you implemented this step definition?\n" +
+                    "2. Did you forget to make the method public?\n" +
+                    "3. Did you forget to add the correct annotation to method?\n" +
+                    "4. Does the string in your annotation matches the step?\n" +
+                    "5. Are all parameters declared in the step definition method correct?"
+                , step
+            );
+            return new EasyCucumberException(ErrorCode.EZCU013, expMsg);
+          }
       );
       results.put(step, matchResult);
     }
