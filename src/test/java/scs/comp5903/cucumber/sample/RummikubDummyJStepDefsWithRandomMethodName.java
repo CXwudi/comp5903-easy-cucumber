@@ -3,7 +3,7 @@ package scs.comp5903.cucumber.sample;
 import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.annotation.step.JStep;
 
-import static scs.comp5903.cucumber.model.JStepKeyword.*;
+import static scs.comp5903.cucumber.model.annotation.step.JStepKeyword.*;
 
 /**
  * this class is exactly same as {@link RummikubDummyJStepDefs} but with different method name

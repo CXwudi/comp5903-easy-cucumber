@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.model.jstep;
+package scs.comp5903.cucumber.model.feature.jstep;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,9 +1,9 @@
 package scs.comp5903.cucumber.parser;
 
 import org.slf4j.Logger;
-import scs.comp5903.cucumber.model.JFeatureDetail;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
+import scs.comp5903.cucumber.model.feature.JFeatureDetail;
 
 import java.io.IOException;
 import java.nio.file.Files;

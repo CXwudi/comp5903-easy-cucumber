@@ -1,7 +1,5 @@
 package scs.comp5903.cucumber.model.annotation.step;
 
-import scs.comp5903.cucumber.model.JStepKeyword;
-
 import java.lang.annotation.*;
 
 /**

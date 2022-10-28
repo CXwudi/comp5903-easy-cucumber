@@ -1,7 +1,7 @@
 package scs.comp5903.cucumber.sample;
 
-import scs.comp5903.cucumber.model.JStepKeyword;
 import scs.comp5903.cucumber.model.annotation.step.JStep;
+import scs.comp5903.cucumber.model.annotation.step.JStepKeyword;
 
 public class TagFilteringStepDef {
 

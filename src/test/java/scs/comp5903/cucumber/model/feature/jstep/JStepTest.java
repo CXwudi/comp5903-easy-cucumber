@@ -1,10 +1,10 @@
-package scs.comp5903.cucumber.model.jstep;
+package scs.comp5903.cucumber.model.feature.jstep;
 
 import scs.comp5903.cucumber.model.annotation.step.JGivenStep;
 import scs.comp5903.cucumber.model.annotation.step.JStep;
 
-import static scs.comp5903.cucumber.model.JStepKeyword.GIVEN;
-import static scs.comp5903.cucumber.model.JStepKeyword.WHEN;
+import static scs.comp5903.cucumber.model.annotation.step.JStepKeyword.GIVEN;
+import static scs.comp5903.cucumber.model.annotation.step.JStepKeyword.WHEN;
 
 /**
  * @author Charles Chen 101035684

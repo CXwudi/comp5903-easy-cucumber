@@ -2,10 +2,10 @@ package scs.comp5903.cucumber.parser;
 
 import org.junit.jupiter.api.Test;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
-import scs.comp5903.cucumber.model.jstep.AndStep;
-import scs.comp5903.cucumber.model.jstep.GivenStep;
-import scs.comp5903.cucumber.model.jstep.ThenStep;
-import scs.comp5903.cucumber.model.jstep.WhenStep;
+import scs.comp5903.cucumber.model.feature.jstep.AndStep;
+import scs.comp5903.cucumber.model.feature.jstep.GivenStep;
+import scs.comp5903.cucumber.model.feature.jstep.ThenStep;
+import scs.comp5903.cucumber.model.feature.jstep.WhenStep;
 import scs.comp5903.cucumber.util.ResourceUtil;
 
 import java.net.URISyntaxException;

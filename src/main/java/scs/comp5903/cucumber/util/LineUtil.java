@@ -1,6 +1,6 @@
 package scs.comp5903.cucumber.util;
 
-import scs.comp5903.cucumber.model.JStepKeyword;
+import scs.comp5903.cucumber.model.annotation.step.JStepKeyword;
 
 /**
  * @author Charles Chen 101035684

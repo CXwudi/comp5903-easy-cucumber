@@ -1,13 +1,12 @@
 package scs.comp5903.cucumber.parser;
 
 import org.slf4j.Logger;
-import scs.comp5903.cucumber.model.JStepDefDetail;
-import scs.comp5903.cucumber.model.JStepDefMethodDetail;
-import scs.comp5903.cucumber.model.JStepKeyword;
 import scs.comp5903.cucumber.model.annotation.step.*;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
-import scs.comp5903.cucumber.model.matcher.*;
+import scs.comp5903.cucumber.model.stepdef.JStepDefDetail;
+import scs.comp5903.cucumber.model.stepdef.JStepDefMethodDetail;
+import scs.comp5903.cucumber.model.stepdef.matcher.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

@@ -1,12 +1,12 @@
 package scs.comp5903.cucumber.parser;
 
 import org.junit.jupiter.api.Test;
-import scs.comp5903.cucumber.model.JStepKeyword;
 import scs.comp5903.cucumber.model.annotation.step.JStep;
+import scs.comp5903.cucumber.model.annotation.step.JStepKeyword;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
-import scs.comp5903.cucumber.model.matcher.GivenJStepMatcher;
-import scs.comp5903.cucumber.model.matcher.ThenJStepMatcher;
-import scs.comp5903.cucumber.model.matcher.WhenJStepMatcher;
+import scs.comp5903.cucumber.model.stepdef.matcher.GivenJStepMatcher;
+import scs.comp5903.cucumber.model.stepdef.matcher.ThenJStepMatcher;
+import scs.comp5903.cucumber.model.stepdef.matcher.WhenJStepMatcher;
 import scs.comp5903.cucumber.parser.samplestepdef.AnotherSampleStepDefinition;
 import scs.comp5903.cucumber.parser.samplestepdef.SampleStepDefWithNewAnnotation;
 import scs.comp5903.cucumber.parser.samplestepdef.SampleStepDefinition;

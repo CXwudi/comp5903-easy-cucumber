@@ -5,10 +5,14 @@ import scs.comp5903.cucumber.execution.JFeature;
 import scs.comp5903.cucumber.execution.JScenario;
 import scs.comp5903.cucumber.execution.JScenarioOutline;
 import scs.comp5903.cucumber.execution.MethodExecution;
-import scs.comp5903.cucumber.model.*;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
-import scs.comp5903.cucumber.model.jstep.AbstractJStep;
+import scs.comp5903.cucumber.model.feature.JFeatureDetail;
+import scs.comp5903.cucumber.model.feature.JScenarioDetail;
+import scs.comp5903.cucumber.model.feature.JScenarioOutlineDetail;
+import scs.comp5903.cucumber.model.feature.jstep.AbstractJStep;
+import scs.comp5903.cucumber.model.stepdef.JStepDefDetail;
+import scs.comp5903.cucumber.model.stepdef.JStepDefMethodDetail;
 
 import java.util.*;
 

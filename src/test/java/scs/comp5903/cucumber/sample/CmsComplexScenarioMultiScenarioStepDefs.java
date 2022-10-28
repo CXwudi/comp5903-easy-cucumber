@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.util.concurrent.CountDownLatch;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static scs.comp5903.cucumber.model.JStepKeyword.*;
+import static scs.comp5903.cucumber.model.annotation.step.JStepKeyword.*;
 
 /**
  * @author Charles Chen 101035684

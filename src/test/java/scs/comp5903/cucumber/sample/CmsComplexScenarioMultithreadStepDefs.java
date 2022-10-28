@@ -14,7 +14,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static scs.comp5903.cucumber.model.JStepKeyword.*;
+import static scs.comp5903.cucumber.model.annotation.step.JStepKeyword.*;
 
 /**
  * @author Charles Chen 101035684

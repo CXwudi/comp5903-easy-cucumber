@@ -2,10 +2,10 @@ package scs.comp5903.cucumber.parser;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import scs.comp5903.cucumber.model.JFeatureDetail;
-import scs.comp5903.cucumber.model.jstep.GivenStep;
-import scs.comp5903.cucumber.model.jstep.ThenStep;
-import scs.comp5903.cucumber.model.jstep.WhenStep;
+import scs.comp5903.cucumber.model.feature.JFeatureDetail;
+import scs.comp5903.cucumber.model.feature.jstep.GivenStep;
+import scs.comp5903.cucumber.model.feature.jstep.ThenStep;
+import scs.comp5903.cucumber.model.feature.jstep.WhenStep;
 
 import java.util.ArrayList;
 import java.util.List;

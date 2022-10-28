@@ -1,6 +1,4 @@
-package scs.comp5903.cucumber.model;
-
-import scs.comp5903.cucumber.model.annotation.step.JStep;
+package scs.comp5903.cucumber.model.annotation.step;
 
 /**
  * the keyword used by {@link JStep} and possibly other classes
