@@ -23,7 +23,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.36</version>
+      <version>1.7.36</version> <!-- will keep the 1.x.x version for a while to not break users' deps -->
     </dependency>
 
     <dependency>
@@ -35,7 +35,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.2.11</version>
+      <version>1.4.4</version>
       <scope>test</scope>
     </dependency>
 
@@ -48,13 +48,13 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>4.3.0</version>
+      <version>4.5.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.github.bonigarcia</groupId>
       <artifactId>webdrivermanager</artifactId>
-      <version>5.2.2</version>
+      <version>5.3.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
