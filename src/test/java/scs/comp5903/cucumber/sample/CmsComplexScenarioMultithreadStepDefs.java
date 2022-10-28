@@ -4,7 +4,7 @@ import org.jooq.lambda.Unchecked;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
-import scs.comp5903.cucumber.model.annotation.JStep;
+import scs.comp5903.cucumber.model.annotation.step.JStep;
 import scs.comp5903.cucumber.sample.cmsutil.CmsPageUtils;
 import scs.comp5903.cucumber.sample.cmsutil.Constants;
 import scs.comp5903.cucumber.sample.cmsutil.SeleniumFactory;

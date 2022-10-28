@@ -1,10 +1,10 @@
 package scs.comp5903.cucumber.sample;
 
 import org.slf4j.Logger;
-import scs.comp5903.cucumber.model.annotation.JAndStep;
-import scs.comp5903.cucumber.model.annotation.JGivenStep;
-import scs.comp5903.cucumber.model.annotation.JThenStep;
-import scs.comp5903.cucumber.model.annotation.JWhenStep;
+import scs.comp5903.cucumber.model.annotation.step.JAndStep;
+import scs.comp5903.cucumber.model.annotation.step.JGivenStep;
+import scs.comp5903.cucumber.model.annotation.step.JThenStep;
+import scs.comp5903.cucumber.model.annotation.step.JWhenStep;
 
 public class RummikubDummyJStepDefsWithAlternativeAnnotation {
   private final static Logger log = org.slf4j.LoggerFactory.getLogger(RummikubDummyJStepDefsWithAlternativeAnnotation.class);

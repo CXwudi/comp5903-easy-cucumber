@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.model.annotation;
+package scs.comp5903.cucumber.model.annotation.step;
 
 import java.lang.annotation.*;
 
@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-public @interface JGivenStep {
+public @interface JWhenStep {
   String value();
 }
 

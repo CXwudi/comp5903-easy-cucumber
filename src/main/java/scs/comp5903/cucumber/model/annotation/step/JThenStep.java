@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.model.annotation;
+package scs.comp5903.cucumber.model.annotation.step;
 
 import java.lang.annotation.*;
 

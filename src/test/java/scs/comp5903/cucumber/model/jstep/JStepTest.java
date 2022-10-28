@@ -1,7 +1,7 @@
 package scs.comp5903.cucumber.model.jstep;
 
-import scs.comp5903.cucumber.model.annotation.JGivenStep;
-import scs.comp5903.cucumber.model.annotation.JStep;
+import scs.comp5903.cucumber.model.annotation.step.JGivenStep;
+import scs.comp5903.cucumber.model.annotation.step.JStep;
 
 import static scs.comp5903.cucumber.model.JStepKeyword.GIVEN;
 import static scs.comp5903.cucumber.model.JStepKeyword.WHEN;

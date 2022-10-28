@@ -1,10 +1,10 @@
 package scs.comp5903.cucumber.sample.pirates;
 
 import org.slf4j.Logger;
-import scs.comp5903.cucumber.model.annotation.JAndStep;
-import scs.comp5903.cucumber.model.annotation.JGivenStep;
-import scs.comp5903.cucumber.model.annotation.JThenStep;
-import scs.comp5903.cucumber.model.annotation.JWhenStep;
+import scs.comp5903.cucumber.model.annotation.step.JAndStep;
+import scs.comp5903.cucumber.model.annotation.step.JGivenStep;
+import scs.comp5903.cucumber.model.annotation.step.JThenStep;
+import scs.comp5903.cucumber.model.annotation.step.JWhenStep;
 
 import static org.slf4j.LoggerFactory.getLogger;
 

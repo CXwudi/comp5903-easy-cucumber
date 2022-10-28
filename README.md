@@ -115,11 +115,9 @@ The API is divided into build phase and runtime phase.
    like following:
     ```java
     // MyStepDefinition.java
-    import scs.comp5903.cucumber.model.annotation.JStep;
-    import scs.comp5903.cucumber.model.annotation.JGivenStep;
-    import scs.comp5903.cucumber.model.annotation.JThenStep;
-    import scs.comp5903.cucumber.model.annotation.JWhenStep;
-    import scs.comp5903.cucumber.model.JStepKeyword;
+    import scs.comp5903.cucumber.model.annotation.step.JGivenStep;
+    import scs.comp5903.cucumber.model.annotation.step.JThenStep;
+    import scs.comp5903.cucumber.model.annotation.step.JWhenStep;
     
     public class MyStepDefinition {
     

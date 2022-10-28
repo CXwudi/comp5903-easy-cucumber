@@ -1,8 +1,8 @@
 package scs.comp5903.cucumber.parser.samplestepdef;
 
-import scs.comp5903.cucumber.model.annotation.JGivenStep;
-import scs.comp5903.cucumber.model.annotation.JThenStep;
-import scs.comp5903.cucumber.model.annotation.JWhenStep;
+import scs.comp5903.cucumber.model.annotation.step.JGivenStep;
+import scs.comp5903.cucumber.model.annotation.step.JThenStep;
+import scs.comp5903.cucumber.model.annotation.step.JWhenStep;
 
 /**
  * @author CX无敌

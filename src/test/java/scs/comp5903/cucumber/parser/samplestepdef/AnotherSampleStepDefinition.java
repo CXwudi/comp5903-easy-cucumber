@@ -1,7 +1,7 @@
 package scs.comp5903.cucumber.parser.samplestepdef;
 
 import scs.comp5903.cucumber.model.JStepKeyword;
-import scs.comp5903.cucumber.model.annotation.JStep;
+import scs.comp5903.cucumber.model.annotation.step.JStep;
 
 /**
  * @author CX无敌
