@@ -3,9 +3,9 @@ package scs.comp5903.cucumber.parser;
 import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
-import scs.comp5903.cucumber.model.feature.JScenarioDetail;
-import scs.comp5903.cucumber.model.feature.JScenarioOutlineDetail;
-import scs.comp5903.cucumber.model.feature.jstep.*;
+import scs.comp5903.cucumber.model.jfeature.JScenarioDetail;
+import scs.comp5903.cucumber.model.jfeature.JScenarioOutlineDetail;
+import scs.comp5903.cucumber.model.jfeature.jstep.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

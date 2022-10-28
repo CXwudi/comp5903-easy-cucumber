@@ -1,12 +1,12 @@
-package scs.comp5903.cucumber.model.feature.jstep;
+package scs.comp5903.cucumber.model.jstepdef.matcher;
 
 /**
  * @author Charles Chen 101035684
- * @date 2022-06-16
+ * @date 2022-06-22
  */
-public class ThenStep extends AbstractJStep {
-  public ThenStep(String stepString) {
-    super(stepString);
+public class ThenJStepMatcher extends AbstractJStepMatcher {
+  public ThenJStepMatcher(String matchingString) {
+    super(matchingString);
   }
 
   @Override
@@ -14,10 +14,10 @@ public class ThenStep extends AbstractJStep {
     if (o == this) {
       return true;
     }
-    if (!(o instanceof ThenStep)) {
+    if (!(o instanceof ThenJStepMatcher)) {
       return false;
     }
-    final ThenStep other = (ThenStep) o;
+    final ThenJStepMatcher other = (ThenJStepMatcher) o;
     if (!other.canEqual(this)) {
       return false;
     }
@@ -26,7 +26,7 @@ public class ThenStep extends AbstractJStep {
 
   @Override
   protected boolean canEqual(final Object other) {
-    return other instanceof ThenStep;
+    return other instanceof ThenJStepMatcher;
   }
 
   @Override
@@ -36,6 +36,6 @@ public class ThenStep extends AbstractJStep {
 
   @Override
   public String toString() {
-    return "ThenStep(stepString=" + this.getStepString() + ")";
+    return "ThenJStepMatcher(matchingString=" + this.getMatchingString() + ")";
   }
 }

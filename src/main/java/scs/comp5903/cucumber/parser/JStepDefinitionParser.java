@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.annotation.step.*;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
-import scs.comp5903.cucumber.model.stepdef.JStepDefDetail;
-import scs.comp5903.cucumber.model.stepdef.JStepDefMethodDetail;
-import scs.comp5903.cucumber.model.stepdef.matcher.*;
+import scs.comp5903.cucumber.model.jstepdef.JStepDefDetail;
+import scs.comp5903.cucumber.model.jstepdef.JStepDefMethodDetail;
+import scs.comp5903.cucumber.model.jstepdef.matcher.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

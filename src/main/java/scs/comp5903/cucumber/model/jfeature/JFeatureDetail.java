@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.model.feature;
+package scs.comp5903.cucumber.model.jfeature;
 
 import java.util.ArrayList;
 import java.util.List;

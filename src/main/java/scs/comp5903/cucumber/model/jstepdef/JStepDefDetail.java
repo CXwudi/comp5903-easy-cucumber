@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.model.stepdef;
+package scs.comp5903.cucumber.model.jstepdef;
 
 import java.util.List;
 import java.util.Objects;

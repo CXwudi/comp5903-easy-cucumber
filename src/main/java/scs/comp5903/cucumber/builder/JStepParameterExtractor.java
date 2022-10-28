@@ -3,9 +3,9 @@ package scs.comp5903.cucumber.builder;
 import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
-import scs.comp5903.cucumber.model.feature.jstep.*;
-import scs.comp5903.cucumber.model.stepdef.JStepDefMethodDetail;
-import scs.comp5903.cucumber.model.stepdef.matcher.*;
+import scs.comp5903.cucumber.model.jfeature.jstep.*;
+import scs.comp5903.cucumber.model.jstepdef.JStepDefMethodDetail;
+import scs.comp5903.cucumber.model.jstepdef.matcher.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

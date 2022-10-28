@@ -1,6 +1,6 @@
-package scs.comp5903.cucumber.model.feature;
+package scs.comp5903.cucumber.model.jfeature;
 
-import scs.comp5903.cucumber.model.feature.jstep.AbstractJStep;
+import scs.comp5903.cucumber.model.jfeature.jstep.AbstractJStep;
 
 import java.util.List;
 import java.util.Objects;

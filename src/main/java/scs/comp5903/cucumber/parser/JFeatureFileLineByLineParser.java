@@ -3,7 +3,7 @@ package scs.comp5903.cucumber.parser;
 import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
-import scs.comp5903.cucumber.model.feature.JFeatureDetail;
+import scs.comp5903.cucumber.model.jfeature.JFeatureDetail;
 import scs.comp5903.cucumber.util.JFeatureKeyword;
 import scs.comp5903.cucumber.util.LineUtil;
 import scs.comp5903.cucumber.util.ThrowingConsumer;

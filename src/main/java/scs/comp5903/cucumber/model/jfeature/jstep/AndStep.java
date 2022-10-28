@@ -1,11 +1,11 @@
-package scs.comp5903.cucumber.model.feature.jstep;
+package scs.comp5903.cucumber.model.jfeature.jstep;
 
 /**
  * @author Charles Chen 101035684
  * @date 2022-06-16
  */
-public class WhenStep extends AbstractJStep {
-  public WhenStep(String stepString) {
+public class AndStep extends AbstractJStep {
+  public AndStep(String stepString) {
     super(stepString);
   }
 
@@ -14,10 +14,10 @@ public class WhenStep extends AbstractJStep {
     if (o == this) {
       return true;
     }
-    if (!(o instanceof WhenStep)) {
+    if (!(o instanceof AndStep)) {
       return false;
     }
-    final WhenStep other = (WhenStep) o;
+    final AndStep other = (AndStep) o;
     if (!other.canEqual(this)) {
       return false;
     }
@@ -26,7 +26,7 @@ public class WhenStep extends AbstractJStep {
 
   @Override
   protected boolean canEqual(final Object other) {
-    return other instanceof WhenStep;
+    return other instanceof AndStep;
   }
 
   @Override
@@ -36,6 +36,6 @@ public class WhenStep extends AbstractJStep {
 
   @Override
   public String toString() {
-    return "WhenStep(stepString=" + this.getStepString() + ")";
+    return "AndStep(stepString=" + this.getStepString() + ")";
   }
 }

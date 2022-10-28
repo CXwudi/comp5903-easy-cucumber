@@ -1,12 +1,12 @@
-package scs.comp5903.cucumber.model.stepdef.matcher;
+package scs.comp5903.cucumber.model.jfeature.jstep;
 
 /**
  * @author Charles Chen 101035684
- * @date 2022-06-22
+ * @date 2022-06-16
  */
-public class WhenJStepMatcher extends AbstractJStepMatcher {
-  public WhenJStepMatcher(String matchingString) {
-    super(matchingString);
+public class WhenStep extends AbstractJStep {
+  public WhenStep(String stepString) {
+    super(stepString);
   }
 
   @Override
@@ -14,10 +14,10 @@ public class WhenJStepMatcher extends AbstractJStepMatcher {
     if (o == this) {
       return true;
     }
-    if (!(o instanceof WhenJStepMatcher)) {
+    if (!(o instanceof WhenStep)) {
       return false;
     }
-    final WhenJStepMatcher other = (WhenJStepMatcher) o;
+    final WhenStep other = (WhenStep) o;
     if (!other.canEqual(this)) {
       return false;
     }
@@ -26,7 +26,7 @@ public class WhenJStepMatcher extends AbstractJStepMatcher {
 
   @Override
   protected boolean canEqual(final Object other) {
-    return other instanceof WhenJStepMatcher;
+    return other instanceof WhenStep;
   }
 
   @Override
@@ -36,6 +36,6 @@ public class WhenJStepMatcher extends AbstractJStepMatcher {
 
   @Override
   public String toString() {
-    return "WhenJStepMatcher(matchingString=" + this.getMatchingString() + ")";
+    return "WhenStep(stepString=" + this.getStepString() + ")";
   }
 }

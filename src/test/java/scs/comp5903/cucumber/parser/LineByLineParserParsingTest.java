@@ -3,7 +3,7 @@ package scs.comp5903.cucumber.parser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
-import scs.comp5903.cucumber.model.feature.JFeatureDetail;
+import scs.comp5903.cucumber.model.jfeature.JFeatureDetail;
 
 import java.util.ArrayList;
 import java.util.List;

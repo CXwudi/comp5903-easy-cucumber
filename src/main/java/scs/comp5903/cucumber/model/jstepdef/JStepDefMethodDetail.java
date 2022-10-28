@@ -1,6 +1,6 @@
-package scs.comp5903.cucumber.model.stepdef;
+package scs.comp5903.cucumber.model.jstepdef;
 
-import scs.comp5903.cucumber.model.stepdef.matcher.AbstractJStepMatcher;
+import scs.comp5903.cucumber.model.jstepdef.matcher.AbstractJStepMatcher;
 
 import java.lang.reflect.Method;
 import java.util.Objects;

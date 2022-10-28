@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.model.feature.jstep;
+package scs.comp5903.cucumber.model.jfeature.jstep;
 
 import java.util.Objects;
 

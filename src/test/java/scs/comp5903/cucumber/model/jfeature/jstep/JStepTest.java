@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.model.feature.jstep;
+package scs.comp5903.cucumber.model.jfeature.jstep;
 
 import scs.comp5903.cucumber.model.annotation.step.JGivenStep;
 import scs.comp5903.cucumber.model.annotation.step.JStep;
