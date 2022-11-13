@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.parser;
+package scs.comp5903.cucumber.parser.jfeature;
 
 import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static scs.comp5903.cucumber.parser.JFeatureFileLineByLineParser.ParseState.*;
+import static scs.comp5903.cucumber.parser.jfeature.JFeatureFileLineByLineParser.ParseState.*;
 
 /**
  * This is the functional interface implementation of the logic of parsing feature file inspired by state-machine diagram <br/>

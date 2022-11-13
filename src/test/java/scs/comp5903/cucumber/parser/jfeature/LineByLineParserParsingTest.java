@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.parser;
+package scs.comp5903.cucumber.parser.jfeature;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static scs.comp5903.cucumber.parser.JFeatureFileLineByLineParser.ParseState.*;
+import static scs.comp5903.cucumber.parser.jfeature.JFeatureFileLineByLineParser.ParseState.*;
 
 /**
  * @author Charles Chen 101035684

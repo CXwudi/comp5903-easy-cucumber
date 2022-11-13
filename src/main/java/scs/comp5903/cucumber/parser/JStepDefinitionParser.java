@@ -6,6 +6,7 @@ import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
 import scs.comp5903.cucumber.model.jstepdef.JStepDefDetail;
 import scs.comp5903.cucumber.model.jstepdef.JStepDefMethodDetail;
+import scs.comp5903.cucumber.model.jstepdef.JStepHookDetail;
 import scs.comp5903.cucumber.model.jstepdef.matcher.*;
 
 import java.lang.reflect.Method;
@@ -31,11 +32,12 @@ public class JStepDefinitionParser {
   public JStepDefDetail parse(List<Class<?>> stepDefinitionClasses) {
     log.info("Start parsing step definition classes: {}", stepDefinitionClasses);
     var stepsFromAllClasses = new ArrayList<JStepDefMethodDetail>();
+    var hooksFromAllClasses = new ArrayList<JStepHookDetail>();
     for (var stepDefinitionClass : stepDefinitionClasses) {
       stepsFromAllClasses.addAll(extractOneClass(stepDefinitionClass));
     }
     log.info("Done parsing step definition classes: {}", stepDefinitionClasses);
-    return new JStepDefDetail(stepsFromAllClasses);
+    return new JStepDefDetail(stepsFromAllClasses, List.of());
   }
 
   List<JStepDefMethodDetail> extractOneClass(Class<?> stepDefinitionClass) {

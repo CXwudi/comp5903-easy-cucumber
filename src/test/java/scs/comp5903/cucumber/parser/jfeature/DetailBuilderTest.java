@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.parser;
+package scs.comp5903.cucumber.parser.jfeature;
 
 import org.junit.jupiter.api.Test;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
