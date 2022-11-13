@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.parser;
+package scs.comp5903.cucumber.parser.jstep;
 
 import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.annotation.step.*;
