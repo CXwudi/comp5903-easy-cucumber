@@ -55,7 +55,7 @@ class JStepDefinitionMethodParserTest {
   @Test
   void shouldThrowOnNonPublicStepDefClass() {
     var exp = assertThrows(EasyCucumberException.class, () -> methodParser.extractOneClass(NonPublicStepDefClass.class));
-    assertTrue(exp.getMessage().contains("Step definition class must be public"));
+    assertTrue(exp.getMessage().contains(" is not public"));
   }
 
   @Test
