@@ -10,9 +10,9 @@ import java.util.Objects;
 public class JStepDefHookDetail {
 
   private final Method method;
-  private final HookType type;
+  private final JHookType type;
 
-  public JStepDefHookDetail(Method method, HookType type) {
+  public JStepDefHookDetail(Method method, JHookType type) {
     this.method = method;
     this.type = type;
   }
@@ -21,7 +21,7 @@ public class JStepDefHookDetail {
     return this.method;
   }
 
-  public HookType getType() {
+  public JHookType getType() {
     return this.type;
   }
 
