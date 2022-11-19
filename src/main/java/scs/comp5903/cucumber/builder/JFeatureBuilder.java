@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import scs.comp5903.cucumber.execution.JFeature;
 import scs.comp5903.cucumber.execution.JScenario;
 import scs.comp5903.cucumber.execution.JScenarioOutline;
-import scs.comp5903.cucumber.execution.MethodExecution;
+import scs.comp5903.cucumber.execution.JStepDefMethodExecution;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
 import scs.comp5903.cucumber.model.jfeature.JFeatureDetail;
@@ -138,11 +138,11 @@ public class JFeatureBuilder {
   private ArrayList<JScenario> getjScenarios(List<JScenarioDetail> jScenarioOutlineDetail, HashMap<AbstractJStep, MatchResult> matchingStepToMethodMap, BaseObjectProvider objectProvider) {
     var extractedJScenarios = new ArrayList<JScenario>();
     for (JScenarioDetail jScenarioDetail : jScenarioOutlineDetail) {
-      var executions = new ArrayList<MethodExecution>();
+      var executions = new ArrayList<JStepDefMethodExecution>();
       for (AbstractJStep step : jScenarioDetail.getSteps()) {
         var matchResult = matchingStepToMethodMap.get(step);
         var method = matchResult.jStepDefMethodDetail.getMethod();
-        executions.add(new MethodExecution(method, objectProvider.get(method.getDeclaringClass()), matchResult.parameters));
+        executions.add(new JStepDefMethodExecution(method, objectProvider.get(method.getDeclaringClass()), matchResult.parameters));
       }
       extractedJScenarios.add(new JScenario(jScenarioDetail.getTitle(), jScenarioDetail.getTags(), executions));
     }

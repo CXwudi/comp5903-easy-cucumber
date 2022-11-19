@@ -9,14 +9,14 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
  * @author Charles Chen 101035684
  * @date 2022-06-23
  */
-class MethodExecutionTest {
+class JStepDefMethodExecutionTest {
 
-  private static final Logger log = org.slf4j.LoggerFactory.getLogger(MethodExecutionTest.class);
+  private static final Logger log = org.slf4j.LoggerFactory.getLogger(JStepDefMethodExecutionTest.class);
 
   @Test
   void executeAMethodThrowReflection() throws NoSuchMethodException {
     var method = getClass().getMethod("printAStr", String.class);
-    var methodExecution = new MethodExecution(method, this, "Hello World from MethodExecutionTest");
+    var methodExecution = new JStepDefMethodExecution(method, this, "Hello World from MethodExecutionTest");
     assertDoesNotThrow(methodExecution::execute, "failed with exception");
   }
 

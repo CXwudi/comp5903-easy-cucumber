@@ -8,12 +8,12 @@ import java.util.Objects;
  * @author Charles Chen 101035684
  * @date 2022-06-23
  */
-public class MethodExecution {
+public class JStepDefMethodExecution {
   private final Method method;
   private final Object instance;
   private final Object[] args;
 
-  public MethodExecution(Method method, Object instance, Object... args) {
+  public JStepDefMethodExecution(Method method, Object instance, Object... args) {
     this.method = method;
     this.instance = instance;
     this.args = args;
@@ -28,10 +28,10 @@ public class MethodExecution {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof MethodExecution)) {
+    if (!(o instanceof JStepDefMethodExecution)) {
       return false;
     }
-    MethodExecution that = (MethodExecution) o;
+    JStepDefMethodExecution that = (JStepDefMethodExecution) o;
     return Objects.equals(method, that.method) && Objects.equals(instance, that.instance);
   }
 

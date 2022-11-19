@@ -17,9 +17,9 @@ public class JScenario implements TagsContainer {
   private static final Logger log = getLogger(JScenario.class);
   private final String title;
   private final List<String> tags;
-  private final List<MethodExecution> steps;
+  private final List<JStepDefMethodExecution> steps;
 
-  public JScenario(String title, List<String> tags, List<MethodExecution> steps) {
+  public JScenario(String title, List<String> tags, List<JStepDefMethodExecution> steps) {
     this.title = title;
     this.tags = tags;
     this.steps = steps;
@@ -37,7 +37,7 @@ public class JScenario implements TagsContainer {
     return tags;
   }
 
-  public List<MethodExecution> getSteps() {
+  public List<JStepDefMethodExecution> getSteps() {
     return steps;
   }
 
@@ -46,7 +46,7 @@ public class JScenario implements TagsContainer {
    */
   public void execute() throws InvocationTargetException, IllegalAccessException {
     log.info("Executing scenario: {}", title);
-    for (MethodExecution step : steps) {
+    for (JStepDefMethodExecution step : steps) {
       step.execute();
     }
   }
