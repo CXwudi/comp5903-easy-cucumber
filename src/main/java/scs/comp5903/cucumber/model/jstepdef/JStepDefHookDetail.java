@@ -7,12 +7,12 @@ import java.util.Objects;
  * @author Charles Chen 101035684
  * @date 2022-11-12
  */
-public class JStepHookDetail {
+public class JStepDefHookDetail {
 
   private final Method method;
   private final HookType type;
 
-  public JStepHookDetail(Method method, HookType type) {
+  public JStepDefHookDetail(Method method, HookType type) {
     this.method = method;
     this.type = type;
   }
@@ -28,8 +28,8 @@ public class JStepHookDetail {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof JStepHookDetail)) return false;
-    JStepHookDetail that = (JStepHookDetail) o;
+    if (!(o instanceof JStepDefHookDetail)) return false;
+    JStepDefHookDetail that = (JStepDefHookDetail) o;
     return Objects.equals(method, that.method) && type == that.type;
   }
 

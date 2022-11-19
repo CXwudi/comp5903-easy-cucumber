@@ -23,9 +23,9 @@ public class JStepDefDetail {
   /**
    * Like {@link #steps}, but for hooks. This list also contains any hooks from any classes.
    */
-  private final List<JStepHookDetail> hooks;
+  private final List<JStepDefHookDetail> hooks;
 
-  public JStepDefDetail(List<JStepDefMethodDetail> steps, List<JStepHookDetail> hooks) {
+  public JStepDefDetail(List<JStepDefMethodDetail> steps, List<JStepDefHookDetail> hooks) {
     this.steps = steps;
     this.hooks = hooks;
   }

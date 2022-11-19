@@ -2,8 +2,8 @@ package scs.comp5903.cucumber.parser.jstep;
 
 import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.jstepdef.JStepDefDetail;
+import scs.comp5903.cucumber.model.jstepdef.JStepDefHookDetail;
 import scs.comp5903.cucumber.model.jstepdef.JStepDefMethodDetail;
-import scs.comp5903.cucumber.model.jstepdef.JStepHookDetail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class JStepDefinitionParser {
   public JStepDefDetail parse(List<Class<?>> stepDefinitionClasses) {
     log.info("Start parsing step definition classes: {}", stepDefinitionClasses);
     var stepsFromAllClasses = new ArrayList<JStepDefMethodDetail>();
-    var hooksFromAllClasses = new ArrayList<JStepHookDetail>();
+    var hooksFromAllClasses = new ArrayList<JStepDefHookDetail>();
     for (var stepDefinitionClass : stepDefinitionClasses) {
       stepsFromAllClasses.addAll(methodParser.extractOneClass(stepDefinitionClass));
     }

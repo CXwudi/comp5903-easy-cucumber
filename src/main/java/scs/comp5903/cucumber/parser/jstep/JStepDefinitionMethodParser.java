@@ -6,9 +6,9 @@ import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
 import scs.comp5903.cucumber.model.jstepdef.JStepDefMethodDetail;
 import scs.comp5903.cucumber.model.jstepdef.matcher.*;
+import scs.comp5903.cucumber.util.ReflectionUtil;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -52,15 +52,16 @@ public class JStepDefinitionMethodParser {
           keyword = JStepKeyword.BUT;
           stepMatcherString = ((JButStep) annotation).value();
         }
-        if (keyword != null) {
+        if (Objects.nonNull(keyword)) {
           break;
         }
       }
       if (Objects.isNull(keyword)) { // means no jstep annotation
         continue;
-      } else {
+      } else if (!clazzIsPublic) {
         // once we see at least one method with @JStep annotation, we know this is step definition class and then can perform check of class modifier
-        clazzIsPublic = checkClazzIsPublicOrThrow(stepDefinitionClass, clazzIsPublic);
+        ReflectionUtil.requireClassIsPublic(stepDefinitionClass);
+        clazzIsPublic = true;
       }
       var jStepMatcher = createMethodDetail(keyword, stepMatcherString);
       var methodDetail = new JStepDefMethodDetail(method, jStepMatcher);
@@ -85,14 +86,6 @@ public class JStepDefinitionMethodParser {
       default:
         // this shouldn't happen
         throw new EasyCucumberException(ErrorCode.EZCU004, "Unknown step definition keyword: " + keyword);
-    }
-  }
-
-  private boolean checkClazzIsPublicOrThrow(Class<?> stepDefinitionClass, boolean isPublic) {
-    if (isPublic || Modifier.isPublic(stepDefinitionClass.getModifiers())) {
-      return true;
-    } else {
-      throw new EasyCucumberException(ErrorCode.EZCU038, "Step definition class must be public: " + stepDefinitionClass.getName());
     }
   }
 }
