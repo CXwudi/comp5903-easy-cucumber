@@ -1,20 +1,20 @@
 package scs.comp5903.cucumber.builder;
 
 import org.slf4j.Logger;
-import scs.comp5903.cucumber.execution.JFeature;
-import scs.comp5903.cucumber.execution.JScenario;
-import scs.comp5903.cucumber.execution.JScenarioOutline;
-import scs.comp5903.cucumber.execution.JStepDefMethodExecution;
+import scs.comp5903.cucumber.execution.*;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
 import scs.comp5903.cucumber.model.jfeature.JFeatureDetail;
 import scs.comp5903.cucumber.model.jfeature.JScenarioDetail;
 import scs.comp5903.cucumber.model.jfeature.JScenarioOutlineDetail;
 import scs.comp5903.cucumber.model.jfeature.jstep.AbstractJStep;
+import scs.comp5903.cucumber.model.jstepdef.JHookType;
 import scs.comp5903.cucumber.model.jstepdef.JStepDefDetail;
+import scs.comp5903.cucumber.model.jstepdef.JStepDefHookDetail;
 import scs.comp5903.cucumber.model.jstepdef.JStepDefMethodDetail;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -46,12 +46,39 @@ public class JFeatureBuilder {
     log.info("Start building runnable JFeature using data classes from the feature file and step definitions");
     // extract all AbstractJStep from featureDetail into a linked has set
     var allSteps = extractAllSteps(featureDetail);
-    // for each step def method detail, find the matching step in the linked hash set, and remove it from the linked hash set and add it into the HashMap
+    // for each step def method detail, find the matching step in the linked hash set
+    // and remove it from the linked hash set and add it into the HashMap
     HashMap<AbstractJStep, MatchResult> matchingStepToMethodMap = mapAllStepsToStepDefMethods(allSteps, stepDefDetail.getSteps());
+    // for each step def hook detail, convert it into an executable hook method,
+    // and group them by hook type and sort them by order
+    EnumMap<JHookType, List<JHookMethodExecution>> hookTypeToHookMethodMap = mapAllHookDetailsToMethods(stepDefDetail.getHooks(), objectProvider);
     // with the filled map of matching steps to step def method details, create the method execution for each pair
     // lastly, create the JFeature object using all information we computed before
     log.info("Done building runnable JFeature using data classes from the feature file and step definitions");
+    // TODO: let building takes the hookTypeToHookMethodMap as input
     return buildJFeature(featureDetail, matchingStepToMethodMap, objectProvider);
+  }
+
+  private EnumMap<JHookType, List<JHookMethodExecution>> mapAllHookDetailsToMethods(List<JStepDefHookDetail> hookDetails, BaseObjectProvider objectProvider) {
+    var typeToHookDetailsMap = new EnumMap<JHookType, List<JStepDefHookDetail>>(JHookType.class);
+    // first, create a map of hook type -> list of hook details
+    for (JStepDefHookDetail hookDetail : hookDetails) {
+      typeToHookDetailsMap.computeIfAbsent(hookDetail.getType(), k -> new ArrayList<>()).add(hookDetail);
+    }
+    // then, for each list of hook details, sort them by order increasing
+    for (var entry: typeToHookDetailsMap.entrySet()) {
+      entry.getValue().sort(Comparator.comparingInt(JStepDefHookDetail::getOrder));
+    }
+    // then, map each hook detail to a hook method execution
+    var typeToHookMethodMap = new EnumMap<JHookType, List<JHookMethodExecution>>(JHookType.class);
+    for (var entry: typeToHookDetailsMap.entrySet()) {
+      var executions = entry.getValue().stream().map(detail -> {
+        var method = detail.getMethod();
+        return new JHookMethodExecution(method, objectProvider.get(method.getDeclaringClass()));
+      }).collect(Collectors.toList());
+      typeToHookMethodMap.put(entry.getKey(), executions);
+    }
+    return typeToHookMethodMap;
   }
 
 
@@ -125,17 +152,23 @@ public class JFeatureBuilder {
    * with the filled map of matching steps to step def method details, create the method execution for each pair <br/>
    * lastly, create the JFeature object using all information we computed before
    */
-  private JFeature buildJFeature(JFeatureDetail featureDetail, HashMap<AbstractJStep, MatchResult> matchingStepToMethodMap, BaseObjectProvider objectProvider) {
-    var jScenarios = getjScenarios(featureDetail.getScenarios(), matchingStepToMethodMap, objectProvider);
+  private JFeature buildJFeature(
+      JFeatureDetail featureDetail,
+      HashMap<AbstractJStep, MatchResult> matchingStepToMethodMap,
+      BaseObjectProvider objectProvider) {
+    var jScenarios = buildJScenarios(featureDetail.getScenarios(), matchingStepToMethodMap, objectProvider);
     var jScenarioOutlines = new ArrayList<JScenarioOutline>();
     for (JScenarioOutlineDetail jScenarioOutlineDetail : featureDetail.getScenarioOutlines()) {
-      ArrayList<JScenario> extractedJScenarios = getjScenarios(jScenarioOutlineDetail.getScenarios(), matchingStepToMethodMap, objectProvider);
+      ArrayList<JScenario> extractedJScenarios = buildJScenarios(jScenarioOutlineDetail.getScenarios(), matchingStepToMethodMap, objectProvider);
       jScenarioOutlines.add(new JScenarioOutline(jScenarioOutlineDetail.getTitle(), jScenarioOutlineDetail.getTags(), extractedJScenarios));
     }
     return new JFeature(featureDetail.getTitle(), featureDetail.getTags(), jScenarios, jScenarioOutlines, featureDetail.getScenarioOrders(), featureDetail.getScenarioOutlineOrders());
   }
 
-  private ArrayList<JScenario> getjScenarios(List<JScenarioDetail> jScenarioOutlineDetail, HashMap<AbstractJStep, MatchResult> matchingStepToMethodMap, BaseObjectProvider objectProvider) {
+  private ArrayList<JScenario> buildJScenarios(
+      List<JScenarioDetail> jScenarioOutlineDetail,
+      HashMap<AbstractJStep, MatchResult> matchingStepToMethodMap,
+      BaseObjectProvider objectProvider) {
     var extractedJScenarios = new ArrayList<JScenario>();
     for (JScenarioDetail jScenarioDetail : jScenarioOutlineDetail) {
       var executions = new ArrayList<JStepDefMethodExecution>();
