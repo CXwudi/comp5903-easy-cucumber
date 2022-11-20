@@ -19,9 +19,11 @@ public class JStepDefinitionParser {
   private static final Logger log = getLogger(JStepDefinitionParser.class);
 
   final JStepDefinitionMethodParser methodParser;
+  final JStepDefinitionHookParser hookParser;
 
-  public JStepDefinitionParser(JStepDefinitionMethodParser methodParser) {
+  public JStepDefinitionParser(JStepDefinitionMethodParser methodParser, JStepDefinitionHookParser hookParser) {
     this.methodParser = methodParser;
+    this.hookParser = hookParser;
   }
 
   public JStepDefDetail parse(Class<?>... stepDefinitionClass) {
@@ -34,9 +36,10 @@ public class JStepDefinitionParser {
     var hooksFromAllClasses = new ArrayList<JStepDefHookDetail>();
     for (var stepDefinitionClass : stepDefinitionClasses) {
       stepsFromAllClasses.addAll(methodParser.extractOneClass(stepDefinitionClass));
+      hooksFromAllClasses.addAll(hookParser.extractOneClass(stepDefinitionClass));
     }
     log.info("Done parsing step definition classes: {}", stepDefinitionClasses);
-    return new JStepDefDetail(stepsFromAllClasses, List.of());
+    return new JStepDefDetail(stepsFromAllClasses, hooksFromAllClasses);
   }
 
 }

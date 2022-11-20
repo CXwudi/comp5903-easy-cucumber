@@ -34,6 +34,10 @@ public class JStepDefDetail {
     return steps;
   }
 
+  public List<JStepDefHookDetail> getHooks() {
+    return hooks;
+  }
+
   @Override
   public boolean equals(final Object o) {
     if (o == this) {
