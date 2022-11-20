@@ -11,10 +11,12 @@ public class JStepDefHookDetail {
 
   private final Method method;
   private final JHookType type;
+  private final int order;
 
-  public JStepDefHookDetail(Method method, JHookType type) {
+  public JStepDefHookDetail(Method method, JHookType type, int order) {
     this.method = method;
     this.type = type;
+    this.order = order;
   }
 
   public Method getMethod() {
@@ -23,6 +25,10 @@ public class JStepDefHookDetail {
 
   public JHookType getType() {
     return this.type;
+  }
+
+  public int getOrder() {
+    return order;
   }
 
   @Override
