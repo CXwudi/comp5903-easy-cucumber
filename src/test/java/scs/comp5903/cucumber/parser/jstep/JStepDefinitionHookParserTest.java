@@ -6,6 +6,7 @@ import scs.comp5903.cucumber.model.annotation.hook.BeforeEachJScenario;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.jstepdef.JHookType;
 import scs.comp5903.cucumber.parser.samplestepdef.SampleHookDefinition;
+import scs.comp5903.cucumber.parser.samplestepdef.SampleInvalidHookDefClass;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,6 +46,14 @@ class JStepDefinitionHookParserTest {
   void doesNotThrowIfTheClassIsNotStepDef() {
     assertDoesNotThrow(() -> hookParser.extractOneClass(NonHookDefClass.class));
   }
+
+  @Test
+  void shouldThrowOnInvalidBeforeAfterAllScenariosHook() {
+    var exp = assertThrows(EasyCucumberException.class, () -> hookParser.extractOneClass(SampleInvalidHookDefClass.class));
+    assertTrue(exp.getMessage().contains("should not have any parameters"), "Wrong expecting exp msg: " + exp.getMessage());
+  }
+
+  //TODO: add more tests for invalid hooks
 
 }
 
