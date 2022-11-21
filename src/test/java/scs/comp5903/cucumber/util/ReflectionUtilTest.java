@@ -21,13 +21,13 @@ class ReflectionUtilTest {
 
   @Test
   void canFindClassesInNestedPackages() {
-    var classSet = ReflectionUtil.findAllClassesUsingClassLoader("scs.comp5903.cucumber.sample");
+    var classSet = ReflectionUtil.findAllClassesUsingClassLoader("scs.comp5903.cucumber.integration");
     assertTrue(classSet.contains(SeleniumFactory.class));
   }
 
   @Test
   void canFindClassesInNestedClasses2() {
-    var classSet = ReflectionUtil.findAllClassesUsingClassLoader("scs.comp5903.cucumber.sample.samplestepdef");
+    var classSet = ReflectionUtil.findAllClassesUsingClassLoader("scs.comp5903.cucumber.integration.samplestepdef");
     assertTrue(classSet.contains(RummikubDummySeparatedJStepDefs.RummikubDummySeparatedJStepDefs2.class));
   }
 
