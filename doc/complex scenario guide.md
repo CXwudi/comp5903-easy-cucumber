@@ -249,7 +249,7 @@ class`stepDefinitionInstanceOfSmallFeature`) will need to be refactored to accep
 ### Example
 
 Hence, the CMS scenario described above can be rewritten
-as [`src/test/java/scs/comp5903/cucumber/sample/CmsComplexScenarioMultiScenarioStepDefs.java`](https://github.com/CXwudi/comp5903-easy-cucumber/blob/main/src/test/java/scs/comp5903/cucumber/sample/CmsComplexScenarioMultiScenarioStepDefs.java) (
+as [`src/test/java/scs/comp5903/cucumber/integration/CmsComplexScenarioMultiScenarioStepDefs.java`](https://github.com/CXwudi/comp5903-easy-cucumber/blob/main/src/test/java/scs/comp5903/cucumber/integration/CmsComplexScenarioMultiScenarioStepDefs.java) (
 using the same feature file in way 1)
 
 ```java
@@ -325,7 +325,7 @@ In the example, both `student1RegisterCourseScenario` and `student2RegisterCours
 with a counting number `1`.
 When `timingLock.countDown()` is called during the step `When student one and student two click the register button on COMP3004 at the same time`,
 both student 1 and student 2 will try to press the registration button at the same time,
-see the implementation of [`CmsSimpleRegisterCourseStepDefs`](https://github.com/CXwudi/comp5903-easy-cucumber/blob/main/src/test/java/scs/comp5903/cucumber/sample/CmsSimpleRegisterCourseStepDefs.java)
+see the implementation of [`CmsSimpleRegisterCourseStepDefs`](https://github.com/CXwudi/comp5903-easy-cucumber/blob/main/src/test/java/scs/comp5903/cucumber/integration/CmsSimpleRegisterCourseStepDefs.java)
 for more details.
 
 ### Pro and cons

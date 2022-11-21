@@ -73,7 +73,7 @@ class EasyCucumberApiTest {
   void canBuildWithPackage() {
     assertDoesNotThrow(() -> EasyCucumber.build(
         Path.of("src/test/resources/sample/jfeature/rummikub/initial_points.jfeature"),
-        "scs.comp5903.cucumber.sample.samplestepdef"
+        "scs.comp5903.cucumber.integration.samplestepdef"
     ).executeAll());
   }
 }
