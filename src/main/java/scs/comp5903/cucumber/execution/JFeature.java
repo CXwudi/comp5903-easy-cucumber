@@ -30,10 +30,21 @@ public class JFeature {
    */
   private final HashMap<Integer, JScenario> orderToScenarioMap;
   private final HashMap<Integer, JScenarioOutline> orderToScenarioOutlineMap;
+  private final List<JHookMethodExecution> beforeAllScenariosHooks;
+  private final List<JHookMethodExecution> afterAllScenariosHooks;
 
-  public JFeature(String title, List<String> tags, List<JScenario> scenarios, List<JScenarioOutline> scenarioOutlines, List<Integer> scenarioOrders, List<Integer> scenarioOutlineOrders) {
+  public JFeature(String title,
+                  List<String> tags,
+                  List<JScenario> scenarios,
+                  List<JScenarioOutline> scenarioOutlines,
+                  List<Integer> scenarioOrders,
+                  List<Integer> scenarioOutlineOrders,
+                  List<JHookMethodExecution> beforeAllScenariosHooks,
+                  List<JHookMethodExecution> afterAllScenariosHooks) {
     this.title = title;
     this.tags = tags;
+    this.beforeAllScenariosHooks = beforeAllScenariosHooks;
+    this.afterAllScenariosHooks = afterAllScenariosHooks;
     if (scenarioOrders.size() != scenarios.size()) {
       throw new EasyCucumberException(ErrorCode.EZCU005, "scenarioOrders.size() != scenarios.size()");
     }
@@ -73,6 +84,14 @@ public class JFeature {
     return new ArrayList<>(orderToScenarioOutlineMap.values());
   }
 
+  public List<JHookMethodExecution> getBeforeAllScenariosHooks() {
+    return beforeAllScenariosHooks;
+  }
+
+  public List<JHookMethodExecution> getAfterAllScenariosHooks() {
+    return afterAllScenariosHooks;
+  }
+
   /**
    * execute all scenarios in this feature with respect to the order
    */
@@ -82,6 +101,7 @@ public class JFeature {
 
   public void executeByTag(BaseFilteringTag tag) throws InvocationTargetException, IllegalAccessException {
     log.info("Start executing the feature: '{}' by tag expression: '{}'", title, tag);
+    executeBeforeAllScenariosHooks();
     for (int i = 0; i < orderToScenarioMap.size() + orderToScenarioOutlineMap.size(); i++) {
       if (orderToScenarioMap.containsKey(i)) {
         orderToScenarioMap.get(i).executeConditionallyBy(tag);
@@ -89,7 +109,22 @@ public class JFeature {
         orderToScenarioOutlineMap.get(i).executeConditionallyBy(tag);
       }
     }
+    executeAfterAllScenariosHooks();
     log.info("Done executing the feature: '{}' by tag conditionally", title);
+  }
+
+  private void executeBeforeAllScenariosHooks() throws InvocationTargetException, IllegalAccessException {
+    log.info("Start executing the before all scenarios hooks");
+    for (JHookMethodExecution hook : beforeAllScenariosHooks) {
+      hook.executeOnParametersMatch();
+    }
+  }
+
+  private void executeAfterAllScenariosHooks() throws InvocationTargetException, IllegalAccessException {
+    log.info("Start executing the after all scenarios hooks");
+    for (JHookMethodExecution hook : afterAllScenariosHooks) {
+      hook.executeOnParametersMatch();
+    }
   }
 
   @Override

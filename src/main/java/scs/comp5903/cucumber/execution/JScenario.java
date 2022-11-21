@@ -18,11 +18,26 @@ public class JScenario implements TagsContainer {
   private final String title;
   private final List<String> tags;
   private final List<JStepDefMethodExecution> steps;
+  private final List<JHookMethodExecution> beforeScenarioHooks;
+  private final List<JHookMethodExecution> afterScenarioHooks;
+  private final List<JHookMethodExecution> beforeStepHooks;
+  private final List<JHookMethodExecution> afterStepHooks;
 
-  public JScenario(String title, List<String> tags, List<JStepDefMethodExecution> steps) {
+  public JScenario(
+      String title,
+      List<String> tags,
+      List<JStepDefMethodExecution> steps,
+      List<JHookMethodExecution> beforeScenarioHooks,
+      List<JHookMethodExecution> afterScenarioHooks,
+      List<JHookMethodExecution> beforeStepHooks,
+      List<JHookMethodExecution> afterStepHooks) {
     this.title = title;
     this.tags = tags;
     this.steps = steps;
+    this.beforeScenarioHooks = beforeScenarioHooks;
+    this.afterScenarioHooks = afterScenarioHooks;
+    this.beforeStepHooks = beforeStepHooks;
+    this.afterStepHooks = afterStepHooks;
   }
 
   public String getTitle() {
@@ -41,13 +56,59 @@ public class JScenario implements TagsContainer {
     return steps;
   }
 
+  public List<JHookMethodExecution> getBeforeScenarioHooks() {
+    return beforeScenarioHooks;
+  }
+
+  public List<JHookMethodExecution> getAfterScenarioHooks() {
+    return afterScenarioHooks;
+  }
+
+  public List<JHookMethodExecution> getBeforeStepHooks() {
+    return beforeStepHooks;
+  }
+
+  public List<JHookMethodExecution> getAfterStepHooks() {
+    return afterStepHooks;
+  }
+
   /**
    * actual execute the scenario
    */
   public void execute() throws InvocationTargetException, IllegalAccessException {
     log.info("Executing scenario: {}", title);
+    var status = new JScenarioStatus(this);
+    executeBeforeScenarioHooks(status);
     for (JStepDefMethodExecution step : steps) {
+      executeBeforeStepHooks(status);
       step.execute();
+      status.incrementAndReturnStepIndex();
+      executeAfterStepHooks(status);
+    }
+    executeAfterScenarioHooks(status);
+  }
+
+  private void executeBeforeScenarioHooks(JScenarioStatus status) throws InvocationTargetException, IllegalAccessException {
+    for (JHookMethodExecution hook : beforeScenarioHooks) {
+      hook.executeOnParametersMatch(status);
+    }
+  }
+
+  private void executeBeforeStepHooks(JScenarioStatus status) throws InvocationTargetException, IllegalAccessException {
+    for (JHookMethodExecution hook : beforeStepHooks) {
+      hook.executeOnParametersMatch(status);
+    }
+  }
+
+  private void executeAfterStepHooks(JScenarioStatus status) throws InvocationTargetException, IllegalAccessException {
+    for (JHookMethodExecution hook : afterStepHooks) {
+      hook.executeOnParametersMatch(status);
+    }
+  }
+
+  private void executeAfterScenarioHooks(JScenarioStatus status) throws InvocationTargetException, IllegalAccessException {
+    for (JHookMethodExecution hook : afterScenarioHooks) {
+      hook.executeOnParametersMatch(status);
     }
   }
 

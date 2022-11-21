@@ -56,7 +56,7 @@ public class JFeatureBuilder {
     // lastly, create the JFeature object using all information we computed before
     log.info("Done building runnable JFeature using data classes from the feature file and step definitions");
     // TODO: let building takes the hookTypeToHookMethodMap as input
-    return buildJFeature(featureDetail, matchingStepToMethodMap, objectProvider);
+    return buildJFeature(featureDetail, matchingStepToMethodMap, hookTypeToHookMethodMap, objectProvider);
   }
 
   private EnumMap<JHookType, List<JHookMethodExecution>> mapAllHookDetailsToMethods(List<JStepDefHookDetail> hookDetails, BaseObjectProvider objectProvider) {
@@ -155,19 +155,28 @@ public class JFeatureBuilder {
   private JFeature buildJFeature(
       JFeatureDetail featureDetail,
       HashMap<AbstractJStep, MatchResult> matchingStepToMethodMap,
+      EnumMap<JHookType, List<JHookMethodExecution>> hookTypeToHookMethodMap,
       BaseObjectProvider objectProvider) {
-    var jScenarios = buildJScenarios(featureDetail.getScenarios(), matchingStepToMethodMap, objectProvider);
+    var jScenarios = buildJScenarios(featureDetail.getScenarios(), matchingStepToMethodMap, hookTypeToHookMethodMap, objectProvider);
     var jScenarioOutlines = new ArrayList<JScenarioOutline>();
     for (JScenarioOutlineDetail jScenarioOutlineDetail : featureDetail.getScenarioOutlines()) {
-      ArrayList<JScenario> extractedJScenarios = buildJScenarios(jScenarioOutlineDetail.getScenarios(), matchingStepToMethodMap, objectProvider);
+      ArrayList<JScenario> extractedJScenarios = buildJScenarios(jScenarioOutlineDetail.getScenarios(), matchingStepToMethodMap, hookTypeToHookMethodMap, objectProvider);
       jScenarioOutlines.add(new JScenarioOutline(jScenarioOutlineDetail.getTitle(), jScenarioOutlineDetail.getTags(), extractedJScenarios));
     }
-    return new JFeature(featureDetail.getTitle(), featureDetail.getTags(), jScenarios, jScenarioOutlines, featureDetail.getScenarioOrders(), featureDetail.getScenarioOutlineOrders());
+    return new JFeature(featureDetail.getTitle(),
+        featureDetail.getTags(),
+        jScenarios, jScenarioOutlines,
+        featureDetail.getScenarioOrders(),
+        featureDetail.getScenarioOutlineOrders(),
+        hookTypeToHookMethodMap.computeIfAbsent(JHookType.BEFORE_ALL_JSCENARIOS, k -> Collections.emptyList()),
+        hookTypeToHookMethodMap.computeIfAbsent(JHookType.AFTER_ALL_JSCENARIOS, k -> Collections.emptyList())
+    );
   }
 
   private ArrayList<JScenario> buildJScenarios(
       List<JScenarioDetail> jScenarioOutlineDetail,
       HashMap<AbstractJStep, MatchResult> matchingStepToMethodMap,
+      EnumMap<JHookType, List<JHookMethodExecution>> hookTypeToHookMethodMap,
       BaseObjectProvider objectProvider) {
     var extractedJScenarios = new ArrayList<JScenario>();
     for (JScenarioDetail jScenarioDetail : jScenarioOutlineDetail) {
@@ -177,7 +186,15 @@ public class JFeatureBuilder {
         var method = matchResult.jStepDefMethodDetail.getMethod();
         executions.add(new JStepDefMethodExecution(method, objectProvider.get(method.getDeclaringClass()), matchResult.parameters));
       }
-      extractedJScenarios.add(new JScenario(jScenarioDetail.getTitle(), jScenarioDetail.getTags(), executions));
+      var newJScenario = new JScenario(
+          jScenarioDetail.getTitle(),
+          jScenarioDetail.getTags(),
+          executions,
+          hookTypeToHookMethodMap.computeIfAbsent(JHookType.BEFORE_EACH_JSCENARIO, k -> Collections.emptyList()),
+          hookTypeToHookMethodMap.computeIfAbsent(JHookType.AFTER_EACH_JSCENARIO, k -> Collections.emptyList()),
+          hookTypeToHookMethodMap.computeIfAbsent(JHookType.BEFORE_EACH_JSTEP, k -> Collections.emptyList()),
+          hookTypeToHookMethodMap.computeIfAbsent(JHookType.AFTER_EACH_JSTEP, k -> Collections.emptyList()));
+      extractedJScenarios.add(newJScenario);
     }
     return extractedJScenarios;
   }

@@ -30,6 +30,10 @@ public class JScenarioStatus {
     this.stepIndex = stepIndex;
   }
 
+  public int incrementAndReturnStepIndex() {
+    return ++stepIndex;
+  }
+
   public boolean hasFailure() {
     return failureOpt.isPresent();
   }
