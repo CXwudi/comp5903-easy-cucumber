@@ -49,8 +49,26 @@ class JStepDefinitionHookParserTest {
 
   @Test
   void shouldThrowOnInvalidBeforeAfterAllScenariosHook() {
-    var exp = assertThrows(EasyCucumberException.class, () -> hookParser.extractOneClass(SampleInvalidHookDefClass.class));
-    assertTrue(exp.getMessage().contains("should not have any parameters"), "Wrong expecting exp msg: " + exp.getMessage());
+    var exp = assertThrows(EasyCucumberException.class, () -> hookParser.extractOneClass(SampleInvalidHookDefClass.Sample1.class));
+    assertTrue(exp.getMessage().contains("must not have any parameters"), "Wrong expecting exp msg: " + exp.getMessage());
+  }
+
+  @Test
+  void shouldThrowOnInvalidBeforeAfterAllScenariosHook2() {
+    var exp = assertThrows(EasyCucumberException.class, () -> hookParser.extractOneClass(SampleInvalidHookDefClass.Sample2.class));
+    assertTrue(exp.getMessage().contains("must not have any parameters"), "Wrong expecting exp msg: " + exp.getMessage());
+  }
+
+  @Test
+  void shouldThrowOnInvalidScenarioLevelHook() {
+    var exp = assertThrows(EasyCucumberException.class, () -> hookParser.extractOneClass(SampleInvalidHookDefClass.Sample3.class));
+    assertTrue(exp.getMessage().contains("must not have more than one parameter"), "Wrong expecting exp msg: " + exp.getMessage());
+  }
+
+  @Test
+  void shouldThrowOnInvalidScenarioLevelHook2() {
+    var exp = assertThrows(EasyCucumberException.class, () -> hookParser.extractOneClass(SampleInvalidHookDefClass.Sample4.class));
+    assertTrue(exp.getMessage().contains("can only contain one parameter of type"), "Wrong expecting exp msg: " + exp.getMessage());
   }
 
   //TODO: add more tests for invalid hooks

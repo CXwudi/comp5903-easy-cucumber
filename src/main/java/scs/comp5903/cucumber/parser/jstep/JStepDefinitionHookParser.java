@@ -75,7 +75,7 @@ public class JStepDefinitionHookParser {
       case BEFORE_ALL_JSCENARIOS:
       case AFTER_ALL_JSCENARIOS:
         if (method.getParameterCount() != 0) {
-          throw new EasyCucumberException(ErrorCode.EZCU026, String.format("%s hook method %s#%s should not have any parameters", type, method.getDeclaringClass().getSimpleName(), method.getName()));
+          throw new EasyCucumberException(ErrorCode.EZCU026, String.format("%s hook method %s#%s must not have any parameters", type, method.getDeclaringClass().getSimpleName(), method.getName()));
         }
         break;
       case BEFORE_EACH_JSCENARIO:
@@ -84,7 +84,7 @@ public class JStepDefinitionHookParser {
       case AFTER_EACH_JSTEP:
         int paramCount = method.getParameterCount();
         if (paramCount > 1) {
-          throw new EasyCucumberException(ErrorCode.EZCU027, String.format("%s hook method %s#%s should not have more than one parameter which is just the %s", type, method.getDeclaringClass().getSimpleName(), method.getName(), JScenarioStatus.class.getSimpleName()));
+          throw new EasyCucumberException(ErrorCode.EZCU027, String.format("%s hook method %s#%s must not have more than one parameter which is just the %s", type, method.getDeclaringClass().getSimpleName(), method.getName(), JScenarioStatus.class.getSimpleName()));
         } else if (paramCount == 1) {
           var paramType = method.getParameterTypes()[0];
           if (!paramType.equals(JScenarioStatus.class)) {
