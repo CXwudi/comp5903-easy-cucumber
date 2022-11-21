@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.sample;
+package scs.comp5903.cucumber.integration;
 
 import scs.comp5903.cucumber.model.annotation.step.JStep;
 import scs.comp5903.cucumber.model.annotation.step.JStepKeyword;

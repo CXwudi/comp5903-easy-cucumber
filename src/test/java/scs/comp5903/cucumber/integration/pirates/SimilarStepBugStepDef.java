@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.sample.pirates;
+package scs.comp5903.cucumber.integration.pirates;
 
 import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.annotation.step.JAndStep;
@@ -9,12 +9,11 @@ import scs.comp5903.cucumber.model.annotation.step.JWhenStep;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * Similar to {@link SimilarStepBugStepDef}, but with a mismatch in the {@link #disqualified(String)} method.
  * @author CX无敌
  * @date 2022-10-26
  */
-public class SimilarStepBugStepDefWithFailure {
-  private static final Logger log = getLogger(SimilarStepBugStepDefWithFailure.class);
+public class SimilarStepBugStepDef {
+  private static final Logger log = getLogger(SimilarStepBugStepDef.class);
   @JGivenStep("Test given")
   public void given() {
     log.debug("Test given");
@@ -35,8 +34,8 @@ public class SimilarStepBugStepDefWithFailure {
     log.debug(player + " gets " + card + " fortune card");
   }
 
-  @JAndStep("{string} is disqualified")
+  @JAndStep("{string} gets disqualified")
   public void disqualified(String player) {
-    log.debug(player + " is disqualified");
+    log.debug(player + " gets disqualified");
   }
 }

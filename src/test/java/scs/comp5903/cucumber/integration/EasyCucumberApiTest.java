@@ -1,8 +1,8 @@
-package scs.comp5903.cucumber.sample;
+package scs.comp5903.cucumber.integration;
 
 import org.junit.jupiter.api.Test;
 import scs.comp5903.cucumber.EasyCucumber;
-import scs.comp5903.cucumber.sample.samplestepdef.RummikubDummySeparatedJStepDefs;
+import scs.comp5903.cucumber.integration.samplestepdef.RummikubDummySeparatedJStepDefs;
 
 import java.nio.file.Path;
 import java.util.List;

@@ -1,8 +1,8 @@
 package scs.comp5903.cucumber.util;
 
 import org.junit.jupiter.api.Test;
-import scs.comp5903.cucumber.sample.cmsutil.SeleniumFactory;
-import scs.comp5903.cucumber.sample.samplestepdef.RummikubDummySeparatedJStepDefs;
+import scs.comp5903.cucumber.integration.cmsutil.SeleniumFactory;
+import scs.comp5903.cucumber.integration.samplestepdef.RummikubDummySeparatedJStepDefs;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

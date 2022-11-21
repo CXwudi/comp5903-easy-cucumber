@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.sample.samplestepdef;
+package scs.comp5903.cucumber.integration.samplestepdef;
 
 import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.annotation.step.JStep;
@@ -6,7 +6,7 @@ import scs.comp5903.cucumber.model.annotation.step.JStep;
 import static scs.comp5903.cucumber.model.annotation.step.JStepKeyword.*;
 
 /**
- * just exactly same step definition of {@link scs.comp5903.cucumber.sample.RummikubDummyJStepDefs}, but separated into different class
+ * just exactly same step definition of {@link scs.comp5903.cucumber.integration.RummikubDummyJStepDefs}, but separated into different class
  */
 public class RummikubDummySeparatedJStepDefs {
   private final static Logger log = org.slf4j.LoggerFactory.getLogger(RummikubDummySeparatedJStepDefs.class);

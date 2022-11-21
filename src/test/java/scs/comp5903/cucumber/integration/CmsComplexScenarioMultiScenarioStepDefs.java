@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.sample;
+package scs.comp5903.cucumber.integration;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jooq.lambda.Unchecked;

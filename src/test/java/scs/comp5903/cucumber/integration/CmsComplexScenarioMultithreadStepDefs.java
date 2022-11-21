@@ -1,13 +1,13 @@
-package scs.comp5903.cucumber.sample;
+package scs.comp5903.cucumber.integration;
 
 import org.jooq.lambda.Unchecked;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
+import scs.comp5903.cucumber.integration.cmsutil.CmsPageUtils;
+import scs.comp5903.cucumber.integration.cmsutil.Constants;
+import scs.comp5903.cucumber.integration.cmsutil.SeleniumFactory;
 import scs.comp5903.cucumber.model.annotation.step.JStep;
-import scs.comp5903.cucumber.sample.cmsutil.CmsPageUtils;
-import scs.comp5903.cucumber.sample.cmsutil.Constants;
-import scs.comp5903.cucumber.sample.cmsutil.SeleniumFactory;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;

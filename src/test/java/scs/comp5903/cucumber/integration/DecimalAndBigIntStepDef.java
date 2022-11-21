@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.sample;
+package scs.comp5903.cucumber.integration;
 
 import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.annotation.step.JStep;

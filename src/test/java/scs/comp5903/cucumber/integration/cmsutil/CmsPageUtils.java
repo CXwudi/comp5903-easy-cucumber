@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.sample.cmsutil;
+package scs.comp5903.cucumber.integration.cmsutil;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

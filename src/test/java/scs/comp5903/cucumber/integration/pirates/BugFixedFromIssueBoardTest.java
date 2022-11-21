@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.sample.pirates;
+package scs.comp5903.cucumber.integration.pirates;
 
 import org.junit.jupiter.api.Test;
 import scs.comp5903.cucumber.EasyCucumber;
