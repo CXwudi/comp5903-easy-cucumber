@@ -2,6 +2,7 @@ package scs.comp5903.cucumber.integration;
 
 import org.junit.jupiter.api.Test;
 import scs.comp5903.cucumber.EasyCucumber;
+import scs.comp5903.cucumber.integration.rummikub.RummikubDummyJStepDefs;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
 

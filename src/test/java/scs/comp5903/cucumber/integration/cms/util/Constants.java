@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.integration.cmsutil;
+package scs.comp5903.cucumber.integration.cms.util;
 
 /**
  * @author CX无敌

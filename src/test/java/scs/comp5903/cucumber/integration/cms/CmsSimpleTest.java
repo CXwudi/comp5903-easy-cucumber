@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.integration;
+package scs.comp5903.cucumber.integration.cms;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

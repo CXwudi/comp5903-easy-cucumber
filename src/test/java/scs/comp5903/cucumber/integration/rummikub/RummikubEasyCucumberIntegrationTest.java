@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.integration;
+package scs.comp5903.cucumber.integration.rummikub;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
