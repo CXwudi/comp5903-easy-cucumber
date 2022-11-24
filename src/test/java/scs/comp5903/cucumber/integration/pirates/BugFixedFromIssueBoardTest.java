@@ -25,4 +25,10 @@ class BugFixedFromIssueBoardTest {
     var easyCucumberException = assertThrows(EasyCucumberException.class, () -> EasyCucumber.build(ResourceUtil.getResourcePath("sample/jfeature/pirates/similar-step.jfeature"), SimilarStepBugStepDefWithFailure.class));
     assertTrue(easyCucumberException.getMessage().contains("Step definition not found for: AndStep(stepString='Player3' gets disqualified)"));
   }
+
+  @Test
+  void checkIssue25() {
+    // this test requires to manually rerun it several times, as each time needs a new JVM
+    assertDoesNotThrow(() -> EasyCucumber.build(ResourceUtil.getResourcePath("sample/jfeature/pirates/similar-step-2.jfeature"), SimilarStepBugStepDef2.class));
+  }
 }

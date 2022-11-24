@@ -1,0 +1,7 @@
+Feature: Test feature
+  This capture the issue of wrongly thrown EZCU015 error, where it should not be traded as hard error
+
+  Scenario: Test issue 25
+    And Player rerolls 3 "swords" and gets 2 "skulls"
+    And Player rerolls 2 "swords" and gets 1 "skulls" and 1 "swords"
+    And Player rerolls 3 "swords" and gets 1 "coins" and 1 "monkeys" and 1 "parrots"

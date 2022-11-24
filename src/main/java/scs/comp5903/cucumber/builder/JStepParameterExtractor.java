@@ -85,9 +85,9 @@ public class JStepParameterExtractor {
     }
     // until here all matches, check if the size of extracted parameters is the same as the size of parameters in method
     if (parameters.size() != jStepDefDetail.getMethod().getParameterTypes().length) {
-      throw new EasyCucumberException(ErrorCode.EZCU015,
-          "The amount of extracted parameters doesn't match the amount of parameters of the step definition: " + jStepDefDetail.getMethod().getName() +
-              ", please check your step definition declaration.");
+      log.warn("The amount of extracted parameters doesn't match the amount of parameters of the step definition: {}" +
+          ", possibly this is not the step definition method we are looking for.", jStepDefDetail.getMethod().getName());
+      return Optional.empty();
     }
     // e.g. [ "string", 5 ]
     return Optional.of(parameters);

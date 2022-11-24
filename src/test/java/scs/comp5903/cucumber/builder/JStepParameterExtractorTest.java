@@ -1,12 +1,12 @@
 package scs.comp5903.cucumber.builder;
 
 import org.junit.jupiter.api.Test;
-import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.jfeature.jstep.GivenStep;
 import scs.comp5903.cucumber.model.jstepdef.JStepDefMethodDetail;
 import scs.comp5903.cucumber.model.jstepdef.matcher.GivenJStepMatcher;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Charles Chen 101035684
@@ -54,13 +54,13 @@ class JStepParameterExtractorTest {
   }
 
   @Test
-  void shouldThrowIfMethodHasNotEnoughParameters() {
-    var exp = assertThrows(EasyCucumberException.class, () -> jStepParameterExtractor.tryExtractParameters(new GivenStep("I have an int 5"),
+  void shouldReturnEmptyIfMethodHasNotEnoughParameters() throws NoSuchMethodException {
+    var parameters = jStepParameterExtractor.tryExtractParameters(new GivenStep("I have an int 5"),
         new JStepDefMethodDetail(
             this.getClass().getDeclaredMethod("noParameterMethod"),
             new GivenJStepMatcher("I have an int {int}"))
-    ));
-    assertTrue(exp.getMessage().contains("The amount of extracted parameters doesn't match the amount of parameters of the step definition"));
+    );
+    assertTrue(parameters.isEmpty(), "Should return empty if method has not enough parameters");
   }
 
   @Test
