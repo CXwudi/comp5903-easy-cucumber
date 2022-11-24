@@ -125,7 +125,8 @@ public class JFeatureBuilder {
                     "2. Did you forget to make the method public?\n" +
                     "3. Did you forget to add the correct annotation to method?\n" +
                     "4. Does the string in your annotation matches the step?\n" +
-                    "5. Are all parameters declared in the step definition method correct?"
+                    "5. Are all parameters declared in the step definition method correct?\n" +
+                    "6. Are you sure you are using our own annotation but not the official Cucumber's annotation?"
                 , step
             );
             return new EasyCucumberException(ErrorCode.EZCU013, expMsg);
