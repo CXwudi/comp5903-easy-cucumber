@@ -20,18 +20,29 @@ public class JHookMethodExecution {
   }
 
   /**
-   * @param args optionally apply the parameter to the hook method
+   * @param args the matching parameters of the method. <br/>
+   *             be awared that this method allows extra parameters than the method's parameters. <br/>
+   *             but the order of parameters must matches the order of method's parameters.
+   *
    */
   public void executeOnParametersMatch(Object... args) throws InvocationTargetException, IllegalAccessException {
     var expectedTypes = method.getParameterTypes();
-    if (expectedTypes.length == args.length) {
+    if (expectedTypes.length <= args.length) {
       var isAssignable = true;
+      var extractedCount = 0;
+      var extractedParameters = new Object[expectedTypes.length];
       // check each parameter type with consideration of boxed types
       for (int i = 0; i < expectedTypes.length; i++) {
         isAssignable = isAssignable && MethodType.methodType(expectedTypes[i]).wrap().returnType().equals(args[i].getClass());
+        if (isAssignable) {
+          extractedParameters[i] = args[i];
+          extractedCount++;
+        } else {
+          break;
+        }
       }
-      if (isAssignable) {
-        method.invoke(instance, args);
+      if (isAssignable && extractedCount == expectedTypes.length) {
+        method.invoke(instance, extractedParameters);
       }
     }
   }

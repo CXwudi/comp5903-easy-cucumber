@@ -23,4 +23,11 @@ class JHookMethodExecutionTest {
     var exp = assertThrows(InvocationTargetException.class, () -> execution.executeOnParametersMatch("a", 1));
     assertEquals(RuntimeException.class, exp.getCause().getClass());
   }
+
+  @Test
+  void canExecuteOnProvidingMoreParameters() throws NoSuchMethodException {
+    JHookMethodExecution execution = new JHookMethodExecution(this.getClass().getMethod("testMethod", String.class, int.class), this);
+    var exp = assertThrows(InvocationTargetException.class, () -> execution.executeOnParametersMatch("a", 1, new Object()));
+    assertEquals(RuntimeException.class, exp.getCause().getClass());
+  }
 }
