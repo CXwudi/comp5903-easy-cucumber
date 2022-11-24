@@ -10,6 +10,7 @@ List of improvement, UML diagram for improved Cucumberized JUnit can be found in
 TOC:
 
 <!-- TOC -->
+
 * [Easy Cucumber](#easy-cucumber)
   * [Prerequisite](#prerequisite)
   * [How to import](#how-to-import)
@@ -23,6 +24,7 @@ TOC:
     * [Supported Cucumber Features](#supported-cucumber-features)
     * [Extra Features that Official Cucumber does not support](#extra-features-that-official-cucumber-does-not-support)
   * [For Developers](#for-developers)
+
 <!-- TOC -->
 
 ## Prerequisite
@@ -81,7 +83,22 @@ dependencies {
 
 ## How to use
 
-The API is divided into build phase and runtime phase.
+TL;DR: You just call `EasyCucumber.build()` to build the test, and call `JFeature.executeAll()` to run the test.
+
+You can call these two APIs in anywhere that you can run a piece of Java code. For example, in JUnit:
+
+```java
+@Test
+void myTest(){
+    Path myFeatureFile=Paths.get("path/to/my/feature-file.feature");
+    JFeature jFeature=EasyCucumber.build(myFeatureFile,MyStepDefinition.class);
+    jFeature.executeAll();
+    // or JFeature.executeByTag(myTag);
+    }
+```
+
+As you can see, `EasyCucumber.build()`represents the build phase
+and `JFeature.executeAll()` represents the runtime phase.
 
 ### Build the test
 
@@ -140,15 +157,45 @@ The API is divided into build phase and runtime phase.
       }
     }
     ```
-
+   Optionally, you can create some hooks, either in the same step definition class(es) or in a separated class:
+   ```java
+   // MyHooks.java
+   import scs.comp5903.cucumber.model.annotation.hook.*;
+   public class MyHooks {
+     @BeforeAllJScenarios
+     public void beforeAllScenarios() {
+       // do something before all scenarios
+     }
+     @AfterAllJScenarios
+     public void afterAllScenarios() {
+       // do something after all scenarios
+     }
+     @BeforeEachJScenario
+     public void beforeEachScenario(JScenarioStatus status) { // this parameter is optional
+       // do something before each scenario
+     }
+     @AfterEachJScenario
+     public void afterEachScenario(JScenarioStatus status) { // this parameter is optional
+       // do something after each scenario
+     }
+     @BeforeEachJStep
+     public void beforeEachStep(JStepStatus status) { // this parameter is optional
+       // do something before each step
+     }
+     @AfterEachJStep
+     public void afterEachStep(JStepStatus status) { // this parameter is optional
+       // do something after each step
+     }
+   }
+   ```
 3. Call [`EasyCucumber.build()`](src/main/java/scs/comp5903/cucumber/EasyCucumber.java) method to parse and create a
    cucumber test like following:
     ```java
     Path myFeatureFile = Paths.get("path/to/my/feature-file.feature");
-    JFeature jFeature = EasyCucumber.build(myFeatureFile, MyStepDefinition.class);
+    JFeature jFeature = EasyCucumber.build(myFeatureFile, MyStepDefinition.class, MyHooks.class);
     // or you can use any one of following alternative
-    // JFeature jFeature = EasyCucumber.build(myFeatureFile, MyStepDefinition1.class, MyStepDefinition2.class);
-    // JFeature jFeature = EasyCucumber.build(myFeatureFile, new MyStepDefinition1(), new MyStepDefinition2());
+    // JFeature jFeature = EasyCucumber.build(myFeatureFile, MyStepDefinition1.class, MyStepDefinition2.class, MyHooks.class);
+    // JFeature jFeature = EasyCucumber.build(myFeatureFile, new MyStepDefinition1(), new MyStepDefinition2(), new MyHooks());
     // JFeature jFeature = EasyCucumber.build(myFeatureFile, "package.to.stepdefinition");
     // JFeature jFeature = EasyCucumber.build(myFeatureFile, List.of(MyStepDefinition1.class, MyStepDefinition2.class), new EasyCachingObjectProvider());
     // How BaseObjectProvider works can be found in design document mentioned at the end of this readme file
@@ -163,21 +210,11 @@ The API is divided into build phase and runtime phase.
      // do something with jFeature
    }
    ```
+
 ### Run the test
 
 Once you get the executable instance of [`JFeature`](src/main/java/scs/comp5903/cucumber/execution/JFeature.java),
-you can run the cucumber test through calling `JFeature.executeAll()` or `JFeature.executeByTag(BaseFilteringTag tag)`,
-like following:
-
-```java
-@Test
-void myTest() {
-  Path myFeatureFile = Paths.get("path/to/my/feature-file.feature");
-  JFeature jFeature = EasyCucumber.build(myFeatureFile, MyStepDefinition.class);
-  jFeature.executeAll();
-  // or JFeature.executeByTag(myTag);
-}
-```
+you can run the cucumber test through calling `JFeature.executeAll()` or `JFeature.executeByTag(BaseFilteringTag tag)`.
 
 `JFeature.executeAll()` will run all scenarios and scenario outlines in the feature file.
 
@@ -230,24 +267,28 @@ Only a subset of keywords and features that official cucumber have are supported
 
 ### Supported Cucumber Features
 
-- Able to parse `{}` (parsed as string), `{int}`, `{string}`, `{double}`, `{biginteger}` and `{bigdecimal}` in step definition
+- Able to parse `{}` (parsed as string), `{int}`, `{string}`, `{double}`, `{biginteger}` and `{bigdecimal}` in step
+  definition
   - see <https://github.com/cucumber/cucumber-expressions#parameter-types> for more details
 - Can ignore comments began with `#`
 - Can ignore multi-line description placed under `Feature`, `Scenario` or `Scenario Outline`
 
 ### Extra Features that Official Cucumber does not support
 
-- Accept step definition class instances: Several `EasyCucumber.build()` methods can take the instance of your step definition class as parameter. 
-  In this case,
-  the cucumber will use your instance to run the step, instead of creating a fresh new instance of the step definition
-  class itself using Java Reflection API
+- Accept passing instances of step definition class:
+  Several `EasyCucumber.build()` methods can take the instance of your step definition class as parameter.
+  In this case, the cucumber will use your instance to run the step,
+  instead of creating a fresh new instance of the step definition class itself using Java Reflection API
   - For example, you can pass in `new MyStepDefinition()` instead of `MyStepDefinition.class` as the parameter
     to `EasyCucumber.build()`
-  - This can be useful for **sharing states between different cucumber tests**,
-    which also **support controlled concurrent execution** of multiple Cucumber tests.
+  - This is the **key** feature to **support controlled concurrent execution** of multiple Cucumber tests, 
+    achieved by sharing states between different cucumber tests,
     See [this document](./doc/complex%20scenario%20guide.md) for more detail.
-- Enforced Keyword Check: The step definition keyword in feature file must match the keyword in the annotation of the step definition method.
-  - For examples: to match `Given a step`, you have to use `@JGivenStep("a step")` instead of `@JWhenStep("a step")` or `@JThenStep("a step")`. 
+- Enforced Keyword Check:
+  The step definition keyword in feature file must match the keyword in the annotation of the
+  step definition method.
+  - For examples: to match `Given a step`, you have to use `@JGivenStep("a step")` instead of `@JWhenStep("a step")`
+    or `@JThenStep("a step")`.
     This means if you have both `Given a step` and `When a step` in your feature file,
     you have to write two step definition methods with `@JGivenStep("a step")` and `@JWhenStep("a step")` respectively.
   - This is explicitly designed to allow better flexibility
