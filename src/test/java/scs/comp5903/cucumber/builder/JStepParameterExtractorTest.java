@@ -1,10 +1,10 @@
 package scs.comp5903.cucumber.builder;
 
 import org.junit.jupiter.api.Test;
-import scs.comp5903.cucumber.model.JStepDefMethodDetail;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
-import scs.comp5903.cucumber.model.jstep.GivenStep;
-import scs.comp5903.cucumber.model.matcher.GivenJStepMatcher;
+import scs.comp5903.cucumber.model.jfeature.jstep.GivenStep;
+import scs.comp5903.cucumber.model.jstepdef.JStepDefMethodDetail;
+import scs.comp5903.cucumber.model.jstepdef.matcher.GivenJStepMatcher;
 
 import static org.junit.jupiter.api.Assertions.*;
 
