@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.builder;
+package scs.comp5903.cucumber.builder.params;
 
 import org.junit.jupiter.api.Test;
 import scs.comp5903.cucumber.model.jfeature.jstep.GivenStep;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class JStepParameterExtractorTest {
 
-  private final JStepParameterExtractor jStepParameterExtractor = new JStepParameterExtractor();
+  private final JStepParameterExtractor jStepParameterExtractor = new ManualJStepParameterExtractor();
 
   @Test
   void testExtractParameters() throws NoSuchMethodException {

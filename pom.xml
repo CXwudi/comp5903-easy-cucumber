@@ -21,6 +21,11 @@
       <version>0.10.2</version>
     </dependency>
     <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-expressions</artifactId>
+      <version>16.1.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.7.36</version> <!-- will keep the 1.x.x version for a while to not break users' deps -->

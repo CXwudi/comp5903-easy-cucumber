@@ -1,11 +1,10 @@
-package scs.comp5903.cucumber.builder;
+package scs.comp5903.cucumber.builder.params;
 
 import org.slf4j.Logger;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
-import scs.comp5903.cucumber.model.jfeature.jstep.*;
+import scs.comp5903.cucumber.model.jfeature.jstep.AbstractJStep;
 import scs.comp5903.cucumber.model.jstepdef.JStepDefMethodDetail;
-import scs.comp5903.cucumber.model.jstepdef.matcher.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,9 +22,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Charles Chen 101035684
  * @date 2022-06-29
  */
-public class JStepParameterExtractor {
+public class ManualJStepParameterExtractor implements JStepParameterExtractor {
 
-  private static final Logger log = getLogger(JStepParameterExtractor.class);
+  private static final Logger log = getLogger(ManualJStepParameterExtractor.class);
 
   /**
    * simply match the digits with an optional minus sign
@@ -48,6 +47,7 @@ public class JStepParameterExtractor {
    * @return none if jstep doesn't match this step definition <br/>
    * else, return list of parameters, can be empty lists meaning no parameters
    */
+  @Override
   public Optional<List<Object>> tryExtractParameters(AbstractJStep jStep, JStepDefMethodDetail jStepDefDetail) {
     var parameters = new ArrayList<>();
     var jStepMatcher = jStepDefDetail.getMatcher();
@@ -202,19 +202,5 @@ public class JStepParameterExtractor {
     }
   }
 
-  boolean isSameKeyword(AbstractJStep jStep, AbstractJStepMatcher jStepMatcher) {
-    if (jStep instanceof GivenStep) {
-      return jStepMatcher instanceof GivenJStepMatcher;
-    } else if (jStep instanceof WhenStep) {
-      return jStepMatcher instanceof WhenJStepMatcher;
-    } else if (jStep instanceof ThenStep) {
-      return jStepMatcher instanceof ThenJStepMatcher;
-    } else if (jStep instanceof AndStep) {
-      return jStepMatcher instanceof AndJStepMatcher;
-    } else if (jStep instanceof ButStep) {
-      return jStepMatcher instanceof ButJStepMatcher;
-    } else {
-      throw new EasyCucumberException(ErrorCode.EZCU008, "we are seeing unknown type here??");
-    }
-  }
+
 }
