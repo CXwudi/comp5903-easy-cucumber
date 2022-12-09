@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class JStepParameterExtractorTest {
 
-  private final JStepParameterExtractor jStepParameterExtractor = new ManualJStepParameterExtractor();
+  private final JStepParameterExtractor jStepParameterExtractor = new CucumberExpressionJStepParameterExtractor();
 
   @Test
   void testExtractParameters() throws NoSuchMethodException {
