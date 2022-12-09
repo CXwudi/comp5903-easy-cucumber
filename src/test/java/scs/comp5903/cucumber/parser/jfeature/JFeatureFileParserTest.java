@@ -20,11 +20,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class JFeatureFileParserTest {
 
   private final DetailBuilder detailBuilder = new DetailBuilder();
-  private final JFeatureFileLineByLineParser lineByLineParser = new JFeatureFileLineByLineParser(detailBuilder);
 
   @Test
   void canParseScenario() throws URISyntaxException {
-    var jFeatureDetail = new JFeatureFileParser(lineByLineParser).parse(ResourceUtil.getResourcePath("sample/jfeature/rummikub/declaring_winner.jfeature"));
+    var jFeatureDetail = new StateMachineJFeatureFileParser(detailBuilder).parse(ResourceUtil.getResourcePath("sample/jfeature/rummikub/declaring_winner.jfeature"));
     assertEquals("Declaring Winner", jFeatureDetail.getTitle());
     assertEquals(1, jFeatureDetail.getScenarios().size());
     assertEquals(0, jFeatureDetail.getScenarioOutlines().size());
@@ -41,7 +40,7 @@ class JFeatureFileParserTest {
 
   @Test
   void canParseScenarioOutline() throws URISyntaxException {
-    var jFeatureDetail = new JFeatureFileParser(lineByLineParser).parse(ResourceUtil.getResourcePath("sample/jfeature/rummikub/initial_points.jfeature"));
+    var jFeatureDetail = new StateMachineJFeatureFileParser(detailBuilder).parse(ResourceUtil.getResourcePath("sample/jfeature/rummikub/initial_points.jfeature"));
     assertEquals("Test if first play meets initial point threshold", jFeatureDetail.getTitle());
     assertEquals(1, jFeatureDetail.getScenarios().size());
     assertEquals(1, jFeatureDetail.getScenarioOrders().size());
@@ -59,13 +58,13 @@ class JFeatureFileParserTest {
 
   @Test
   void shouldThrowOnEmptyOrNoTitleFeatureFile() {
-    var exp = assertThrows(EasyCucumberException.class, () -> new JFeatureFileParser(lineByLineParser).parse(ResourceUtil.getResourcePath("sample/jfeature/empty-file.jfeature")));
+    var exp = assertThrows(EasyCucumberException.class, () -> new StateMachineJFeatureFileParser(detailBuilder).parse(ResourceUtil.getResourcePath("sample/jfeature/empty-file.jfeature")));
     assertTrue(exp.getMessage().contains("A feature must have a valid title"));
   }
 
   @Test
   void shouldNotThrowOnFeatureFileWithZeroScenarios() throws URISyntaxException {
-    var jFeatureDetail = new JFeatureFileParser(lineByLineParser).parse(ResourceUtil.getResourcePath("sample/jfeature/zero-scenarios.jfeature"));
+    var jFeatureDetail = new StateMachineJFeatureFileParser(detailBuilder).parse(ResourceUtil.getResourcePath("sample/jfeature/zero-scenarios.jfeature"));
     assertEquals(0, jFeatureDetail.getScenarios().size());
     assertEquals(0, jFeatureDetail.getScenarioOutlines().size());
     assertEquals(0, jFeatureDetail.getScenarioOrders().size());
@@ -74,7 +73,7 @@ class JFeatureFileParserTest {
 
   @Test
   void canIgnoreCommentsAndDescription() throws URISyntaxException {
-    var jFeatureDetail = new JFeatureFileParser(lineByLineParser).parse(ResourceUtil.getResourcePath("sample/jfeature/multi-line-description.jfeature"));
+    var jFeatureDetail = new StateMachineJFeatureFileParser(detailBuilder).parse(ResourceUtil.getResourcePath("sample/jfeature/multi-line-description.jfeature"));
     assertEquals("This is a feature with description and comments", jFeatureDetail.getTitle());
     assertEquals(1, jFeatureDetail.getScenarios().size());
     assertEquals(0, jFeatureDetail.getScenarioOutlines().size());
@@ -92,7 +91,7 @@ class JFeatureFileParserTest {
 
   @Test
   void canParseTags() throws URISyntaxException {
-    var jFeatureDetail = new JFeatureFileParser(lineByLineParser).parse(ResourceUtil.getResourcePath("sample/jfeature/multi-line-description-with-tags.jfeature"));
+    var jFeatureDetail = new StateMachineJFeatureFileParser(detailBuilder).parse(ResourceUtil.getResourcePath("sample/jfeature/multi-line-description-with-tags.jfeature"));
     assertEquals("This is a feature with description and comments", jFeatureDetail.getTitle());
     assertIterableEquals(Arrays.asList("tag1", "tag2", "tag3"), jFeatureDetail.getTags());
     assertEquals(1, jFeatureDetail.getScenarios().size());

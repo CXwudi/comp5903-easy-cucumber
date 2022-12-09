@@ -12,24 +12,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static scs.comp5903.cucumber.parser.jfeature.JFeatureFileLineByLineParser.ParseState.*;
+import static scs.comp5903.cucumber.parser.jfeature.StateMachineJFeatureFileParserInternal.ParseState.*;
 
 /**
  * This is the functional interface implementation of the logic of parsing feature file inspired by state-machine diagram <br/>
- * It is used by {@link JFeatureFileParser}. <br/>
+ * It is used by {@link StateMachineJFeatureFileParser}. <br/>
  * The implementation is not thread-safe. So need to create a new instance for each feature file. <br/>
  *
  * @author Charles Chen 101035684
  * @date 2022-07-05
  */
-public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
+public class StateMachineJFeatureFileParserInternal implements ThrowingConsumer<String> {
 
-  private static final Logger log = getLogger(JFeatureFileLineByLineParser.class);
+  private static final Logger log = getLogger(StateMachineJFeatureFileParserInternal.class);
 
   private JFeatureDetail.JFeatureDetailBuilder jFeatureDetailBuilder;
   private final DetailBuilder detailBuilder;
 
-  public JFeatureFileLineByLineParser(DetailBuilder detailBuilder) {
+  public StateMachineJFeatureFileParserInternal(DetailBuilder detailBuilder) {
     this.detailBuilder = detailBuilder;
   }
 
@@ -82,7 +82,7 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
   private ParseState parentState = null;
   /**
    * The current state from the result of the think() method. <br/>
-   * It is also the previous state from the previous {@link JFeatureFileLineByLineParser#acceptThrows(String)} method call. <br/>
+   * It is also the previous state from the previous {@link StateMachineJFeatureFileParserInternal#acceptThrows(String)} method call. <br/>
    */
   private ParseState state = START;
 

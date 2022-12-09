@@ -9,8 +9,7 @@ import scs.comp5903.cucumber.execution.JFeature;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
 import scs.comp5903.cucumber.parser.jfeature.DetailBuilder;
-import scs.comp5903.cucumber.parser.jfeature.JFeatureFileLineByLineParser;
-import scs.comp5903.cucumber.parser.jfeature.JFeatureFileParser;
+import scs.comp5903.cucumber.parser.jfeature.StateMachineJFeatureFileParser;
 import scs.comp5903.cucumber.parser.jstep.JStepDefinitionHookParser;
 import scs.comp5903.cucumber.parser.jstep.JStepDefinitionMethodParser;
 import scs.comp5903.cucumber.parser.jstep.JStepDefinitionParser;
@@ -137,8 +136,7 @@ public class EasyCucumber {
     }
     log.info("Start building the runnable JFeature from feature file: {} with step definition classes: {}", featureFile, stepDefinitionClasses);
     var detailBuilder = new DetailBuilder();
-    var lineByLineParser = new JFeatureFileLineByLineParser(detailBuilder);
-    var jFeatureFileParser = new JFeatureFileParser(lineByLineParser);
+    var jFeatureFileParser = new StateMachineJFeatureFileParser(detailBuilder);
     var jStepDefinitionMethodParser = new JStepDefinitionMethodParser();
     var jStepDefinitionHookParser = new JStepDefinitionHookParser();
     var jStepDefinitionParser = new JStepDefinitionParser(jStepDefinitionMethodParser, jStepDefinitionHookParser);
