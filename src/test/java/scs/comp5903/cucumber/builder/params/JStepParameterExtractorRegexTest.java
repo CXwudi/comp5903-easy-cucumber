@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Charles Chen 101035684
  * @date 2022-07-13
  */
+@Disabled
 class JStepParameterExtractorRegexTest {
   private final ManualJStepParameterExtractor jStepParameterExtractor = new ManualJStepParameterExtractor();
 

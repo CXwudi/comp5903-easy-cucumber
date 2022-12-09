@@ -21,7 +21,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  *
  * @author Charles Chen 101035684
  * @date 2022-06-29
+ * @deprecated use {@link CucumberExpressionJStepParameterExtractor} instead
  */
+@Deprecated(since = "0.4.0")
 public class ManualJStepParameterExtractor implements JStepParameterExtractor {
 
   private static final Logger log = getLogger(ManualJStepParameterExtractor.class);
