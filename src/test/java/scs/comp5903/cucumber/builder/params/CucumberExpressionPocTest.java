@@ -3,6 +3,7 @@ package scs.comp5903.cucumber.builder.params;
 import io.cucumber.cucumberexpressions.Argument;
 import io.cucumber.cucumberexpressions.ExpressionFactory;
 import io.cucumber.cucumberexpressions.ParameterTypeRegistry;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Charles Chen 101035684
  * @date 2022-12-07
  */
+@Disabled("This is a POC test, not a real test")
 class CucumberExpressionPocTest {
 
   private final ParameterTypeRegistry parameterTypeRegistry = new ParameterTypeRegistry(Locale.ENGLISH);
