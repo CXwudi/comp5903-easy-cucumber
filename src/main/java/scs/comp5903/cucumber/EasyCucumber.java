@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import scs.comp5903.cucumber.builder.BaseObjectProvider;
 import scs.comp5903.cucumber.builder.EasyCachingObjectProvider;
 import scs.comp5903.cucumber.builder.JFeatureBuilder;
-import scs.comp5903.cucumber.builder.params.ManualJStepParameterExtractor;
+import scs.comp5903.cucumber.builder.params.CucumberExpressionJStepParameterExtractor;
 import scs.comp5903.cucumber.execution.JFeature;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
@@ -142,7 +142,7 @@ public class EasyCucumber {
     var jStepDefinitionMethodParser = new JStepDefinitionMethodParser();
     var jStepDefinitionHookParser = new JStepDefinitionHookParser();
     var jStepDefinitionParser = new JStepDefinitionParser(jStepDefinitionMethodParser, jStepDefinitionHookParser);
-    var jStepParameterExtractor = new ManualJStepParameterExtractor();
+    var jStepParameterExtractor = new CucumberExpressionJStepParameterExtractor();
     // parse jfeature file to detail object
     var featureDetail = jFeatureFileParser.parse(featureFile);
     // parse step definition class to detail object
