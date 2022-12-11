@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static scs.comp5903.cucumber.model.exception.ErrorCode.EZCU002;
 import static scs.comp5903.cucumber.model.exception.ErrorCode.EZCU003;
 
 /**
@@ -115,7 +114,7 @@ public class LineBasedDetailBuilder {
       for (var tag : tagsRaw) {
         var trimmed = tag.trim();
         if (trimmed.isBlank()) {
-          throw new EasyCucumberException(ErrorCode.EZCU037, "Tag should not be a blank string: " + tagLiteral);
+          throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "Tag should not be a blank string: " + tagLiteral);
         }
         tags.add(trimmed);
       }
@@ -145,7 +144,7 @@ public class LineBasedDetailBuilder {
         jStep = new ButStep(step);
         break;
       default:
-        throw new EasyCucumberException(EZCU002, "Unknown step keyword: " + keyword);
+        throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "Unknown step keyword: " + keyword);
     }
     return jStep;
   }
