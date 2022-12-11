@@ -160,7 +160,7 @@ public class StateMachineJFeatureFileParserInternal implements ThrowingConsumer<
           state = SCENARIO_OUTLINE;
         } else {
           // to prevent infinite recursion
-          throw new EasyCucumberException(ErrorCode.EZCU025, "Illegal state transition from " + parentState + " to " + DESCRIPTION);
+          throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "Illegal state transition from " + parentState + " to " + DESCRIPTION);
         }
         // this should only happen once per line
         var result = /*re*/sense(line);
@@ -178,7 +178,7 @@ public class StateMachineJFeatureFileParserInternal implements ThrowingConsumer<
           state = FEATURE;
         } else {
           // to prevent infinite recursion
-          throw new EasyCucumberException(ErrorCode.EZCU034, "Illegal state transition from " + parentState + " to " + TAG);
+          throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "Illegal state transition from " + parentState + " to " + TAG);
         }
         // this should only happen once per line
         result = /*re*/sense(line);
@@ -230,7 +230,7 @@ public class StateMachineJFeatureFileParserInternal implements ThrowingConsumer<
         } else if (senceResult.sawTag) {
           state = TAG;
         } else {
-          throw new EasyCucumberException(ErrorCode.EZCU016, "The feature file must start with \"Feature:\" or tags");
+          throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "The feature file must start with \"Feature:\" or tags");
         }
         break;
       case FEATURE:
@@ -270,7 +270,7 @@ public class StateMachineJFeatureFileParserInternal implements ThrowingConsumer<
         } else if (parentState == SCENARIO_OUTLINE) {
           state = SCENARIO_OUTLINE;
         } else {
-          throw new EasyCucumberException(ErrorCode.EZCU024, "Illegal state transition from " + parentState + " to " + DESCRIPTION);
+          throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "Illegal state transition from " + parentState + " to " + DESCRIPTION);
         }
         // this should only recurse once per line
         /*re*/
@@ -284,14 +284,14 @@ public class StateMachineJFeatureFileParserInternal implements ThrowingConsumer<
           } else if (parentState == FEATURE) {
             state = FEATURE;
           } else {
-            throw new EasyCucumberException(ErrorCode.EZCU035, "Illegal state transition from " + parentState + " to " + TAG);
+            throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "Illegal state transition from " + parentState + " to " + TAG);
           }
           // this should only recurse once per line
           /*re*/
           think(senceResult);
           // in case if a tag -> description transition happened, which is illegal
           if (state == DESCRIPTION) {
-            throw new EasyCucumberException(ErrorCode.EZCU036, "Illegal state transition from " + TAG + " to " + state +
+            throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "Illegal state transition from " + TAG + " to " + state +
                 ". After tags, only feature (title), scenario, scenario outline or more tags are allowed");
           }
         }
@@ -311,7 +311,7 @@ public class StateMachineJFeatureFileParserInternal implements ThrowingConsumer<
             state = TAG;
             parentState = FEATURE;
           } else {
-            throw new EasyCucumberException(ErrorCode.EZCU021, "After a step, another step, example or a new scenario or scenario outline are allowed");
+            throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "After a step, another step, example or a new scenario or scenario outline are allowed");
           }
         }
         // else, keep in the same state, step
@@ -321,14 +321,14 @@ public class StateMachineJFeatureFileParserInternal implements ThrowingConsumer<
         if (senceResult.sawExampleContent) {
           state = EXAMPLE_CONTENT;
         } else {
-          throw new EasyCucumberException(ErrorCode.EZCU022, "After an example keyword, only example content is allowed");
+          throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "After an example keyword, only example content is allowed");
         }
         break;
       case EXAMPLE_CONTENT:
         if (!senceResult.sawExampleContent) {
           if (parentState != EXAMPLE_KEYWORD) {
             // just a check, although I don't think this can happen
-            throw new EasyCucumberException(ErrorCode.EZCU023, "Illegal state transition from " + parentState + " to " + EXAMPLE_CONTENT);
+            throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "Illegal state transition from " + parentState + " to " + EXAMPLE_CONTENT);
           }
           if (senceResult.sawScenario) {
             state = SCENARIO;
@@ -340,7 +340,7 @@ public class StateMachineJFeatureFileParserInternal implements ThrowingConsumer<
             state = TAG;
             parentState = FEATURE;
           } else {
-            throw new EasyCucumberException(ErrorCode.EZCU024, "After an example content, another example content, scenario, scenario outline or more tags are allowed");
+            throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "After an example content, another example content, scenario, scenario outline or more tags are allowed");
           }
         }
         // else, keep in example content state

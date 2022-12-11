@@ -38,11 +38,11 @@ public class StateMachineJFeatureFileParser implements JFeatureFileParser {
         lineByLineParser.accept(line.trim());
       }
     } catch (IOException e) {
-      throw new EasyCucumberException(ErrorCode.EZCU001, "Failed to parse jfeature file " + featureFile + " due to IO exception", e);
+      throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "Failed to parse jfeature file " + featureFile + " due to IO exception", e);
     }
     var jFeatureDetail = lineByLineParser.buildJFeatureDetail();
     if (jFeatureDetail.getTitle() == null || jFeatureDetail.getTitle().isBlank()) {
-      throw new EasyCucumberException(ErrorCode.EZCU014, "A feature must have a valid title, or is there a syntax issue in your feature file" + featureFile + "?");
+      throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "A feature must have a valid title, or is there a syntax issue in your feature file" + featureFile + "?");
     }
     log.info("Done parsing feature file: {}", featureFile.getFileName());
     return jFeatureDetail;

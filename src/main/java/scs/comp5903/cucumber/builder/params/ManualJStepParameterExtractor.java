@@ -200,7 +200,7 @@ public class ManualJStepParameterExtractor implements JStepParameterExtractor {
           return Optional.of(endIndex);
         }
       default:
-        throw new EasyCucumberException(ErrorCode.EZCU011, "Invalid parameter type: " + parameterType);
+        throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "Invalid parameter type: " + parameterType);
     }
   }
 
