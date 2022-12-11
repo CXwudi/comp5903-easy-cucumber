@@ -22,9 +22,9 @@ import static scs.comp5903.cucumber.model.exception.ErrorCode.EZCU003;
  * @author Charles Chen 101035684
  * @date 2022-06-28
  */
-public class DetailBuilder {
+public class LineBasedDetailBuilder {
 
-  private static final Logger log = getLogger(DetailBuilder.class);
+  private static final Logger log = getLogger(LineBasedDetailBuilder.class);
 
   /**
    * this method takes the raw literal of scenario outline

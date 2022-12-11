@@ -12,18 +12,18 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Charles Chen 101035684
  * @date 2022-06-29
  */
-class DetailBuilderTest {
+class LineBasedDetailBuilderTest {
 
   @Test
   void shouldThrowOnUnknownKeyword() {
-    var detailBuilder = new DetailBuilder();
+    var detailBuilder = new LineBasedDetailBuilder();
     var exp = assertThrows(EasyCucumberException.class, () -> detailBuilder.parseStep("This is not a keyword"));
     assertTrue(exp.getMessage().contains("Unknown step keyword"));
   }
 
   @Test
   void canCreateJScenarioDetail() {
-    var detailBuilder = new DetailBuilder();
+    var detailBuilder = new LineBasedDetailBuilder();
     var title = "This is a title";
     var steps = List.of(
         "Given I have an apple",
@@ -52,7 +52,7 @@ class DetailBuilderTest {
 
   @Test
   void canCreateJScenarioOutlineDetail() {
-    var detailBuilder = new DetailBuilder();
+    var detailBuilder = new LineBasedDetailBuilder();
     var title = "This is a title";
     var steps = List.of(
         "Given I have a <fruit1>",

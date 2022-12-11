@@ -19,13 +19,13 @@ import static scs.comp5903.cucumber.parser.jfeature.StateMachineJFeatureFilePars
  */
 class LineByLineParserBuildingTest {
 
-  private final DetailBuilder detailBuilder = new DetailBuilder();
+  private final LineBasedDetailBuilder lineBasedDetailBuilder = new LineBasedDetailBuilder();
   private StateMachineJFeatureFileParserInternal lineByLineParser;
   private JFeatureDetail.JFeatureDetailBuilder jFeatureDetailBuilder;
 
   @BeforeEach
   void setUp() {
-    lineByLineParser = new StateMachineJFeatureFileParserInternal(detailBuilder);
+    lineByLineParser = new StateMachineJFeatureFileParserInternal(lineBasedDetailBuilder);
     jFeatureDetailBuilder = lineByLineParser.initNewJFeatureDetailBuilder();
   }
 

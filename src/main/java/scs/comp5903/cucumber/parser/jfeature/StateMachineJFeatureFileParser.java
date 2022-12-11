@@ -20,8 +20,8 @@ public class StateMachineJFeatureFileParser implements JFeatureFileParser {
   private static final Logger log = getLogger(StateMachineJFeatureFileParser.class);
   private final StateMachineJFeatureFileParserInternal lineByLineParser;
 
-  public StateMachineJFeatureFileParser(DetailBuilder detailBuilder) {
-    this.lineByLineParser = new StateMachineJFeatureFileParserInternal(detailBuilder);
+  public StateMachineJFeatureFileParser() {
+    this.lineByLineParser = new StateMachineJFeatureFileParserInternal(new LineBasedDetailBuilder());
   }
 
   @Override

@@ -27,10 +27,10 @@ public class StateMachineJFeatureFileParserInternal implements ThrowingConsumer<
   private static final Logger log = getLogger(StateMachineJFeatureFileParserInternal.class);
 
   private JFeatureDetail.JFeatureDetailBuilder jFeatureDetailBuilder;
-  private final DetailBuilder detailBuilder;
+  private final LineBasedDetailBuilder lineBasedDetailBuilder;
 
-  public StateMachineJFeatureFileParserInternal(DetailBuilder detailBuilder) {
-    this.detailBuilder = detailBuilder;
+  public StateMachineJFeatureFileParserInternal(LineBasedDetailBuilder lineBasedDetailBuilder) {
+    this.lineBasedDetailBuilder = lineBasedDetailBuilder;
   }
 
   /**
@@ -56,7 +56,7 @@ public class StateMachineJFeatureFileParserInternal implements ThrowingConsumer<
     // flush the last scenario or scenario outline in the temp storage
     checkTempAndBuildScenarioOrScenarioOutline();
     // also added tags for feature
-    jFeatureDetailBuilder.tags(detailBuilder.parseTagLiteral(tempFeatureTagsLiteral));
+    jFeatureDetailBuilder.tags(lineBasedDetailBuilder.parseTagLiteral(tempFeatureTagsLiteral));
     // finally, build up everything
     return jFeatureDetailBuilder.build();
   }
@@ -392,10 +392,10 @@ public class StateMachineJFeatureFileParserInternal implements ThrowingConsumer<
   public boolean checkTempAndBuildScenarioOrScenarioOutline() {
     if (tempScenarioTitle != null && !tempScenarioTitle.isEmpty()) {
       if (tempScenarioOutlineExamples.isEmpty()) {
-        jFeatureDetailBuilder.addScenario(detailBuilder.buildJScenarioDetail(tempScenarioTitle, tempScenarioSteps, tempScenarioOrScenarioOutlineTagsLiteral));
+        jFeatureDetailBuilder.addScenario(lineBasedDetailBuilder.buildJScenarioDetail(tempScenarioTitle, tempScenarioSteps, tempScenarioOrScenarioOutlineTagsLiteral));
         jFeatureDetailBuilder.addScenarioOrder(order++);
       } else {
-        jFeatureDetailBuilder.addScenarioOutline(detailBuilder.buildJScenarioOutlineDetail(tempScenarioTitle, tempScenarioSteps, tempScenarioOutlineExamples, tempScenarioOrScenarioOutlineTagsLiteral));
+        jFeatureDetailBuilder.addScenarioOutline(lineBasedDetailBuilder.buildJScenarioOutlineDetail(tempScenarioTitle, tempScenarioSteps, tempScenarioOutlineExamples, tempScenarioOrScenarioOutlineTagsLiteral));
         jFeatureDetailBuilder.addScenarioOutlineOrder(order++);
       }
       tempScenarioTitle = "";
