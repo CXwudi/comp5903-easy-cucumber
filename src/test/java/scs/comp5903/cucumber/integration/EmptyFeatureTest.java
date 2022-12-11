@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import scs.comp5903.cucumber.EasyCucumber;
 import scs.comp5903.cucumber.integration.rummikub.RummikubDummyJStepDefs;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
-import scs.comp5903.cucumber.model.exception.ErrorCode;
 
 import java.nio.file.Path;
 
@@ -19,7 +18,7 @@ class EmptyFeatureTest {
   @Test
   void emptyFeatureFile() {
     var exp = assertThrows(EasyCucumberException.class, () -> EasyCucumber.build(Path.of("src/test/resources/sample/jfeature/empty-file.jfeature"), RummikubDummyJStepDefs.class));
-    assertTrue(exp.getMessage().contains(ErrorCode.EZCU014.toString()));
+    assertTrue(exp.getMessage().contains("A feature must have a valid title"));
   }
 
   @Test
