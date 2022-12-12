@@ -4,13 +4,11 @@ import org.slf4j.Logger;
 import scs.comp5903.cucumber.builder.BaseObjectProvider;
 import scs.comp5903.cucumber.builder.EasyCachingObjectProvider;
 import scs.comp5903.cucumber.builder.JFeatureBuilder;
-import scs.comp5903.cucumber.builder.JStepParameterExtractor;
+import scs.comp5903.cucumber.builder.params.CucumberExpressionJStepParameterExtractor;
 import scs.comp5903.cucumber.execution.JFeature;
 import scs.comp5903.cucumber.model.exception.EasyCucumberException;
 import scs.comp5903.cucumber.model.exception.ErrorCode;
-import scs.comp5903.cucumber.parser.jfeature.DetailBuilder;
-import scs.comp5903.cucumber.parser.jfeature.JFeatureFileLineByLineParser;
-import scs.comp5903.cucumber.parser.jfeature.JFeatureFileParser;
+import scs.comp5903.cucumber.parser.jfeature.GherkinBasedJFeatureFileParser;
 import scs.comp5903.cucumber.parser.jstep.JStepDefinitionHookParser;
 import scs.comp5903.cucumber.parser.jstep.JStepDefinitionMethodParser;
 import scs.comp5903.cucumber.parser.jstep.JStepDefinitionParser;
@@ -136,13 +134,11 @@ public class EasyCucumber {
       throw new EasyCucumberException(ErrorCode.EZCU033, "Need at least one step definition class");
     }
     log.info("Start building the runnable JFeature from feature file: {} with step definition classes: {}", featureFile, stepDefinitionClasses);
-    var detailBuilder = new DetailBuilder();
-    var lineByLineParser = new JFeatureFileLineByLineParser(detailBuilder);
-    var jFeatureFileParser = new JFeatureFileParser(lineByLineParser);
+    var jFeatureFileParser = new GherkinBasedJFeatureFileParser();
     var jStepDefinitionMethodParser = new JStepDefinitionMethodParser();
     var jStepDefinitionHookParser = new JStepDefinitionHookParser();
     var jStepDefinitionParser = new JStepDefinitionParser(jStepDefinitionMethodParser, jStepDefinitionHookParser);
-    var jStepParameterExtractor = new JStepParameterExtractor();
+    var jStepParameterExtractor = new CucumberExpressionJStepParameterExtractor();
     // parse jfeature file to detail object
     var featureDetail = jFeatureFileParser.parse(featureFile);
     // parse step definition class to detail object

@@ -12,25 +12,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static scs.comp5903.cucumber.parser.jfeature.JFeatureFileLineByLineParser.ParseState.*;
+import static scs.comp5903.cucumber.parser.jfeature.StateMachineJFeatureFileParserInternal.ParseState.*;
 
 /**
  * This is the functional interface implementation of the logic of parsing feature file inspired by state-machine diagram <br/>
- * It is used by {@link JFeatureFileParser}. <br/>
+ * It is used by {@link StateMachineJFeatureFileParser}. <br/>
  * The implementation is not thread-safe. So need to create a new instance for each feature file. <br/>
  *
  * @author Charles Chen 101035684
  * @date 2022-07-05
  */
-public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
+public class StateMachineJFeatureFileParserInternal implements ThrowingConsumer<String> {
 
-  private static final Logger log = getLogger(JFeatureFileLineByLineParser.class);
+  private static final Logger log = getLogger(StateMachineJFeatureFileParserInternal.class);
 
   private JFeatureDetail.JFeatureDetailBuilder jFeatureDetailBuilder;
-  private final DetailBuilder detailBuilder;
+  private final LineBasedDetailBuilder lineBasedDetailBuilder;
 
-  public JFeatureFileLineByLineParser(DetailBuilder detailBuilder) {
-    this.detailBuilder = detailBuilder;
+  public StateMachineJFeatureFileParserInternal(LineBasedDetailBuilder lineBasedDetailBuilder) {
+    this.lineBasedDetailBuilder = lineBasedDetailBuilder;
   }
 
   /**
@@ -56,7 +56,7 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
     // flush the last scenario or scenario outline in the temp storage
     checkTempAndBuildScenarioOrScenarioOutline();
     // also added tags for feature
-    jFeatureDetailBuilder.tags(detailBuilder.parseTagLiteral(tempFeatureTagsLiteral));
+    jFeatureDetailBuilder.tags(lineBasedDetailBuilder.parseTagLiteral(tempFeatureTagsLiteral));
     // finally, build up everything
     return jFeatureDetailBuilder.build();
   }
@@ -82,7 +82,7 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
   private ParseState parentState = null;
   /**
    * The current state from the result of the think() method. <br/>
-   * It is also the previous state from the previous {@link JFeatureFileLineByLineParser#acceptThrows(String)} method call. <br/>
+   * It is also the previous state from the previous {@link StateMachineJFeatureFileParserInternal#acceptThrows(String)} method call. <br/>
    */
   private ParseState state = START;
 
@@ -160,7 +160,7 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
           state = SCENARIO_OUTLINE;
         } else {
           // to prevent infinite recursion
-          throw new EasyCucumberException(ErrorCode.EZCU025, "Illegal state transition from " + parentState + " to " + DESCRIPTION);
+          throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "Illegal state transition from " + parentState + " to " + DESCRIPTION);
         }
         // this should only happen once per line
         var result = /*re*/sense(line);
@@ -178,7 +178,7 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
           state = FEATURE;
         } else {
           // to prevent infinite recursion
-          throw new EasyCucumberException(ErrorCode.EZCU034, "Illegal state transition from " + parentState + " to " + TAG);
+          throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "Illegal state transition from " + parentState + " to " + TAG);
         }
         // this should only happen once per line
         result = /*re*/sense(line);
@@ -230,7 +230,7 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
         } else if (senceResult.sawTag) {
           state = TAG;
         } else {
-          throw new EasyCucumberException(ErrorCode.EZCU016, "The feature file must start with \"Feature:\" or tags");
+          throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "The feature file must start with \"Feature:\" or tags");
         }
         break;
       case FEATURE:
@@ -270,7 +270,7 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
         } else if (parentState == SCENARIO_OUTLINE) {
           state = SCENARIO_OUTLINE;
         } else {
-          throw new EasyCucumberException(ErrorCode.EZCU024, "Illegal state transition from " + parentState + " to " + DESCRIPTION);
+          throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "Illegal state transition from " + parentState + " to " + DESCRIPTION);
         }
         // this should only recurse once per line
         /*re*/
@@ -284,14 +284,14 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
           } else if (parentState == FEATURE) {
             state = FEATURE;
           } else {
-            throw new EasyCucumberException(ErrorCode.EZCU035, "Illegal state transition from " + parentState + " to " + TAG);
+            throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "Illegal state transition from " + parentState + " to " + TAG);
           }
           // this should only recurse once per line
           /*re*/
           think(senceResult);
           // in case if a tag -> description transition happened, which is illegal
           if (state == DESCRIPTION) {
-            throw new EasyCucumberException(ErrorCode.EZCU036, "Illegal state transition from " + TAG + " to " + state +
+            throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "Illegal state transition from " + TAG + " to " + state +
                 ". After tags, only feature (title), scenario, scenario outline or more tags are allowed");
           }
         }
@@ -311,7 +311,7 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
             state = TAG;
             parentState = FEATURE;
           } else {
-            throw new EasyCucumberException(ErrorCode.EZCU021, "After a step, another step, example or a new scenario or scenario outline are allowed");
+            throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "After a step, another step, example or a new scenario or scenario outline are allowed");
           }
         }
         // else, keep in the same state, step
@@ -321,14 +321,14 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
         if (senceResult.sawExampleContent) {
           state = EXAMPLE_CONTENT;
         } else {
-          throw new EasyCucumberException(ErrorCode.EZCU022, "After an example keyword, only example content is allowed");
+          throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "After an example keyword, only example content is allowed");
         }
         break;
       case EXAMPLE_CONTENT:
         if (!senceResult.sawExampleContent) {
           if (parentState != EXAMPLE_KEYWORD) {
             // just a check, although I don't think this can happen
-            throw new EasyCucumberException(ErrorCode.EZCU023, "Illegal state transition from " + parentState + " to " + EXAMPLE_CONTENT);
+            throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "Illegal state transition from " + parentState + " to " + EXAMPLE_CONTENT);
           }
           if (senceResult.sawScenario) {
             state = SCENARIO;
@@ -340,7 +340,7 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
             state = TAG;
             parentState = FEATURE;
           } else {
-            throw new EasyCucumberException(ErrorCode.EZCU024, "After an example content, another example content, scenario, scenario outline or more tags are allowed");
+            throw new EasyCucumberException(ErrorCode.EZCU_DEPRECATED, "After an example content, another example content, scenario, scenario outline or more tags are allowed");
           }
         }
         // else, keep in example content state
@@ -392,10 +392,10 @@ public class JFeatureFileLineByLineParser implements ThrowingConsumer<String> {
   public boolean checkTempAndBuildScenarioOrScenarioOutline() {
     if (tempScenarioTitle != null && !tempScenarioTitle.isEmpty()) {
       if (tempScenarioOutlineExamples.isEmpty()) {
-        jFeatureDetailBuilder.addScenario(detailBuilder.buildJScenarioDetail(tempScenarioTitle, tempScenarioSteps, tempScenarioOrScenarioOutlineTagsLiteral));
+        jFeatureDetailBuilder.addScenario(lineBasedDetailBuilder.buildJScenarioDetail(tempScenarioTitle, tempScenarioSteps, tempScenarioOrScenarioOutlineTagsLiteral));
         jFeatureDetailBuilder.addScenarioOrder(order++);
       } else {
-        jFeatureDetailBuilder.addScenarioOutline(detailBuilder.buildJScenarioOutlineDetail(tempScenarioTitle, tempScenarioSteps, tempScenarioOutlineExamples, tempScenarioOrScenarioOutlineTagsLiteral));
+        jFeatureDetailBuilder.addScenarioOutline(lineBasedDetailBuilder.buildJScenarioOutlineDetail(tempScenarioTitle, tempScenarioSteps, tempScenarioOutlineExamples, tempScenarioOrScenarioOutlineTagsLiteral));
         jFeatureDetailBuilder.addScenarioOutlineOrder(order++);
       }
       tempScenarioTitle = "";

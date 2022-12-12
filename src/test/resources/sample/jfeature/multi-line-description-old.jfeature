@@ -5,8 +5,8 @@ Feature: This is a feature with description and comments
 
   Scenario: This is a scenario with description and comments
     I can write description here as well
-    # Examples: a tricky description
-    # then another tricky description
+    Examples: a tricky description
+    then another tricky description
     # above three lines are all description
     Given I have an apple
     When I eat it

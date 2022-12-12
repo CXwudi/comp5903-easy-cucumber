@@ -21,6 +21,16 @@
       <version>0.10.2</version>
     </dependency>
     <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-expressions</artifactId>
+      <version>16.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>gherkin</artifactId>
+      <version>25.0.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.7.36</version> <!-- will keep the 1.x.x version for a while to not break users' deps -->
@@ -48,13 +58,13 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>4.5.3</version>
+      <version>4.6.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.github.bonigarcia</groupId>
       <artifactId>webdrivermanager</artifactId>
-      <version>5.3.0</version>
+      <version>5.3.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

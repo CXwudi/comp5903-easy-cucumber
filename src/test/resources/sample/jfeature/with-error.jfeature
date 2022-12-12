@@ -1,0 +1,21 @@
+Feature: This is a feature with gherkin syntax error
+
+
+  Scenario: This is a scenario with description and comments
+    I can write description here as well
+    # error came from here where a example is not allowed right after Scenario
+    Examples: a tricky description
+    # one more comment here
+    Given I have an apple
+    When I eat it
+    Then I am full
+    # and this is a comment
+
+  Scenario Outline: This is a scenario outline with description and comments
+    I can write description here as well
+    # error came from here where a example is not allowed right after Scenario
+    Examples: a tricky description
+    Given I have an apple
+    When I eat it
+    Then I am full
+    # and this is a comment

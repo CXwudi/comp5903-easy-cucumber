@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static scs.comp5903.cucumber.parser.jfeature.JFeatureFileLineByLineParser.ParseState.*;
+import static scs.comp5903.cucumber.parser.jfeature.StateMachineJFeatureFileParserInternal.ParseState.*;
 
 /**
  * @author Charles Chen 101035684
@@ -17,13 +17,13 @@ import static scs.comp5903.cucumber.parser.jfeature.JFeatureFileLineByLineParser
  */
 class LineByLineParserParsingTest {
 
-  private final DetailBuilder detailBuilder = new DetailBuilder();
-  private JFeatureFileLineByLineParser lineByLineParser;
+  private final LineBasedDetailBuilder lineBasedDetailBuilder = new LineBasedDetailBuilder();
+  private StateMachineJFeatureFileParserInternal lineByLineParser;
   private JFeatureDetail.JFeatureDetailBuilder jFeatureDetailBuilder;
 
   @BeforeEach
   void setUp() {
-    lineByLineParser = new JFeatureFileLineByLineParser(detailBuilder);
+    lineByLineParser = new StateMachineJFeatureFileParserInternal(lineBasedDetailBuilder);
     jFeatureDetailBuilder = lineByLineParser.initNewJFeatureDetailBuilder();
   }
 

@@ -1,4 +1,4 @@
-package scs.comp5903.cucumber.builder;
+package scs.comp5903.cucumber.builder.params;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @date 2022-07-13
  */
 class JStepParameterExtractorRegexTest {
-  private final JStepParameterExtractor jStepParameterExtractor = new JStepParameterExtractor();
+  private final ManualJStepParameterExtractor jStepParameterExtractor = new ManualJStepParameterExtractor();
 
   static Stream<Arguments> argumentsStreamForSuccessScenarios() {
     return Stream.of(
