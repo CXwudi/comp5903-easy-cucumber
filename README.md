@@ -94,11 +94,15 @@ void myTest(){
     JFeature jFeature=EasyCucumber.build(myFeatureFile,MyStepDefinition.class);
     jFeature.executeAll();
     // or JFeature.executeByTag(myTag);
-    }
+}
 ```
 
 As you can see, `EasyCucumber.build()`represents the build phase
 and `JFeature.executeAll()` represents the runtime phase.
+
+If any failure happens, either it is an assertion error or a runtime exception,
+will cause the `JFeature.executeAll()` stop running and throw exception.
+Hence `JFeature.executeAll()` finishes execution = your feature file passes.
 
 ### Build the test
 
