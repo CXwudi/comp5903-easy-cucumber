@@ -30,9 +30,9 @@ public class JStepDefinitionMethodParser {
     // be aware that the order of methods can vary depends on OS
     var clazzIsPublic = false;
     for (Method method : stepDefinitionClass.getMethods()) { // this gets only public methods
-      JStepKeyword keyword = null;
-      String stepMatcherString = null;
       for (var annotation : method.getAnnotations()) {
+        JStepKeyword keyword = null;
+        String stepMatcherString = null;
         if (annotation instanceof JStep) {
           keyword = ((JStep) annotation).keyword();
           stepMatcherString = ((JStep) annotation).value();
@@ -52,21 +52,18 @@ public class JStepDefinitionMethodParser {
           keyword = JStepKeyword.BUT;
           stepMatcherString = ((JButStep) annotation).value();
         }
-        if (Objects.nonNull(keyword)) {
-          break;
+        if (Objects.isNull(keyword)) { // means no jstep annotation
+          continue;
+        } else if (!clazzIsPublic) {
+          // once we see at least one method with @JStep annotation, we know this is step definition class and then can perform check of class modifier
+          ReflectionUtil.requireClassIsPublic(stepDefinitionClass);
+          clazzIsPublic = true;
         }
+        var jStepMatcher = createMethodDetail(keyword, stepMatcherString);
+        var methodDetail = new JStepDefMethodDetail(method, jStepMatcher);
+        log.debug("Created data class for step definition method: {} {}", keyword, stepMatcherString);
+        list.add(methodDetail);
       }
-      if (Objects.isNull(keyword)) { // means no jstep annotation
-        continue;
-      } else if (!clazzIsPublic) {
-        // once we see at least one method with @JStep annotation, we know this is step definition class and then can perform check of class modifier
-        ReflectionUtil.requireClassIsPublic(stepDefinitionClass);
-        clazzIsPublic = true;
-      }
-      var jStepMatcher = createMethodDetail(keyword, stepMatcherString);
-      var methodDetail = new JStepDefMethodDetail(method, jStepMatcher);
-      log.debug("Created data class for step definition method: {} {}", keyword, stepMatcherString);
-      list.add(methodDetail);
     }
     return list;
   }

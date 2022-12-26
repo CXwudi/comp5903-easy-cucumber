@@ -51,6 +51,15 @@ class RummikubEasyCucumberIntegrationTest {
     });
   }
 
+  @ParameterizedTest
+  @MethodSource("jFeatureFiles")
+  void canRunRummikubJFeatureWithOverlappedAnnotation(Path jFeatureFile) {
+    assertDoesNotThrow(() -> {
+      var jFeature = EasyCucumber.build(jFeatureFile, RummikubDummyJStepDefsWithOverlappedAnnotation.class);
+      jFeature.executeAll();
+    });
+  }
+
 
   static Stream<Arguments> jFeatureFiles() throws IOException {
     return Files.list(Paths.get("src/test/resources/sample/jfeature/rummikub"))
