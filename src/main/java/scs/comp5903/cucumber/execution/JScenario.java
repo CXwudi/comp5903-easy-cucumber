@@ -79,13 +79,19 @@ public class JScenario implements TagsContainer {
     log.info("Executing scenario: {}", title);
     var status = new JScenarioStatus(this);
     executeBeforeScenarioHooks(status);
-    for (JStepDefMethodExecution step : steps) {
-      executeBeforeStepHooks(status);
-      step.execute();
-      status.incrementAndReturnStepIndex();
-      executeAfterStepHooks(status);
+    try {
+      for (JStepDefMethodExecution step : steps) {
+        executeBeforeStepHooks(status);
+        try {
+          step.execute();
+        } finally {
+          status.incrementAndReturnStepIndex();
+          executeAfterStepHooks(status);
+        }
+      }
+    } finally {
+      executeAfterScenarioHooks(status);
     }
-    executeAfterScenarioHooks(status);
   }
 
   private void executeBeforeScenarioHooks(JScenarioStatus status) throws InvocationTargetException, IllegalAccessException {

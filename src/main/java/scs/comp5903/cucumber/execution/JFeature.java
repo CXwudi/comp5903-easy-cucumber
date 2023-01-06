@@ -102,14 +102,17 @@ public class JFeature {
   public void executeByTag(BaseFilteringTag tag) throws InvocationTargetException, IllegalAccessException {
     log.info("Start executing the feature: '{}' by tag expression: '{}'", title, tag);
     executeBeforeAllScenariosHooks();
-    for (int i = 0; i < orderToScenarioMap.size() + orderToScenarioOutlineMap.size(); i++) {
-      if (orderToScenarioMap.containsKey(i)) {
-        orderToScenarioMap.get(i).executeConditionallyBy(tag);
-      } else {
-        orderToScenarioOutlineMap.get(i).executeConditionallyBy(tag);
+    try {
+      for (int i = 0; i < orderToScenarioMap.size() + orderToScenarioOutlineMap.size(); i++) {
+        if (orderToScenarioMap.containsKey(i)) {
+          orderToScenarioMap.get(i).executeConditionallyBy(tag);
+        } else {
+          orderToScenarioOutlineMap.get(i).executeConditionallyBy(tag);
+        }
       }
+    } finally {
+      executeAfterAllScenariosHooks();
     }
-    executeAfterAllScenariosHooks();
     log.info("Done executing the feature: '{}' by tag conditionally", title);
   }
 
