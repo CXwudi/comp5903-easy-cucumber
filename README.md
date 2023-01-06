@@ -256,6 +256,35 @@ Then, then somewhere in your test code:
 myJFeature.executeByTag(createXor("tag1","tag2")); // will only run scenarios with either `@tag1` or `@tag2`, but not both or neither
 ```
 
+### About Output/Logging
+
+When you run the tests written in easy-cucumber, you might see a warning message:
+
+```
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+```
+
+Easy-cucumber uses SLF4J as the logging facade to provide runtime logs,
+and easy-cucumber does not bundle a default implementation library of the SLF4J-supported logging framework
+in order to avoid having a duplicated or conflicting logging framework.
+(It is likely that your other libraries also come with a logging framework)
+Hence, by default, you would see this warning message asking for a logging framework.
+
+While you can just add a logging framework like Logback, Log4j2, and etc to your Maven or Gradle build.
+You can completely disable logging or suppress the warning by adding
+[slf4j-nop](https://mvnrepository.com/artifact/org.slf4j/slf4j-nop).
+Here is an example in maven:
+
+```xml
+<dependency>
+  <groupId>org.slf4j</groupId>
+  <artifactId>slf4j-nop</artifactId>
+  <version>any version >= 2.0</version>
+</dependency>
+```
+
 ## Supported Features
 
 Only a subset of keywords and features that official cucumber have are supported.
