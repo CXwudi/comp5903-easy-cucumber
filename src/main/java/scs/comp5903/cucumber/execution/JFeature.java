@@ -113,7 +113,7 @@ public class JFeature {
     } finally {
       executeAfterAllScenariosHooks();
     }
-    log.info("Done executing the feature: '{}' by tag conditionally", title);
+    log.info("The feature: '{}' passed with the tag expression: {}", title, tag);
   }
 
   private void executeBeforeAllScenariosHooks() throws InvocationTargetException, IllegalAccessException {
