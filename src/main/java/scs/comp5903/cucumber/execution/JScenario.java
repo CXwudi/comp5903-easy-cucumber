@@ -89,6 +89,9 @@ public class JScenario implements TagsContainer {
           executeAfterStepHooks(status);
         }
       }
+    } catch (Throwable t) {
+      log.error("Error occurred during scenario execution: {}", title, t);
+      throw t;
     } finally {
       executeAfterScenarioHooks(status);
     }
