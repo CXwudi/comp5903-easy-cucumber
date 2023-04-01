@@ -31,4 +31,10 @@ class BugFixedFromIssueBoardTest {
     // this test requires to manually rerun it several times, as each time needs a new JVM
     assertDoesNotThrow(() -> EasyCucumber.build(ResourceUtil.getResourcePath("sample/jfeature/pirates/similar-step-2.jfeature"), SimilarStepBugStepDef2.class));
   }
+
+  @Test
+  void checkIssueFromVictor() {
+    assertDoesNotThrow(() -> EasyCucumber.build(ResourceUtil.getResourcePath("sample/jfeature/pirates/same-method-name-in-2-classes.jfeature"),
+        TwoClassWithSameMethodNamesStepDef.Class1.class, TwoClassWithSameMethodNamesStepDef.Class2.class).executeAll());
+  }
 }

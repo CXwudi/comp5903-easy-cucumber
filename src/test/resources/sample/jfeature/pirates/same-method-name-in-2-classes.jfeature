@@ -1,0 +1,5 @@
+Feature: Naming Feature
+
+  Scenario: Naming Scenario
+    Given Test given 1
+    Given Test given 2
