@@ -38,8 +38,8 @@ public class CmsComplexScenarioMultithreadStepDefs {
     student2Driver = SeleniumFactory.getDriver();
   }
 
-  @JStep(keyword = AND, value = "both are at the course registration page")
-  public void both_are_at_the_course_registration_page() {
+  @JStep(keyword = AND, value = "both are on the course registration page")
+  public void both_are_on_the_course_registration_page() {
     CmsPageUtils.getToPageAndLogin(student1Driver, Constants.URL_CMS + "/student/registration", "student1", "pass1234");
     CmsPageUtils.getToPageAndLogin(student2Driver, Constants.URL_CMS + "/student/registration", "student2", "pass1234");
   }
