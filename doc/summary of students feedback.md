@@ -1,6 +1,6 @@
 All summary is based on version 0.3.x during that time.
 
-## Yuanshi Li
+## Student A
 
 Q: How is Easy Cucumber compared to the official Cucumber?
 
@@ -19,7 +19,7 @@ con:
 - ~~no batch execution like CucumberOptions~~
   - my comment: not really, but maybe this can be a documentation issue
 
-## Victor Yang
+## Student B
 
 Q: How is Easy Cucumber compared to the official Cucumber?
 
@@ -35,7 +35,7 @@ con:
   - my comment: means not all ppl like this enforcement
 - ~~(Unreproducible) two methods in two classes with the same name cause an error~~
 
-## Harry Chen
+## Student C
 
 Q: How is Easy Cucumber compared to the official Cucumber?
 
@@ -50,7 +50,7 @@ con:
 - lack of table support in step definition (not the scenario template)
 - not enough support since it only has one developer
 
-## Riyanson Alfred
+## Student D
 
 Q: How is Easy Cucumber compared to the official Cucumber?
 
@@ -71,7 +71,7 @@ con:
 - lack of support for providing a summary of the test result
   - my comment: fixed just recently
 
-## Shuvankar Saha
+## Student E
 
 Q: How is Easy Cucumber compared to the official Cucumber?
 
@@ -91,7 +91,7 @@ con:
 
 - no
 
-## Andrew Hlynka
+## Student F
 
 Q: How is Easy Cucumber compared to the official Cucumber?
 
@@ -115,7 +115,7 @@ con:
   - my comment: this is really based on one's configuration. so another documentation problem
 - enforcement of keywords also causes more duplicated codes
 
-## Joshi Saurabh
+## Student G
 
 Q: How is Easy Cucumber compared to the official Cucumber?
 
