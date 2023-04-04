@@ -272,7 +272,10 @@ in order to avoid having a duplicated or conflicting logging framework.
 (It is likely that your other libraries also come with a logging framework)
 Hence, by default, you would see this warning message asking for a logging framework.
 
-While you can just add a logging framework like Logback, Log4j2, and etc to your Maven or Gradle build.
+Easy Cucumber uses info level logging for indicating the start of a feature, a scenario or scenario outline.
+If a scenario failed, it will use error level logging to log the error message and the exception thrown.
+When a feature is executed without error, it will use info level logging to indicate that the feature runs successfully.
+
 You can completely disable logging or suppress the warning by adding
 [slf4j-nop](https://mvnrepository.com/artifact/org.slf4j/slf4j-nop).
 Here is an example in maven:
@@ -284,6 +287,8 @@ Here is an example in maven:
   <version>any version >= 2.0</version>
 </dependency>
 ```
+However, I would recommend you to use a logging framework (logback, log4j) that is supported by SLF4J,
+so that you can see the logs in your test output.
 
 ## Supported Features
 
